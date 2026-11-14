@@ -28,14 +28,14 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;overflow-x:clip}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:clamp(17px,calc(13.94px + 0.28vw),22.1px);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip}
 img,svg,canvas{max-width:100%;display:block}
 a{color:var(--ink);text-decoration-color:var(--accent);text-underline-offset:3px}
 a:hover{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:.95;letter-spacing:.01em}
 p{margin:0}
-.mono{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.mono{font-family:var(--f-mono);font-size:clamp(13.8px,calc(9.84px + 0.28vw),17.4px);letter-spacing:.06em;text-transform:uppercase}
 .muted{color:var(--muted)}
 .wrap{max-width:1240px;margin:0 auto;padding:0 var(--gut)}
 .prose{max-width:62ch}
@@ -44,18 +44,19 @@ p{margin:0}
 /* ---------- top bar ---------- */
 .bar{position:fixed;inset:0 0 auto 0;z-index:50;background:rgba(13,14,13,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .bar-in{display:flex;align-items:center;gap:20px;height:52px}
-.logo{font-family:var(--f-display);font-weight:900;font-size:22px;letter-spacing:.04em;text-decoration:none;white-space:nowrap}
+.logo{font-family:var(--f-display);font-weight:900;font-size:clamp(22px,calc(18.04px + 0.28vw),28.6px);letter-spacing:.04em;text-decoration:none;white-space:nowrap}
 .logo b{color:var(--accent);font-weight:900}
-.sheet{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet{font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);color:var(--muted);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sheet span{color:var(--ink)}
-.bar nav{margin-left:auto;display:flex;gap:18px}
-.bar nav a{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
-.bar nav a:hover,.bar nav a.on{color:var(--ink)}
+.bar nav{margin-left:auto;display:flex;gap:8px}
+.bar nav a{font-family:var(--f-mono);font-size:clamp(12px,calc(10px + 0.2vw),14px);font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--ink);border:1px solid #4a4f49;background:#1a1c1a;padding:7px 12px;border-radius:2px;white-space:nowrap;transition:border-color .2s,background .2s,color .2s}
+.bar nav a:hover{border-color:var(--accent);color:var(--accent)}
+.bar nav a.on{background:var(--accent);border-color:var(--accent);color:#120800}
 .progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;background:var(--accent);transform-origin:0 50%;transform:scaleX(0)}
-@media (max-width:820px){.bar nav{display:none}.sheet{margin-left:auto}}
+@media (max-width:820px){.bar-in{flex-wrap:wrap;height:auto;padding-top:8px;padding-bottom:8px;row-gap:8px}.sheet{margin-left:auto}.sheet{flex:1 1 0;min-width:0;text-align:right}.bar nav{order:3;width:100%;margin-left:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.bar nav a{padding:7px 4px;text-align:center;letter-spacing:.03em}}
 
 /* ---------- hero ---------- */
-.hero{position:relative;padding:120px 0 72px;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero{position:relative;padding:130px 0 72px;overflow:hidden;border-bottom:1px solid var(--line)}
 .hero-layer{position:absolute;inset:0;pointer-events:none}
 .hero-grid{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:48px 48px;opacity:.35;mask-image:radial-gradient(ellipse at 70% 40%,#000 20%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at 70% 40%,#000 20%,transparent 75%);inset:-200px 0}
 #heroCanvas{position:absolute;inset:0;width:100%;height:100%}
@@ -75,9 +76,9 @@ p{margin:0}
 .index{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);max-width:760px}
 .index a{background:var(--bg);padding:14px 16px;text-decoration:none;display:flex;flex-direction:column;gap:4px;transition:background .2s}
 .index a:hover{background:var(--panel)}
-.index a b{font-family:var(--f-display);font-size:22px;font-weight:800;letter-spacing:.02em}
+.index a b{font-family:var(--f-display);font-size:clamp(22px,calc(18.04px + 0.28vw),28.6px);font-weight:800;letter-spacing:.02em}
 .index a:hover b{color:var(--accent)}
-.tblock{border:1px solid var(--line);font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;display:grid;grid-template-columns:auto auto;background:rgba(13,14,13,.7)}
+.tblock{border:1px solid var(--line);font-family:var(--f-mono);font-size:clamp(12.07px,calc(8.61px + 0.28vw),15.22px);letter-spacing:.06em;text-transform:uppercase;display:grid;grid-template-columns:auto auto;background:rgba(13,14,13,.7)}
 .tblock div{padding:6px 10px;border-bottom:1px solid var(--line)}
 .tblock div:nth-child(odd){color:var(--muted);border-right:1px solid var(--line)}
 .tblock div:nth-last-child(-n+2){border-bottom:0}
@@ -91,21 +92,21 @@ p{margin:0}
 .strip-in em{font-style:normal;color:var(--accent)}
 
 /* ---------- sheets ---------- */
-.sheet-sec{position:relative;padding:110px 0 90px;border-bottom:1px solid var(--line)}
+.sheet-sec{position:relative;scroll-margin-top:60px;padding:110px 0 90px;border-bottom:1px solid var(--line)}
 .bignum{position:absolute;right:var(--gut);top:40px;font-family:var(--f-display);font-weight:900;font-size:clamp(160px,26vw,360px);line-height:.8;color:transparent;-webkit-text-stroke:1px #2d312d;pointer-events:none;user-select:none;z-index:0}
 .sec-head{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:40px;align-items:end;margin-bottom:56px}
 .sec-head h2{font-size:clamp(56px,9vw,130px);font-weight:900;text-transform:uppercase}
-.sec-head h2 small{display:block;font-family:var(--f-mono);font-weight:400;font-size:12px;letter-spacing:.08em;color:var(--accent);margin-bottom:14px}
+.sec-head h2 small{display:block;font-family:var(--f-mono);font-weight:500;font-size:clamp(14px,calc(11.48px + 0.28vw),18.2px);letter-spacing:.08em;color:var(--accent);margin-bottom:14px}
 .tag-line{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,2.4vw,30px);line-height:1.15;color:#d8d4ca;margin-top:14px;letter-spacing:.01em}
 .meta{display:grid;grid-template-columns:auto 1fr;border-top:1px solid var(--line)}
-.meta div{padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
-.meta div:nth-child(odd){font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-right:22px;padding-top:12px}
+.meta div{padding:9px 0;border-bottom:1px solid var(--line);font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px)}
+.meta div:nth-child(odd){font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-right:22px;padding-top:12px}
 @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr);gap:24px}}
 
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;padding:4px 9px;border:1px solid var(--line);border-radius:2px;color:#cfcbc1;white-space:nowrap}
+.chip{font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);letter-spacing:.04em;padding:4px 9px;border:1px solid var(--line);border-radius:2px;color:#cfcbc1;white-space:nowrap}
 .chip.a{border-color:var(--accent);color:var(--accent)}
-.status{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:2px;white-space:nowrap;display:inline-block}
+.status{font-family:var(--f-mono);font-size:clamp(12.07px,calc(8.61px + 0.28vw),15.22px);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:2px;white-space:nowrap;display:inline-block}
 .s-ok{background:rgba(127,201,143,.12);color:var(--ok)}
 .s-warn{background:rgba(232,181,74,.12);color:var(--warn)}
 .s-info{background:rgba(140,207,224,.12);color:var(--clean)}
@@ -125,10 +126,10 @@ p{margin:0}
 .stage-canvas{flex:1;min-height:0;position:relative}
 #airCanvas{position:absolute;inset:0;width:100%;height:100%}
 .stage-ctl{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line)}
-.readouts{display:flex;gap:18px;font-family:var(--f-mono);font-size:12px}
-.readouts b{display:block;font-size:17px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink)}
-.readouts span{color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
-.toggle{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#cfcbc1;user-select:none}
+.readouts{display:flex;gap:18px;font-family:var(--f-mono);font-size:clamp(13.8px,calc(9.84px + 0.28vw),17.4px)}
+.readouts b{display:block;font-size:clamp(17px,calc(13.94px + 0.28vw),22.1px);font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink)}
+.readouts span{color:var(--muted);font-size:clamp(11.5px,calc(8.2px + 0.28vw),14.5px);letter-spacing:.08em;text-transform:uppercase}
+.toggle{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);letter-spacing:.06em;text-transform:uppercase;color:#cfcbc1;user-select:none}
 .toggle input{appearance:none;-webkit-appearance:none;width:36px;height:20px;border-radius:10px;background:#2a2e2a;position:relative;cursor:pointer;margin:0;transition:background .2s}
 .toggle input::after{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:var(--ink);transition:transform .2s}
 .toggle input:checked{background:var(--accent)}
@@ -141,7 +142,7 @@ p{margin:0}
 .step p{max-width:48ch;color:#d3cfc5}
 @media (max-width:900px){
   .story{grid-template-columns:minmax(0,1fr);gap:0}
-  .stage{top:52px;height:56vh;min-height:360px;z-index:5;background:var(--bg);padding-bottom:8px}
+  .stage{top:98px;height:54vh;min-height:340px;z-index:5;background:var(--bg);padding-bottom:8px}
   .steps{padding:4vh 0 10vh}
   .step{min-height:56vh;opacity:.45}
   .readouts{gap:12px}
@@ -151,50 +152,50 @@ p{margin:0}
 .calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1px;background:var(--line);border:1px solid var(--line);position:relative;z-index:1}
 .calc>div{background:var(--panel);padding:22px}
 .field{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;margin-bottom:16px}
-.field label{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.field output{font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums}
+.field label{font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field output{font-family:var(--f-mono);font-size:clamp(13px,calc(10.66px + 0.28vw),16.9px);font-variant-numeric:tabular-nums}
 .field input{grid-column:1/-1;width:100%;accent-color:var(--accent)}
-.formula{font-family:var(--f-mono);font-size:13px;line-height:1.9;color:#cfcbc1;border-left:2px solid var(--accent);padding-left:14px;margin:4px 0 22px;overflow-x:auto}
+.formula{font-family:var(--f-mono);font-size:clamp(13px,calc(10.66px + 0.28vw),16.9px);line-height:1.9;color:#cfcbc1;border-left:2px solid var(--accent);padding-left:14px;margin:4px 0 22px;overflow-x:auto}
 .big-eff{font-family:var(--f-display);font-weight:900;font-size:clamp(64px,9vw,112px);line-height:.9;font-variant-numeric:tabular-nums}
 .big-eff.na{color:var(--muted)}
 @media (max-width:820px){.calc{grid-template-columns:minmax(0,1fr)}}
 
-button.chip{background:transparent;cursor:pointer;text-transform:none;letter-spacing:.04em;font-size:11px;padding:6px 10px}
+button.chip{background:transparent;cursor:pointer;text-transform:none;letter-spacing:.04em;font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);padding:6px 10px}
 button.chip:hover{border-color:var(--accent);color:var(--accent)}
 .dash{position:relative;z-index:1;background:var(--panel);color:var(--ink)}
 .dash.light{--panel:#f4f2ec;--bg:#ebe8e1;--ink:#1c1e1b;--muted:#6a6d67;--line:#d6d2c8;--accent:#d9500c}
-.mini{padding:6px 10px;font-size:10px}
+.mini{padding:6px 10px;font-size:clamp(11.5px,calc(8.2px + 0.28vw),14.5px)}
 .dash-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-bottom:1px solid var(--line)}
-.dash-tabs button{border:0;border-radius:0;border-bottom:2px solid transparent;padding:12px 4px;color:var(--muted);font-size:10.5px}
+.dash-tabs button{border:0;border-radius:0;border-bottom:2px solid transparent;padding:12px 4px;color:var(--muted);font-size:clamp(12.07px,calc(8.61px + 0.28vw),15.22px)}
 .dash-tabs button.on{color:var(--ink);border-bottom-color:var(--accent)}
 .dash-body{padding:20px;min-height:280px}
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
 .tiles div{background:var(--panel);padding:14px}
-.tiles span{display:block;font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.tiles b{display:block;font-family:var(--f-display);font-weight:800;font-size:36px;line-height:1.05;font-variant-numeric:tabular-nums;margin-top:4px}
-.tiles small{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.tiles span{display:block;font-family:var(--f-mono);font-size:clamp(11.5px,calc(8.2px + 0.28vw),14.5px);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tiles b{display:block;font-family:var(--f-display);font-weight:800;font-size:clamp(36px,calc(29.52px + 0.28vw),46.8px);line-height:1.05;font-variant-numeric:tabular-nums;margin-top:4px}
+.tiles small{font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);color:var(--muted)}
 .drows{display:grid;gap:0;border-top:1px solid var(--line)}
-.drows div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:15px;align-items:center}
-.drows div>span:first-child{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.drows div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px);align-items:center}
+.drows div>span:first-child{font-family:var(--f-mono);font-size:clamp(12.07px,calc(8.61px + 0.28vw),15.22px);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .lifebar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:6px}
 .lifebar i{display:block;height:100%;background:var(--accent)}
 #dGraph{width:100%;height:220px}
-.dmsg{font-family:var(--f-mono);font-size:11px;color:var(--accent);min-height:16px;margin-top:10px}
+.dmsg{font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);color:var(--accent);min-height:16px;margin-top:10px}
 @media (max-width:700px){.dash-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.drows div{grid-template-columns:minmax(0,1fr);gap:2px}.dash-body{padding:16px}}
 /* log + spec */
 .two{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px;position:relative;z-index:1}
 @media (max-width:900px){.two{grid-template-columns:minmax(0,1fr)}}
 .log{border-top:1px solid var(--line)}
 .log-row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:20px;padding:20px 0;border-bottom:1px solid var(--line)}
-.log-row h4{margin:0 0 6px;font-family:var(--f-display);font-weight:800;font-size:24px;letter-spacing:.02em;text-transform:uppercase}
-.log-row p{color:#cfcbc1;font-size:16px}
-.delta{font-family:var(--f-mono);font-size:13px;margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.log-row h4{margin:0 0 6px;font-family:var(--f-display);font-weight:800;font-size:clamp(24px,calc(19.68px + 0.28vw),31.2px);letter-spacing:.02em;text-transform:uppercase}
+.log-row p{color:#cfcbc1;font-size:clamp(16px,calc(13.12px + 0.28vw),20.8px)}
+.delta{font-family:var(--f-mono);font-size:clamp(13px,calc(10.66px + 0.28vw),16.9px);margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .delta b{font-weight:500;font-variant-numeric:tabular-nums}
 @media (max-width:600px){.log-row{grid-template-columns:minmax(0,1fr);gap:6px}}
-.spec{width:100%;border-collapse:collapse;font-size:15px}
+.spec{width:100%;border-collapse:collapse;font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px)}
 .spec td{padding:9px 0;border-bottom:1px solid var(--line);vertical-align:top}
-.spec td:first-child{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-right:16px;padding-top:12px;white-space:nowrap}
-.note{font-size:14px;color:var(--muted);border:1px dashed var(--line);padding:12px 14px;margin-top:18px}
+.spec td:first-child{font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-right:16px;padding-top:12px;white-space:nowrap}
+.note{font-size:clamp(14px,calc(11.48px + 0.28vw),18.2px);color:var(--muted);border:1px dashed var(--line);padding:12px 14px;margin-top:18px}
 .note b{color:var(--warn);font-weight:500}
 
 /* ---------- Vexis ---------- */
@@ -202,8 +203,8 @@ button.chip:hover{border-color:var(--accent);color:var(--accent)}
 .arch svg{min-width:760px;width:100%}
 .arch .box{fill:var(--panel);stroke:var(--line)}
 .arch .box.hot{stroke:var(--accent)}
-.arch text{fill:var(--ink);font-family:var(--f-mono);font-size:12px}
-.arch text.s{fill:var(--muted);font-size:10px;letter-spacing:.06em}
+.arch text{fill:var(--ink);font-family:var(--f-mono);font-size:clamp(13.8px,calc(9.84px + 0.28vw),17.4px)}
+.arch text.s{fill:var(--muted);font-size:clamp(11.5px,calc(8.2px + 0.28vw),14.5px);letter-spacing:.06em}
 .arch .flow{stroke:var(--accent);stroke-width:1.5;fill:none;stroke-dasharray:5 6;animation:dash 1.2s linear infinite}
 .arch .flow.c{stroke:var(--clean)}
 .kl-flow{animation:dash 1.2s linear infinite}
@@ -212,29 +213,29 @@ button.chip:hover{border-color:var(--accent);color:var(--accent)}
 @media (max-width:980px){.vx-grid{grid-template-columns:minmax(0,1fr)}}
 #curve{width:100%;height:auto;touch-action:none;user-select:none}
 #curve .ax{stroke:var(--line)}
-#curve text{fill:var(--muted);font-family:var(--f-mono);font-size:11px}
+#curve text{fill:var(--muted);font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px)}
 #curve .knot{fill:var(--bg);stroke:var(--accent);stroke-width:2;cursor:grab}
 #curve .knot:hover,#curve .knot.drag{fill:var(--accent)}
 .ctl-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;padding:16px 18px;border-top:1px solid var(--line)}
 @media (max-width:600px){.ctl-row{grid-template-columns:minmax(0,1fr)}}
 .ctl-row .field{margin:0}
 .btns{display:flex;gap:10px;flex-wrap:wrap}
-button{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--ink);border:1px solid var(--line);padding:9px 14px;cursor:pointer;border-radius:2px;transition:border-color .2s,color .2s,background .2s}
+button{font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--ink);border:1px solid var(--line);padding:9px 14px;cursor:pointer;border-radius:2px;transition:border-color .2s,color .2s,background .2s}
 button:hover{border-color:var(--accent);color:var(--accent)}
 button.primary{background:var(--accent);border-color:var(--accent);color:#120800}
 button.primary:hover{background:#ff8442;color:#120800}
 .fan-state{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
 .fan-ico{width:84px;height:84px}
 .fan-ico g{transform-origin:50px 50px}
-.duty{font-family:var(--f-display);font-weight:900;font-size:64px;line-height:.9;font-variant-numeric:tabular-nums}
-.json{font-family:var(--f-mono);font-size:12px;line-height:1.6;color:#bdb9af;white-space:pre;overflow-x:auto;margin:0;padding:14px 18px;background:#0f110f;border-top:1px solid var(--line);min-height:236px}
+.duty{font-family:var(--f-display);font-weight:900;font-size:clamp(64px,calc(52.48px + 0.28vw),83.2px);line-height:.9;font-variant-numeric:tabular-nums}
+.json{font-family:var(--f-mono);font-size:clamp(13.8px,calc(9.84px + 0.28vw),17.4px);line-height:1.6;color:#bdb9af;white-space:pre;overflow-x:auto;margin:0;padding:14px 18px;background:#0f110f;border-top:1px solid var(--line);min-height:236px}
 .json .k{color:var(--clean)}.json .n{color:var(--accent)}
 .tick{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block;margin-right:8px;opacity:.25;transition:opacity .08s}
 .tick.on{opacity:1}
 .rel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);position:relative;z-index:1}
 .rel div{background:var(--bg);padding:20px}
-.rel h4{margin:8px 0 6px;font-family:var(--f-display);font-weight:800;font-size:22px;text-transform:uppercase;letter-spacing:.02em}
-.rel p{font-size:15px;color:#cfcbc1}
+.rel h4{margin:8px 0 6px;font-family:var(--f-display);font-weight:800;font-size:clamp(22px,calc(18.04px + 0.28vw),28.6px);text-transform:uppercase;letter-spacing:.02em}
+.rel p{font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px);color:#cfcbc1}
 @media (max-width:820px){.rel{grid-template-columns:minmax(0,1fr)}}
 
 /* ---------- Spectrum ---------- */
@@ -243,37 +244,46 @@ button.primary:hover{background:#ff8442;color:#120800}
 .browser{background:#f3f1ec;color:#1b1d1b;border-radius:6px;overflow:hidden;box-shadow:0 30px 80px -30px rgba(0,0,0,.8)}
 .br-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#dedbd3}
 .br-bar i{width:10px;height:10px;border-radius:50%;background:#b9b5ab}
-.br-url{flex:1;background:#f3f1ec;border-radius:4px;font-family:var(--f-mono);font-size:11px;padding:5px 10px;color:#6b6d68;margin-left:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.br-url{flex:1;background:#f3f1ec;border-radius:4px;font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);padding:5px 10px;color:#6b6d68;margin-left:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .bk{padding:22px}
 .bk-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:20px}
-.bk-steps button{color:#6b6d68;border:0;border-bottom:3px solid #d4d0c6;border-radius:0;padding:8px 2px;text-align:left;font-size:10px;letter-spacing:.06em}
+.bk-steps button{color:#6b6d68;border:0;border-bottom:3px solid #d4d0c6;border-radius:0;padding:8px 2px;text-align:left;font-size:clamp(11.5px,calc(8.2px + 0.28vw),14.5px);letter-spacing:.06em}
 .bk-steps button.on{color:#b2301e;border-color:#c8392a}
 .bk-steps button:hover{color:#1b1d1b;border-color:#1b1d1b}
-.bk h4{font-family:var(--f-body);font-weight:600;font-size:20px;margin:0 0 12px}
-.opt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid #d4d0c6;border-radius:4px;margin-bottom:8px;font-size:15px;cursor:pointer;background:#fff}
+.bk h4{font-family:var(--f-body);font-weight:600;font-size:clamp(20px,calc(16.4px + 0.28vw),26px);margin:0 0 12px}
+.opt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid #d4d0c6;border-radius:4px;margin-bottom:8px;font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px);cursor:pointer;background:#fff}
 .opt.sel{border-color:#c8392a;box-shadow:inset 3px 0 0 #c8392a}
-.opt small{font-family:var(--f-mono);font-size:11px;color:#6b6d68}
+.opt small{font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);color:#6b6d68}
 .opt .wl{color:#9a5b00}
 .bk-foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:10px}
 .bk-foot button{background:#c8392a;color:#fff;border:0;border-radius:4px}
 .bk-foot button:hover{background:#a92c1f;color:#fff}
-.bk-foot span{font-family:var(--f-mono);font-size:11px;color:#6b6d68}
-.rev{width:100%;border-collapse:collapse;font-size:15px}
-.rev th{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:400;padding:8px 10px;border:1px solid var(--line);background:var(--panel)}
+.bk-foot span{font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);color:#6b6d68}
+.rev{width:100%;border-collapse:collapse;font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px)}
+.rev th{font-family:var(--f-mono);font-size:clamp(12.07px,calc(8.61px + 0.28vw),15.22px);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:400;padding:8px 10px;border:1px solid var(--line);background:var(--panel)}
 .rev td{padding:10px;border:1px solid var(--line);vertical-align:middle}
-.rev td:first-child{font-family:var(--f-display);font-weight:800;font-size:20px;color:var(--accent);text-align:center;width:52px}
+.rev td:first-child{font-family:var(--f-display);font-weight:800;font-size:clamp(20px,calc(16.4px + 0.28vw),26px);color:var(--accent);text-align:center;width:52px}
 .hours{display:flex;align-items:baseline;gap:12px;margin-top:18px;flex-wrap:wrap}
-.hours b{font-family:var(--f-display);font-weight:900;font-size:64px;line-height:.9}
+.hours b{font-family:var(--f-display);font-weight:900;font-size:clamp(64px,calc(52.48px + 0.28vw),83.2px);line-height:.9}
 
-.demo-link{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px;padding:16px 18px;background:var(--accent);color:#120800;text-decoration:none;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+.demo-link{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px;padding:16px 18px;background:var(--accent);color:#120800;text-decoration:none;font-family:var(--f-mono);font-size:clamp(13.8px,calc(9.84px + 0.28vw),17.4px);letter-spacing:.06em;text-transform:uppercase;font-weight:500}
 .demo-link:hover{background:#ff8442;color:#120800}
+.demo-win{position:relative;z-index:1;border:1px solid var(--line);background:var(--panel);box-shadow:0 30px 80px -30px rgba(0,0,0,.8)}
+.win-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line)}
+.win-bar .btns{margin-left:auto}
+.win-bar button{padding:7px 12px}
+#demoFrame{display:block;width:100%;height:clamp(540px,78vh,900px);border:0;background:#fff}
+.demo-win.full{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;border:0}
+.demo-win.full #demoFrame{flex:1;height:auto}
+body.demo-open{overflow:hidden}
+@media (max-width:600px){.win-bar .btns{margin-left:0}#demoFrame{height:76vh}}
 /* ---------- bench ---------- */
 .bench{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px;position:relative;z-index:1}
 .card{background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column}
 .card-b{padding:22px;display:flex;flex-direction:column;gap:12px}
 .card h3{font-size:clamp(32px,3.4vw,42px);font-weight:800;text-transform:uppercase}
-.card p{color:#cfcbc1;font-size:16px}
-.card ul{margin:0;padding-left:18px;color:#cfcbc1;font-size:15px}
+.card p{color:#cfcbc1;font-size:clamp(16px,calc(13.12px + 0.28vw),20.8px)}
+.card ul{margin:0;padding-left:18px;color:#cfcbc1;font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px)}
 .card ul li+li{margin-top:4px}
 .c-cnc{grid-column:span 6}
 .c-pc,.c-kl{grid-column:span 3}
@@ -285,15 +295,15 @@ button.primary:hover{background:#ff8442;color:#120800}
 @media (max-width:820px){.cnc-in{grid-template-columns:minmax(0,1fr)}.cnc-in>div+div{border-left:0;border-top:1px solid var(--line)}}
 .dial-wrap{display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:22px;align-items:center}
 @media (max-width:520px){.dial-wrap{grid-template-columns:minmax(0,1fr);justify-items:center}}
-#dial text{fill:var(--muted);font-family:var(--f-mono);font-size:9px}
-.dev{font-family:var(--f-display);font-weight:900;font-size:52px;line-height:.9;font-variant-numeric:tabular-nums}
+#dial text{fill:var(--muted);font-family:var(--f-mono);font-size:clamp(10.35px,calc(7.38px + 0.28vw),13.05px)}
+.dev{font-family:var(--f-display);font-weight:900;font-size:clamp(52px,calc(42.64px + 0.28vw),67.6px);line-height:.9;font-variant-numeric:tabular-nums}
 #pcCanvas{width:100%;height:190px;background:#0f110f;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--f-mono);font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);color:var(--muted)}
 .legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:6px}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:2px;overflow:hidden}
 .seg button{border:0;border-radius:0;padding:7px 12px}
 .seg button.on{background:var(--accent);color:#120800}
-.term{background:#0b0c0b;font-family:var(--f-mono);font-size:12.5px;line-height:1.7;padding:16px 18px;overflow-x:auto;white-space:pre;color:#bdb9af;border-top:1px solid var(--line)}
+.term{background:#0b0c0b;font-family:var(--f-mono);font-size:clamp(14.37px,calc(10.25px + 0.28vw),18.12px);line-height:1.7;padding:16px 18px;overflow-x:auto;white-space:pre;color:#bdb9af;border-top:1px solid var(--line)}
 .term .p{color:var(--accent)}.term .c{color:#5f645d}.term .r{background:#2a2e2a;color:#2a2e2a;border-radius:2px}
 .cursor{display:inline-block;width:8px;height:14px;background:var(--ink);vertical-align:-2px;animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
@@ -303,18 +313,18 @@ button.primary:hover{background:#ff8442;color:#120800}
 .also{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .also>div{padding:20px 22px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .also>div+div{border-left:1px solid var(--line)}
-.also h4{margin:0;font-family:var(--f-display);font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:.02em}
-.also p{font-size:15px;color:#cfcbc1}
+.also h4{margin:0;font-family:var(--f-display);font-weight:800;font-size:clamp(26px,calc(21.32px + 0.28vw),33.8px);text-transform:uppercase;letter-spacing:.02em}
+.also p{font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px);color:#cfcbc1}
 @media (max-width:820px){.also{grid-template-columns:minmax(0,1fr)}.also>div+div{border-left:0;border-top:1px solid var(--line)}}
-.trail{display:grid;gap:10px;font-size:15px}
+.trail{display:grid;gap:10px;font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px)}
 .trail div{display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px}
-.trail div span:first-child{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);padding-top:3px}
+.trail div span:first-child{font-family:var(--f-mono);font-size:clamp(12.07px,calc(8.61px + 0.28vw),15.22px);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);padding-top:3px}
 
 /* ---------- toolchain + footer ---------- */
 .tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
 .tools div{background:var(--bg);padding:20px}
-.tools h4{margin:0 0 10px;font-family:var(--f-mono);font-weight:400;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-.tools p{font-size:15px;color:#cfcbc1}
+.tools h4{margin:0 0 10px;font-family:var(--f-mono);font-weight:400;font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.tools p{font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px);color:#cfcbc1}
 @media (max-width:820px){.tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:480px){.tools{grid-template-columns:minmax(0,1fr)}}
 footer{padding:100px 0 60px;position:relative;overflow:hidden}
@@ -323,25 +333,25 @@ footer h2 span{color:var(--accent)}
 .foot-row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}
 
 @media (max-width:600px){
-  body{font-size:16px}
-  .hero{padding:96px 0 48px}
+  body{font-size:clamp(16px,calc(13.12px + 0.28vw),20.8px)}
+  .hero{padding:130px 0 48px}
   .sheet-sec{padding:72px 0 64px}
   .sec-head{margin-bottom:36px}
   .sub-h{margin:52px 0 16px}
   .calc>div,.panel-b,.card-b,.cnc-in>div{padding:16px}
   .bk{padding:16px}
-  .bk-steps button{font-size:9px;letter-spacing:.02em;white-space:normal}
+  .bk-steps button{font-size:clamp(10.35px,calc(7.38px + 0.28vw),13.05px);letter-spacing:.02em;white-space:normal}
   .opt{flex-wrap:wrap;gap:2px 10px}
   .stage-ctl{padding:8px 12px;gap:8px}
-  .readouts b{font-size:15px}
-  .duty{font-size:52px}
+  .readouts b{font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px)}
+  .duty{font-size:clamp(52px,calc(42.64px + 0.28vw),67.6px)}
   .fan-ico{width:64px;height:64px}
-  .json{font-size:11px;min-height:0}
-  .term{font-size:11px}
+  .json{font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px);min-height:0}
+  .term{font-size:clamp(12.65px,calc(9.02px + 0.28vw),15.95px)}
   .rev td,.rev th{padding:8px}
-  .meta div{font-size:14px}
-  .sheet{font-size:10px}
-  .logo{font-size:20px}
+  .meta div{font-size:clamp(14px,calc(11.48px + 0.28vw),18.2px)}
+  .sheet{font-size:clamp(11.5px,calc(8.2px + 0.28vw),14.5px)}
+  .logo{font-size:clamp(20px,calc(16.4px + 0.28vw),26px)}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -359,8 +369,8 @@ footer h2 span{color:var(--accent)}
     <nav aria-label="Sections">
       <a href="#airpure" data-nav="airpure">Airpure</a>
       <a href="#vexis" data-nav="vexis">Vexis</a>
-      <a href="#spectrum" data-nav="spectrum">Spectrum CPR</a>
-      <a href="#bench" data-nav="bench">Bench &amp; Shop</a>
+      <a href="#spectrum" data-nav="spectrum">Spectrum</a>
+      <a href="#bench" data-nav="bench">Bench</a>
     </nav>
   </div>
   <div class="progress" id="progress"></div>
@@ -399,7 +409,7 @@ footer h2 span{color:var(--accent)}
   <div class="wrap hero-in">
     <div class="eyebrow mono"><i></i><span>Nickolos Christensen</span><span>·</span><span>Engineering portfolio</span><span>·</span><span>Hardware ↔ Software</span></div>
     <h1>I build systems that connect <span class="sw">software</span> to the <span class="pw">physical world.</span></h1>
-    <p class="hero-sub">Embedded devices, sensors and custom enclosures. Desktop software that safely drives real hardware. Precision parts held to a thousandth of an inch. Everything here was designed, built, measured and debugged by hand.</p>
+    <p class="hero-sub">I design enclosures, wire up sensors, and write the firmware and desktop software that run them. I also machine precision parts for a living. I built, tested and debugged everything on this page myself.</p>
     <div class="hero-foot">
       <nav class="index" aria-label="Featured work">
         <a href="#airpure"><span class="mono muted">Sheet 01</span><b>Airpure</b><span class="mono muted">Embedded · CAD</span></a>
@@ -430,7 +440,7 @@ footer h2 span{color:var(--accent)}
     <div class="sec-head">
       <div>
         <h2><small>Sheet 01 · Flagship hardware</small>Airpure</h2>
-        <p class="tag-line">A smart air purifier that measures its own filtration with two particulate sensors, one on each side of the filter.</p>
+        <p class="tag-line">A smart air purifier I designed and built. It checks how well it's actually filtering by measuring the air before and after the filter.</p>
       </div>
       <div class="meta">
         <div>Scope</div><div>Enclosure CAD, electronics, firmware, on-device dashboard, calibration</div>
@@ -459,30 +469,30 @@ footer h2 span{color:var(--accent)}
         <article class="step on" data-stage="0">
           <span class="mono">01 · Intake</span>
           <h3>Pulled in around the cylinder</h3>
-          <p>Room air enters through vertical slots in the 3D-printed upper housing. The first PMS7003M laser sensor samples this incoming air before it reaches the filter.</p>
+          <p>Room air comes in through vertical slots in the 3D-printed upper housing. The first PMS7003M laser sensor samples it before it reaches the filter.</p>
         </article>
         <article class="step" data-stage="1">
           <span class="mono">02 · Filter</span>
           <h3>Through the HEPA cartridge</h3>
-          <p>A cylindrical HEPA cartridge sits inside the housing. A printed TPU lip seal closes off the top of the cartridge, held in place by a center column underneath it. The seal only works one way round, so its orientation is called out in the hardware notes.</p>
+          <p>The HEPA cartridge sits inside the housing. A printed TPU lip seal closes off the top of it, held in place by a center column underneath. The seal only works one way, so I noted its orientation in the hardware docs.</p>
         </article>
         <article class="step" data-stage="2">
           <span class="mono">03 · Measure</span>
           <h3>A second sensor checks the result</h3>
-          <p>Filtered air passes a second PMS7003M. A BME680 adds temperature, humidity, pressure and a VOC trend. Both particulate sensors are matched with gain and offset before any efficiency is shown.</p>
-          <p class="muted" style="font-size:15px">Try it: switch off <em>Seal support installed</em> to see the bypass leak that once dragged a test to 57%.</p>
+          <p>After the filter, a second PMS7003M samples the air again. A BME680 adds temperature, humidity, pressure and a VOC trend. The two particulate sensors are calibrated against each other before the device reports any efficiency.</p>
+          <p class="muted" style="font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px)">Try it: turn off <em>Seal support installed</em> to see the leak that once dropped a test to 57%.</p>
         </article>
         <article class="step" data-stage="3">
           <span class="mono">04 · Blower base</span>
           <h3>Down into the electronics base</h3>
-          <p>Clean air drops into a separate base where a Noctua NF-F12 iPPC-3000 PWM fan moves it. Fan speed follows particulate load, with spike detection, ramp-up and settling, and a manual override in the UI.</p>
+          <p>The clean air drops into a separate base, where a Noctua NF-F12 iPPC-3000 fan pulls it through. Fan speed follows how dirty the air is. It ramps up fast when there's a spike, settles back down afterward, and can be set by hand from the dashboard.</p>
         </article>
         <article class="step" data-stage="4">
           <span class="mono">05 · Exhaust</span>
           <h3>Out through the base slots</h3>
-          <p>Air leaves through ventilation slots around the base. Meanwhile the ESP32-C6 serves a six-tab dashboard from LittleFS over local Wi-Fi: no cloud account and no app to install.</p>
+          <p>The air leaves through slots around the base. The ESP32-C6 also hosts a six-tab dashboard over local Wi-Fi, so there's no cloud account or app to install.</p>
           <div class="chips" style="margin-top:6px"><button type="button" class="chip a" data-goto="dashboard">Dashboard</button><button type="button" class="chip" data-goto="graphs">Graphs</button><button type="button" class="chip" data-goto="fan">Fan</button><button type="button" class="chip" data-goto="device">Device</button><button type="button" class="chip" data-goto="network">Network</button><button type="button" class="chip" data-goto="support">Support</button></div>
-          <p class="muted" style="font-size:14px">Tap a tab to open it in the dashboard demo below.</p>
+          <p class="muted" style="font-size:clamp(14px,calc(11.48px + 0.28vw),18.2px)">Tap a tab to open it in the dashboard demo below.</p>
         </article>
       </div>
     </div>
@@ -500,9 +510,9 @@ footer h2 span{color:var(--accent)}
         <div>
           <span class="mono muted">Reported efficiency</span>
           <div class="big-eff" id="effOut">96.3%</div>
-          <p class="muted" id="effWhy" style="margin-top:10px;font-size:15px">Corrected post reading 4.4 µg/m³.</p>
+          <p class="muted" id="effWhy" style="margin-top:10px;font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px)">Corrected post reading 4.4 µg/m³.</p>
         </div>
-        <p style="font-size:15px;color:#cfcbc1;max-width:48ch">One post-filter sensor read 35% high before matching, so gain starts near 0.74 here.</p>
+        <p style="font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px);color:#cfcbc1;max-width:48ch">On one build, the post-filter sensor read 35% high before calibration. That's why the gain starts at 0.74 here.</p>
       </div>
     </div>
 
@@ -520,15 +530,15 @@ footer h2 span{color:var(--accent)}
       <div class="log">
         <div class="log-row">
           <span class="status s-bad">Air path</span>
-          <div><h4>The filter wasn't the problem</h4><p>A test came back at 57%. Rather than blame the HEPA media, I traced the air path and found the center column that supports the top TPU seal was missing. Without it the seal could not hold against the cartridge, so unfiltered air slipped past the top of the filter and straight to the post-filter sensor.</p><div class="delta"><span class="muted">Sealed-chamber test</span><b style="color:var(--bad)">57%</b><span>→</span><b style="color:var(--ok)">96.6%</b></div></div>
+          <div><h4>The filter wasn't the problem</h4><p>A test came back at 57%. Instead of blaming the HEPA filter, I traced the air path and found that the center column supporting the top TPU seal was missing. Without it, the seal couldn't press against the cartridge, so dirty air slipped over the top of the filter and straight to the post-filter sensor.</p><div class="delta"><span class="muted">Sealed-chamber test</span><b style="color:var(--bad)">57%</b><span>→</span><b style="color:var(--ok)">96.6%</b></div></div>
         </div>
         <div class="log-row">
           <span class="status s-warn">RF noise</span>
-          <div><h4>Wi-Fi made fake smoke</h4><p>Transmit bursts coupled into the sensor electronics and showed up as false PM spikes. Fixed with local bulk and ceramic decoupling, ferrite chokes on sensor cables, star grounding and more antenna separation.</p></div>
+          <div><h4>Wi-Fi made fake smoke</h4><p>Every time the Wi-Fi transmitted, noise got into the sensor wiring and showed up as fake PM spikes. I fixed it with extra decoupling capacitors, ferrite chokes on the sensor cables, star grounding and more distance from the antenna.</p></div>
         </div>
         <div class="log-row">
           <span class="status s-info">Calibration</span>
-          <div><h4>Two sensors, one truth</h4><p>Identical sensors disagreed by 35%. A two-parameter gain/offset match with validation guards brought the residual to −1.7% on that build.</p><div class="delta"><span class="muted">Post-sensor error</span><b style="color:var(--bad)">+35%</b><span>→</span><b style="color:var(--ok)">−1.7%</b></div></div>
+          <div><h4>Two sensors, one truth</h4><p>Two identical sensors disagreed by 35%. A gain and offset calibration, with checks that reject bad results, brought the difference down to −1.7% on that build.</p><div class="delta"><span class="muted">Post-sensor error</span><b style="color:var(--bad)">+35%</b><span>→</span><b style="color:var(--ok)">−1.7%</b></div></div>
         </div>
       </div>
       <div>
@@ -540,7 +550,7 @@ footer h2 span{color:var(--accent)}
           <tr><td>Fan</td><td>Noctua NF-F12 iPPC-3000, 4-pin PWM with tach</td></tr>
                     <tr><td>Firmware</td><td>Arduino/ESP32, HTTP API, firmware + filesystem OTA</td></tr>
                                       </table></div></div>
-        <p class="note"><b>Measurement note.</b> Each figure on this sheet is shown with the test it came from. Separate observations are kept separate rather than merged into one headline number.</p>
+        <p class="note"><b>Measurement note.</b> Every number on this sheet comes with the test it came from. I kept separate tests separate instead of combining them into one headline number.</p>
       </div>
     </div>
   </div>
@@ -553,7 +563,7 @@ footer h2 span{color:var(--accent)}
     <div class="sec-head">
       <div>
         <h2><small>Sheet 02 · Flagship software</small>Vexis</h2>
-        <p class="tag-line">A Windows app that monitors and controls PC hardware, built so a crash or a bad sensor never leaves the fans in an unsafe state.</p>
+        <p class="tag-line">A Windows app for monitoring and controlling PC hardware. I built it so a crash or a bad sensor reading never leaves the fans in an unsafe state.</p>
       </div>
       <div class="meta">
         <div>Stack</div><div>C# / .NET 8 WinForms host · WebView2 HTML/JS UI</div>
@@ -600,13 +610,13 @@ footer h2 span{color:var(--accent)}
         <div class="panel-h"><span class="mono muted"><span class="tick" id="tick"></span>SensorData snapshot</span><span class="mono muted">every 250 ms</span></div>
         <div class="panel-b fan-state">
           <svg class="fan-ico" viewBox="0 0 100 100" aria-hidden="true"><rect x="3" y="3" width="94" height="94" rx="8" fill="none" stroke="#2c302c"/><circle cx="50" cy="50" r="42" fill="none" stroke="#2c302c"/><g id="fanBlades" fill="none" stroke="#ff6b1f" stroke-width="2"><path d="M50 40c8-16 24-18 28-10M60 50c16 8 18 24 10 28M50 60c-8 16-24 18-28 10M40 50c-16-8-18-24-10-28"/><circle cx="50" cy="50" r="9"/></g></svg>
-          <div><span class="mono muted">Applied duty</span><div class="duty" id="dutyOut">38%</div><p class="muted" id="whyOut" style="font-size:14px">Following curve</p></div>
+          <div><span class="mono muted">Applied duty</span><div class="duty" id="dutyOut">38%</div><p class="muted" id="whyOut" style="font-size:clamp(14px,calc(11.48px + 0.28vw),18.2px)">Following curve</p></div>
         </div>
         <pre class="json" id="json" aria-live="off"></pre>
       </div>
     </div>
 
-    <p class="note" style="position:relative;z-index:1">The sandbox models the guard behavior for illustration. It is not the app's source code.</p>
+    <p class="note" style="position:relative;z-index:1">This sandbox shows how the safety rules behave. It's a simplified model, not the app's actual code.</p>
   </div>
 </section>
 
@@ -617,7 +627,7 @@ footer h2 span{color:var(--accent)}
     <div class="sec-head">
       <div>
         <h2><small>Sheet 03 · Client delivery</small>Spectrum CPR</h2>
-        <p class="tag-line">A website for a family-run CPR and first-aid business that travels to its customers, plus the booking system behind it.</p>
+        <p class="tag-line">A website for a family-run CPR and first aid business that travels to its customers, plus the booking system behind it.</p>
       </div>
       <div class="meta">
         <div>Stack</div><div>Node.js + Express, SQLite, plain HTML/CSS/JS</div>
@@ -627,24 +637,35 @@ footer h2 span{color:var(--accent)}
       </div>
     </div>
 
-    <div class="sp-grid">
+    <div class="demo-win" id="demoWin">
+      <div class="win-bar">
+        <span class="status s-warn">Live demo · fake data</span>
+        <div class="seg" role="group" aria-label="Demo page">
+          <button type="button" class="on" data-demo="spectrum-demo/index.html">Booking site</button>
+          <button type="button" data-demo="spectrum-demo/admin.html">Admin page</button>
+        </div>
+        <div class="btns"><button type="button" id="demoReset">Reset data</button><button type="button" id="demoFull" aria-pressed="false">Expand</button></div>
+      </div>
+      <iframe id="demoFrame" title="Spectrum CPR booking demo" src="spectrum-demo/index.html" loading="lazy"></iframe>
+    </div>
+    <p class="prose muted" style="font-size:clamp(15px,calc(12.3px + 0.28vw),19.5px);margin:14px 0 0;position:relative;z-index:1">This is the real site and admin page, running the actual server code right here in your browser with fake data. Try booking a session and approving the test payment, then switch to the admin page to find your booking.</p>
+
+    <div class="sp-grid" style="margin-top:40px">
       <div>
         <div class="panel"><div class="panel-h"><span class="mono muted">Under the hood</span><span class="status s-ok">Built + tested</span></div>
         <div class="panel-b"><table class="spec">
-          <tr><td>Seat holds</td><td>A seat is held for 20 minutes while the customer pays, and inside a transaction so a day can't be oversold</td></tr>
-          <tr><td>Time slots</td><td>The instructor publishes a working day; customers pick a start time, with travel time kept between visits</td></tr>
-          <tr><td>Travel zones</td><td>Distance from a bundled ZIP-code table sets the travel charge: free within 25 miles, then two paid zones</td></tr>
-          <tr><td>Group pricing</td><td>Per-person price moves with party size: +10% for 1–2, −5% for 3–4, −10% for 5+</td></tr>
-          <tr><td>Waitlist</td><td>When a seat opens, the next person is offered it and the seat is kept for them while they respond</td></tr>
-          <tr><td>Payments</td><td>Provider-agnostic, running on a mock processor until the real merchant account is connected</td></tr>
-          <tr><td>Records</td><td>Renewal reminders before cards expire; personal details cleared after the agreed 2 years</td></tr>
-          <tr><td>Admin</td><td>Repeating schedules, time off, prices, rosters, cancellations and payments</td></tr>
+          <tr><td>Seat holds</td><td>A seat is held for 20 minutes while the customer pays. Bookings run inside a database transaction, so a day can't be overbooked.</td></tr>
+          <tr><td>Time slots</td><td>The instructor sets the hours they're working, and customers pick a start time. Travel time between visits is built in.</td></tr>
+          <tr><td>Travel zones</td><td>The travel charge comes from the distance between ZIP codes, using a table built into the app. It's free within 25 miles, with two paid zones past that.</td></tr>
+          <tr><td>Group pricing</td><td>The price per person changes with group size: +10% for 1–2 people, −5% for 3–4, and −10% for 5 or more.</td></tr>
+          <tr><td>Waitlist</td><td>When a seat opens up, the next person in line is offered it, and the seat is held while they decide.</td></tr>
+          <tr><td>Payments</td><td>Works with any payment provider. It runs on a test processor until the client's merchant account is set up.</td></tr>
+          <tr><td>Records</td><td>Sends renewal reminders before certifications expire, and clears personal details after 2 years, as customers agreed to.</td></tr>
+          <tr><td>Admin</td><td>Repeating schedules, time off, prices, rosters, cancellations and payments.</td></tr>
         </table></div></div>
       </div>
       <div>
-        <a class="demo-link" href="spectrum-demo/">Try the live demo <span aria-hidden="true">→</span></a>
-        <p class="prose muted" style="font-size:15px;margin-top:12px">The real site and admin page, with the actual server code running in your browser on fake data. Book a session, approve the test payment, then find the booking in the admin page.</p>
-        <div class="panel" style="margin-top:22px"><div class="panel-h"><span class="mono muted">Revision block</span></div>
+        <div class="panel"><div class="panel-h"><span class="mono muted">Revision block</span></div>
         <div class="panel-b" style="overflow-x:auto">
           <table class="rev">
             <thead><tr><th>Rev</th><th>Change</th><th>Status</th></tr></thead>
@@ -654,7 +675,7 @@ footer h2 span{color:var(--accent)}
               <tr><td>C</td><td>Booking, time slots and holds</td><td><span class="status s-ok">Built</span></td></tr>
               <tr><td>D</td><td>Travel zones and group pricing</td><td><span class="status s-ok">Built</span></td></tr>
               <tr><td>E</td><td>Waitlist and admin page</td><td><span class="status s-ok">Built</span></td></tr>
-              <tr><td>F</td><td>Live card payments</td><td><span class="status s-info">Awaiting merchant account</span></td></tr>
+              <tr><td>F</td><td>Live card payments</td><td><span class="status s-info">Waiting on merchant account</span></td></tr>
             </tbody>
           </table>
         </div></div>
@@ -684,7 +705,7 @@ footer h2 span{color:var(--accent)}
         <div class="cnc-in">
           <div style="display:flex;flex-direction:column;gap:14px">
             <h3>Precision CNC machining</h3>
-            <p>Mill-side machinist in precision manufacturing, after earlier work as a CNC operator in a contract shop. Tight-tolerance parts, tool changes, offsets and tool-length offsets, and in-process inspection across aluminum, brass, steel and titanium, where cutter geometry and tool wear decide whether a part passes.</p>
+            <p>I'm a mill-side machinist in precision manufacturing, and before that I ran CNC machines at a contract shop. My work covers tight-tolerance parts, tool changes, offsets and tool-length offsets, and in-process inspection. I've cut aluminum, brass, steel and titanium, where cutter geometry and tool wear decide whether a part passes.</p>
             <div class="chips"><span class="chip a">±0.001 in work</span><span class="chip">Aluminum</span><span class="chip">Brass</span><span class="chip">Steel</span><span class="chip">Titanium</span><span class="chip">Tool offsets</span><span class="chip">Inspection</span><span class="chip">Process discipline</span></div>
           </div>
           <div>
@@ -695,7 +716,7 @@ footer h2 span{color:var(--accent)}
                 <div class="dev" id="devOut">+0.0004</div>
                 <span class="status s-ok" id="devState" style="align-self:flex-start">In tolerance</span>
                 <div class="field" style="margin:4px 0 0"><label for="devIn">Measured deviation</label><output>in</output><input type="range" id="devIn" min="-0.004" max="0.004" step="0.0001" value="0.0004"></div>
-                <p class="muted" style="font-size:14px">The whole ±0.001 in band is 0.002 in wide, finer than most human hairs.</p>
+                <p class="muted" style="font-size:clamp(14px,calc(11.48px + 0.28vw),18.2px)">The whole ±0.001 in band is 0.002 in wide, which is thinner than most human hairs.</p>
               </div>
             </div>
           </div>
@@ -705,9 +726,9 @@ footer h2 span{color:var(--accent)}
       <article class="card c-hl">
         <div class="panel-h"><span class="mono muted">Also on the bench</span></div>
         <div class="also">
-          <div><span class="status s-ok">Running</span><h4>Linux homelab</h4><p>Ubuntu server hosting a modded Minecraft world; SSH and service troubleshooting.</p></div>
-          <div><span class="status s-info">Built</span><h4>Custom PC</h4><p>Liquid-cooled Ryzen 9 9950X3D and RX 7900 XTX build.</p></div>
-          <div><span class="status s-warn">Exploring</span><h4>Klipper printer</h4><p>Manta M4P + CB1; looking at water cooling the hotend.</p></div>
+          <div><span class="status s-ok">Running</span><h4>Linux homelab</h4><p>An Ubuntu server running a modded Minecraft world. I set up the SSH access and fix the services when they break.</p></div>
+          <div><span class="status s-info">Built</span><h4>Custom PC</h4><p>A liquid-cooled build with a Ryzen 9 9950X3D and an RX 7900 XTX.</p></div>
+          <div><span class="status s-warn">Exploring</span><h4>Klipper printer</h4><p>A Manta M4P with a CB1. I'm looking into water cooling the hotend.</p></div>
         </div>
       </article>
     </div>
@@ -728,7 +749,7 @@ footer h2 span{color:var(--accent)}
   <div class="wrap" style="position:relative;z-index:1">
     <span class="mono" style="color:var(--accent)">End of set</span>
     <h2 style="margin-top:16px">Measured, <span>not</span> guessed.</h2>
-    <p class="hero-sub" style="margin-top:22px">I work best where hardware and software meet: building it, measuring it and finding out why it misbehaves.</p>
+    <p class="hero-sub" style="margin-top:22px">I work best where hardware and software meet: building things, measuring them, and figuring out why they misbehave.</p>
     <div class="foot-row" id="contact"></div>
   </div>
 </footer>
@@ -1013,9 +1034,9 @@ const air = (() => {
       <div class="legend" style="margin-top:10px"><span><i style="background:#ff6b1f"></i>Pre-filter</span><span><i style="background:#8ccfe0"></i>Post-filter</span><span>last 60 s · 20-sample rolling mean</span></div>`,
     fan:()=>`<div class="drows">
       <div><span>Mode</span><div class="seg" role="group" aria-label="Fan mode"><button type="button" data-mode="auto">Auto</button><button type="button" data-mode="manual">Manual</button></div></div>
-      <div><span>Duty</span><b id="dFan2" style="font-family:var(--f-display);font-size:40px;font-weight:800"></b></div>
+      <div><span>Duty</span><b id="dFan2" style="font-family:var(--f-display);font-size:clamp(40px,calc(32.8px + 0.28vw),52px);font-weight:800"></b></div>
       <div><span>Manual speed</span><div class="field" style="margin:0"><label for="dMan">Set duty</label><output id="dManOut"></output><input type="range" id="dMan" min="20" max="100" value="${st.manual}"></div></div>
-      <div><span>Auto behavior</span><span>Follows particulate load. Spikes trigger a fast ramp-up, then the fan settles back down once readings recover.</span></div></div>
+      <div><span>Auto behavior</span><span>Follows how dirty the air is. A spike ramps it up fast, and it settles back down once the readings recover.</span></div></div>
       <button type="button" class="mini" id="dSpike" style="margin-top:14px">Simulate a smoke spike</button>`,
     device:()=>`<div class="drows">
       <div><span>Filter</span><div>412 h runtime · ~72% life left<div class="lifebar"><i style="width:72%"></i></div></div></div>
@@ -1039,7 +1060,7 @@ const air = (() => {
     if(t==='fan'){ body.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{st.mode=b.dataset.mode;upd();}));
       $('#dMan').addEventListener('input',e=>{st.manual=+e.target.value;upd();});
       $('#dSpike').addEventListener('click',()=>{st.pre=260;}); }
-    if(t==='device') body.querySelectorAll('[data-ota]').forEach(b=>b.addEventListener('click',()=>{$('#dMsg').textContent='Demo only: on the device this uploads a new image over Wi-Fi.';}));
+    if(t==='device') body.querySelectorAll('[data-ota]').forEach(b=>b.addEventListener('click',()=>{$('#dMsg').textContent='Demo only. On the real device, this uploads new firmware over Wi-Fi.';}));
     upd(); }
   function graph(){ const cv=$('#dGraph'); if(!cv)return; const b=cv.getBoundingClientRect(), d=Math.min(devicePixelRatio||1,2);
     cv.width=b.width*d; cv.height=b.height*d; const c=cv.getContext('2d'); c.setTransform(d,0,0,d,0,0);
@@ -1157,6 +1178,19 @@ const air = (() => {
   const spin=now=>{const dt=(now-lastF)/1000;lastF=now; if(!reduce){ang=(ang+applied*7*dt)%360; blades.style.transform=`rotate(${ang}deg)`;} requestAnimationFrame(spin);};
   requestAnimationFrame(spin);
   update();
+})();
+
+/* ---------- Spectrum demo window ---------- */
+(() => {
+  const win=$('#demoWin'), frame=$('#demoFrame'), tabs=$$('[data-demo]'), full=$('#demoFull');
+  tabs.forEach(b=>b.addEventListener('click',()=>{ tabs.forEach(x=>x.classList.toggle('on',x===b)); frame.src=b.dataset.demo; }));
+  $('#demoReset').addEventListener('click',()=>{
+    try { frame.contentWindow.SpectrumDemo.reset(); }
+    catch(e){ try{ localStorage.removeItem('spectrum_demo_db_v3'); }catch(_){} frame.src=frame.src; }
+  });
+  const setFull=(on)=>{ win.classList.toggle('full',on); document.body.classList.toggle('demo-open',on); full.textContent=on?'Close':'Expand'; full.setAttribute('aria-pressed',on); };
+  full.addEventListener('click',()=>setFull(!win.classList.contains('full')));
+  addEventListener('keydown',e=>{ if(e.key==='Escape'&&win.classList.contains('full')) setFull(false); });
 })();
 
 /* ---------- CNC dial indicator ---------- */

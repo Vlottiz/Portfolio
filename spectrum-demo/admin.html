@@ -5,17 +5,6 @@
 <script>window.BOOKING_API_BASE="";</script>
 <script src="vendor/sql-wasm.js"></script>
 <script src="demo-backend.js"></script>
-<style>
-.demo-strip{position:relative;z-index:9999;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:9px 16px;background:#141821;color:#e9ebf0;font:500 13px/1.4 Barlow,system-ui,sans-serif}
-.demo-strip b{background:#d8202f;color:#fff;font-weight:700;letter-spacing:.08em;font-size:11px;padding:3px 7px;border-radius:2px}
-.demo-strip span{flex:1;min-width:200px;color:#b9bfcc}
-.demo-strip .demo-links{display:flex;gap:6px;flex-wrap:wrap;position:static}
-.demo-strip .demo-links a,.demo-strip .demo-links button{all:unset;display:inline-block;box-sizing:border-box;font:600 13px/1.3 Barlow,system-ui,sans-serif;color:#e9ebf0;border:1px solid #3a4152;border-radius:2px;padding:5px 10px;cursor:pointer;width:auto;white-space:nowrap}
-.demo-strip .demo-links a:hover,.demo-strip .demo-links button:hover{border-color:#e9ebf0}
-.demo-strip .demo-links a:focus-visible,.demo-strip .demo-links button:focus-visible{outline:2px solid #fff;outline-offset:2px}
-@media (max-width:640px){.demo-strip{padding:8px 12px}.demo-strip span{flex-basis:100%;order:3;font-size:12px}}
-.demo-strip .demo-links a.on{background:#e9ebf0;color:#141821;border-color:#e9ebf0}
-</style>
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -402,7 +391,6 @@
 </style>
 </head>
 <body>
-<div class="demo-strip" role="note"><b>DEMO</b><span>A copy of the Spectrum CPR booking system running entirely in your browser, with fake data. No real bookings or payments.</span><div class="demo-links"><a href="./">Booking site</a><a href="admin.html" class="on">Admin</a><button type="button" onclick="SpectrumDemo.reset()">Reset data</button><a href="../">&larr; Portfolio</a></div></div>
 <div class="spectrum-bar"></div>
 
 <!-- ============================ login ============================ -->

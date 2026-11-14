@@ -4201,12 +4201,12 @@ async function seedDemo(be, call) {
   const extra = [[2,'CPR','CPR / AED',8500],[3,'HEARTSAVER','Heartsaver CPR / AED / First Aid',9500],[10,'HEARTSAVER','Heartsaver CPR / AED / First Aid',9500],[15,'BABYSIT','Babysitter Safety',5500],[22,'CPR','CPR / AED',8500]];
   for (const [n, code, title, cents] of extra) ins.run({ course_code: code, title, starts_at: day(n, 16), ends_at: day(n, 26), location: '', capacity: code === 'CPR' ? 20 : 24, price_cents: cents });
   const people = [
-    ['Little Oaks Daycare', ['Maya Alvarez','Jordan Brooks','Priya Chen','Luis Duarte'], '97116', '2214 Pacific Ave'],
-    ['Westside Youth Soccer', ['Hannah Ellis','Marcus Foster','Elena Garcia'], '97123', '450 SE Washington St'],
-    ['', ['Theo Hughes'], '97113', '1355 N Barlow St'],
-    ['Cedar Mill Dental', ['Grace Ibarra','Owen Jensen','Sofia Kim','Daniel Lopez','Ava Morgan','Noah Nguyen'], '97006', '16000 NW Walker Rd'],
-    ['', ['Isla Ortiz','Ethan Patel'], '97116', '2810 19th Ave'],
-    ['Valley Swim Club', ['Lena Reyes','Caleb Shaw'], '97113', '1000 S 4th Ave'],
+    ['Little Oaks Daycare', ['Maya Alvarez','Jordan Brooks','Priya Chen','Luis Duarte'], '97116', '100 Example St'],
+    ['Westside Youth Soccer', ['Hannah Ellis','Marcus Foster','Elena Garcia'], '97123', '200 Sample Ave'],
+    ['', ['Theo Hughes'], '97113', '300 Demo Rd'],
+    ['Cedar Mill Dental', ['Grace Ibarra','Owen Jensen','Sofia Kim','Daniel Lopez','Ava Morgan','Noah Nguyen'], '97006', '400 Test Blvd'],
+    ['', ['Isla Ortiz','Ethan Patel'], '97116', '500 Placeholder Ln'],
+    ['Valley Swim Club', ['Lena Reyes','Caleb Shaw'], '97113', '600 Example Way'],
   ];
   const classes = (await call('GET', '/api/classes')).classes || [];
   let k = 0;
@@ -4218,7 +4218,7 @@ async function seedDemo(be, call) {
       if (!pick || k >= people.length) continue;
       const [org, names, zip, street] = people[k++];
       const email = (n) => n.toLowerCase().replace(/[^a-z]+/g, '.') + '@example.com';
-      const body = { attendees: names.map((n) => ({ name: n, email: email(n), phone: '555-0100' })), name: names[0], email: email(names[0]), phone: '555-0100',
+      const body = { attendees: names.map((n) => ({ name: n, email: email(n), phone: '' })), name: names[0], email: email(names[0]), phone: '',
         organiserName: org || undefined, slotStart: pick.start, address: `${street}, OR ${zip}`, zip, consent: true };
       const held = await call('POST', `/api/classes/${cls.id}/hold`, body);
       const ref = held.registration && held.registration.ref;
@@ -4234,7 +4234,7 @@ async function seedDemo(be, call) {
 /* Demo runtime: starts the real booking server in this tab and answers the page's API calls. */
 (function () {
   'use strict';
-  var KEY = 'spectrum_demo_db_v2';
+  var KEY = 'spectrum_demo_db_v3';
   var here = (document.currentScript && document.currentScript.src) || location.href;
   var BASE = here.replace(/[^/]*$/, '');
   var realFetch = window.fetch.bind(window);
