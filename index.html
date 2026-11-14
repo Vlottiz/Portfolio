@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FIELD / NOTES Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout idea: a drawing set. Each project is a numbered sheet with a title block, revision table and a live schematic; parallax layers drift like stacked vellum. */
+  --bg:#0d0e0d;
+  --panel:#151715;
+  --line:#2c302c;
+  --ink:#e8e5dc;
+  --muted:#8f938b;
+  --accent:#ff6b1f;
+  --clean:#8ccfe0;
+  --ok:#7fc98f;
+  --warn:#e8b54a;
+  --bad:#ff5a4f;
+  --f-display:"Big Shoulders Display","Arial Narrow",sans-serif;
+  --f-body:"Barlow","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --gut:clamp(16px,4vw,48px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip}
+img,svg,canvas{max-width:100%;display:block}
+a{color:var(--ink);text-decoration-color:var(--accent);text-underline-offset:3px}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:.95;letter-spacing:.01em}
+p{margin:0}
+.mono{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.muted{color:var(--muted)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 var(--gut)}
+.prose{max-width:62ch}
+.prose p+p{margin-top:.9em}
+
+/* ---------- top bar ---------- */
+.bar{position:fixed;inset:0 0 auto 0;z-index:50;background:rgba(13,14,13,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar-in{display:flex;align-items:center;gap:20px;height:52px}
+.logo{font-family:var(--f-display);font-weight:900;font-size:22px;letter-spacing:.04em;text-decoration:none;white-space:nowrap}
+.logo b{color:var(--accent);font-weight:900}
+.sheet{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet span{color:var(--ink)}
+.bar nav{margin-left:auto;display:flex;gap:18px}
+.bar nav a{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.bar nav a:hover,.bar nav a.on{color:var(--ink)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;background:var(--accent);transform-origin:0 50%;transform:scaleX(0)}
+@media (max-width:820px){.bar nav{display:none}.sheet{margin-left:auto}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:120px 0 72px;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero-layer{position:absolute;inset:0;pointer-events:none}
+.hero-grid{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:48px 48px;opacity:.35;mask-image:radial-gradient(ellipse at 70% 40%,#000 20%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at 70% 40%,#000 20%,transparent 75%);inset:-200px 0}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-draw{position:absolute;color:var(--muted)}
+.hero-draw svg{overflow:visible}
+.d1{right:4%;top:70px;width:min(34vw,380px);opacity:.55}
+.d2{right:30%;bottom:40px;width:min(16vw,170px);opacity:.35}
+.d3{left:-40px;bottom:-30px;width:min(30vw,320px);opacity:.22}
+.hero-in{position:relative;z-index:2}
+.eyebrow{display:flex;gap:14px;flex-wrap:wrap;align-items:center;color:var(--muted)}
+.eyebrow i{display:inline-block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-size:clamp(46px,8.6vw,124px);font-weight:900;text-transform:uppercase;margin:22px 0 26px;max-width:12.5ch}
+.hero h1 .sw{font-family:var(--f-mono);font-weight:500;text-transform:none;font-size:.62em;letter-spacing:-.02em;color:var(--clean);vertical-align:.08em}
+.hero h1 .pw{color:var(--accent)}
+.hero-sub{font-size:clamp(17px,1.6vw,20px);max-width:56ch;color:#cfcbc1}
+.hero-foot{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;margin-top:48px}
+.index{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);max-width:760px}
+.index a{background:var(--bg);padding:14px 16px;text-decoration:none;display:flex;flex-direction:column;gap:4px;transition:background .2s}
+.index a:hover{background:var(--panel)}
+.index a b{font-family:var(--f-display);font-size:22px;font-weight:800;letter-spacing:.02em}
+.index a:hover b{color:var(--accent)}
+.tblock{border:1px solid var(--line);font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;display:grid;grid-template-columns:auto auto;background:rgba(13,14,13,.7)}
+.tblock div{padding:6px 10px;border-bottom:1px solid var(--line)}
+.tblock div:nth-child(odd){color:var(--muted);border-right:1px solid var(--line)}
+.tblock div:nth-last-child(-n+2){border-bottom:0}
+@media (max-width:820px){.index{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-foot{grid-template-columns:minmax(0,1fr)}.tblock{max-width:320px}.d1{width:56vw;opacity:.28;top:90px}.d2,.d3{display:none}}
+
+/* ---------- discipline strip ---------- */
+.strip{border-bottom:1px solid var(--line);overflow:hidden;padding:18px 0;white-space:nowrap}
+.strip-in{display:inline-flex;gap:40px;font-family:var(--f-display);font-weight:800;font-size:clamp(28px,4vw,52px);text-transform:uppercase;will-change:transform}
+.strip-in span{color:transparent;-webkit-text-stroke:1px #4a4f49}
+.strip-in span.hot{color:var(--ink);-webkit-text-stroke:0}
+.strip-in em{font-style:normal;color:var(--accent)}
+
+/* ---------- sheets ---------- */
+.sheet-sec{position:relative;padding:110px 0 90px;border-bottom:1px solid var(--line)}
+.bignum{position:absolute;right:var(--gut);top:40px;font-family:var(--f-display);font-weight:900;font-size:clamp(160px,26vw,360px);line-height:.8;color:transparent;-webkit-text-stroke:1px #2d312d;pointer-events:none;user-select:none;z-index:0}
+.sec-head{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:40px;align-items:end;margin-bottom:56px}
+.sec-head h2{font-size:clamp(56px,9vw,130px);font-weight:900;text-transform:uppercase}
+.sec-head h2 small{display:block;font-family:var(--f-mono);font-weight:400;font-size:12px;letter-spacing:.08em;color:var(--accent);margin-bottom:14px}
+.tag-line{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,2.4vw,30px);line-height:1.15;color:#d8d4ca;margin-top:14px;letter-spacing:.01em}
+.meta{display:grid;grid-template-columns:auto 1fr;border-top:1px solid var(--line)}
+.meta div{padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
+.meta div:nth-child(odd){font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-right:22px;padding-top:12px}
+@media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr);gap:24px}}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;padding:4px 9px;border:1px solid var(--line);border-radius:2px;color:#cfcbc1;white-space:nowrap}
+.chip.a{border-color:var(--accent);color:var(--accent)}
+.status{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:2px;white-space:nowrap;display:inline-block}
+.s-ok{background:rgba(127,201,143,.12);color:var(--ok)}
+.s-warn{background:rgba(232,181,74,.12);color:var(--warn)}
+.s-info{background:rgba(140,207,224,.12);color:var(--clean)}
+.s-bad{background:rgba(255,90,79,.14);color:var(--bad)}
+.s-mute{background:#1f221f;color:var(--muted)}
+
+.panel{background:var(--panel);border:1px solid var(--line);position:relative}
+.panel-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.panel-b{padding:18px}
+.sub-h{font-family:var(--f-display);font-weight:800;font-size:clamp(30px,3.6vw,44px);text-transform:uppercase;margin:72px 0 20px;position:relative;z-index:1}
+.sub-h span{color:var(--accent)}
+
+/* ---------- Airpure story ---------- */
+.story{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:48px}
+.stage{position:sticky;top:68px;height:calc(100vh - 88px);max-height:760px;display:flex;flex-direction:column}
+.stage .panel{flex:1;display:flex;flex-direction:column;min-height:0}
+.stage-canvas{flex:1;min-height:0;position:relative}
+#airCanvas{position:absolute;inset:0;width:100%;height:100%}
+.stage-ctl{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line)}
+.readouts{display:flex;gap:18px;font-family:var(--f-mono);font-size:12px}
+.readouts b{display:block;font-size:17px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink)}
+.readouts span{color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.toggle{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#cfcbc1;user-select:none}
+.toggle input{appearance:none;-webkit-appearance:none;width:36px;height:20px;border-radius:10px;background:#2a2e2a;position:relative;cursor:pointer;margin:0;transition:background .2s}
+.toggle input::after{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:var(--ink);transition:transform .2s}
+.toggle input:checked{background:var(--accent)}
+.toggle input:checked::after{transform:translateX(16px)}
+.steps{display:flex;flex-direction:column;gap:0;padding:12vh 0 20vh}
+.step{min-height:62vh;display:flex;flex-direction:column;justify-content:center;gap:12px;opacity:.38;transition:opacity .35s}
+.step.on{opacity:1}
+.step .mono{color:var(--accent)}
+.step h3{font-size:clamp(34px,4vw,52px);font-weight:800;text-transform:uppercase}
+.step p{max-width:48ch;color:#d3cfc5}
+@media (max-width:900px){
+  .story{grid-template-columns:minmax(0,1fr);gap:0}
+  .stage{top:52px;height:56vh;min-height:360px;z-index:5;background:var(--bg);padding-bottom:8px}
+  .steps{padding:4vh 0 10vh}
+  .step{min-height:56vh;opacity:.45}
+  .readouts{gap:12px}
+}
+
+/* calculator */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1px;background:var(--line);border:1px solid var(--line);position:relative;z-index:1}
+.calc>div{background:var(--panel);padding:22px}
+.field{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;margin-bottom:16px}
+.field label{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field output{font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums}
+.field input{grid-column:1/-1;width:100%;accent-color:var(--accent)}
+.formula{font-family:var(--f-mono);font-size:13px;line-height:1.9;color:#cfcbc1;border-left:2px solid var(--accent);padding-left:14px;margin:4px 0 22px;overflow-x:auto}
+.big-eff{font-family:var(--f-display);font-weight:900;font-size:clamp(64px,9vw,112px);line-height:.9;font-variant-numeric:tabular-nums}
+.big-eff.na{color:var(--muted)}
+@media (max-width:820px){.calc{grid-template-columns:minmax(0,1fr)}}
+
+/* log + spec */
+.two{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px;position:relative;z-index:1}
+@media (max-width:900px){.two{grid-template-columns:minmax(0,1fr)}}
+.log{border-top:1px solid var(--line)}
+.log-row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:20px;padding:20px 0;border-bottom:1px solid var(--line)}
+.log-row h4{margin:0 0 6px;font-family:var(--f-display);font-weight:800;font-size:24px;letter-spacing:.02em;text-transform:uppercase}
+.log-row p{color:#cfcbc1;font-size:16px}
+.delta{font-family:var(--f-mono);font-size:13px;margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.delta b{font-weight:500;font-variant-numeric:tabular-nums}
+@media (max-width:600px){.log-row{grid-template-columns:minmax(0,1fr);gap:6px}}
+.spec{width:100%;border-collapse:collapse;font-size:15px}
+.spec td{padding:9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.spec td:first-child{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-right:16px;padding-top:12px;white-space:nowrap}
+.note{font-size:14px;color:var(--muted);border:1px dashed var(--line);padding:12px 14px;margin-top:18px}
+.note b{color:var(--warn);font-weight:500}
+
+/* ---------- Vexis ---------- */
+.arch{overflow-x:auto;position:relative;z-index:1}
+.arch svg{min-width:760px;width:100%}
+.arch .box{fill:var(--panel);stroke:var(--line)}
+.arch .box.hot{stroke:var(--accent)}
+.arch text{fill:var(--ink);font-family:var(--f-mono);font-size:12px}
+.arch text.s{fill:var(--muted);font-size:10px;letter-spacing:.06em}
+.arch .flow{stroke:var(--accent);stroke-width:1.5;fill:none;stroke-dasharray:5 6;animation:dash 1.2s linear infinite}
+.arch .flow.c{stroke:var(--clean)}
+.kl-flow{animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-22}}
+.vx-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;position:relative;z-index:1}
+@media (max-width:980px){.vx-grid{grid-template-columns:minmax(0,1fr)}}
+#curve{width:100%;height:auto;touch-action:none;user-select:none}
+#curve .ax{stroke:var(--line)}
+#curve text{fill:var(--muted);font-family:var(--f-mono);font-size:11px}
+#curve .knot{fill:var(--bg);stroke:var(--accent);stroke-width:2;cursor:grab}
+#curve .knot:hover,#curve .knot.drag{fill:var(--accent)}
+.ctl-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;padding:16px 18px;border-top:1px solid var(--line)}
+@media (max-width:600px){.ctl-row{grid-template-columns:minmax(0,1fr)}}
+.ctl-row .field{margin:0}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+button{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--ink);border:1px solid var(--line);padding:9px 14px;cursor:pointer;border-radius:2px;transition:border-color .2s,color .2s,background .2s}
+button:hover{border-color:var(--accent);color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#120800}
+button.primary:hover{background:#ff8442;color:#120800}
+.fan-state{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.fan-ico{width:84px;height:84px}
+.fan-ico g{transform-origin:50px 50px}
+.duty{font-family:var(--f-display);font-weight:900;font-size:64px;line-height:.9;font-variant-numeric:tabular-nums}
+.json{font-family:var(--f-mono);font-size:12px;line-height:1.6;color:#bdb9af;white-space:pre;overflow-x:auto;margin:0;padding:14px 18px;background:#0f110f;border-top:1px solid var(--line);min-height:236px}
+.json .k{color:var(--clean)}.json .n{color:var(--accent)}
+.tick{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block;margin-right:8px;opacity:.25;transition:opacity .08s}
+.tick.on{opacity:1}
+.rel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);position:relative;z-index:1}
+.rel div{background:var(--bg);padding:20px}
+.rel h4{margin:8px 0 6px;font-family:var(--f-display);font-weight:800;font-size:22px;text-transform:uppercase;letter-spacing:.02em}
+.rel p{font-size:15px;color:#cfcbc1}
+@media (max-width:820px){.rel{grid-template-columns:minmax(0,1fr)}}
+
+/* ---------- Spectrum ---------- */
+.sp-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;position:relative;z-index:1;align-items:start}
+@media (max-width:980px){.sp-grid{grid-template-columns:minmax(0,1fr)}}
+.browser{background:#f3f1ec;color:#1b1d1b;border-radius:6px;overflow:hidden;box-shadow:0 30px 80px -30px rgba(0,0,0,.8)}
+.br-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#dedbd3}
+.br-bar i{width:10px;height:10px;border-radius:50%;background:#b9b5ab}
+.br-url{flex:1;background:#f3f1ec;border-radius:4px;font-family:var(--f-mono);font-size:11px;padding:5px 10px;color:#6b6d68;margin-left:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.bk{padding:22px}
+.bk-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:20px}
+.bk-steps button{color:#6b6d68;border:0;border-bottom:3px solid #d4d0c6;border-radius:0;padding:8px 2px;text-align:left;font-size:10px;letter-spacing:.06em}
+.bk-steps button.on{color:#b2301e;border-color:#c8392a}
+.bk-steps button:hover{color:#1b1d1b;border-color:#1b1d1b}
+.bk h4{font-family:var(--f-body);font-weight:600;font-size:20px;margin:0 0 12px}
+.opt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid #d4d0c6;border-radius:4px;margin-bottom:8px;font-size:15px;cursor:pointer;background:#fff}
+.opt.sel{border-color:#c8392a;box-shadow:inset 3px 0 0 #c8392a}
+.opt small{font-family:var(--f-mono);font-size:11px;color:#6b6d68}
+.opt .wl{color:#9a5b00}
+.bk-foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:10px}
+.bk-foot button{background:#c8392a;color:#fff;border:0;border-radius:4px}
+.bk-foot button:hover{background:#a92c1f;color:#fff}
+.bk-foot span{font-family:var(--f-mono);font-size:11px;color:#6b6d68}
+.rev{width:100%;border-collapse:collapse;font-size:15px}
+.rev th{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:400;padding:8px 10px;border:1px solid var(--line);background:var(--panel)}
+.rev td{padding:10px;border:1px solid var(--line);vertical-align:middle}
+.rev td:first-child{font-family:var(--f-display);font-weight:800;font-size:20px;color:var(--accent);text-align:center;width:52px}
+.hours{display:flex;align-items:baseline;gap:12px;margin-top:18px;flex-wrap:wrap}
+.hours b{font-family:var(--f-display);font-weight:900;font-size:64px;line-height:.9}
+
+/* ---------- bench ---------- */
+.bench{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px;position:relative;z-index:1}
+.card{background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column}
+.card-b{padding:22px;display:flex;flex-direction:column;gap:12px}
+.card h3{font-size:clamp(32px,3.4vw,42px);font-weight:800;text-transform:uppercase}
+.card p{color:#cfcbc1;font-size:16px}
+.card ul{margin:0;padding-left:18px;color:#cfcbc1;font-size:15px}
+.card ul li+li{margin-top:4px}
+.c-cnc{grid-column:span 6}
+.c-pc,.c-kl{grid-column:span 3}
+.c-hl{grid-column:span 6}
+@media (max-width:900px){.c-pc,.c-kl{grid-column:span 6}}
+.cnc-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0}
+.cnc-in>div{padding:22px}
+.cnc-in>div+div{border-left:1px solid var(--line)}
+@media (max-width:820px){.cnc-in{grid-template-columns:minmax(0,1fr)}.cnc-in>div+div{border-left:0;border-top:1px solid var(--line)}}
+.dial-wrap{display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:22px;align-items:center}
+@media (max-width:520px){.dial-wrap{grid-template-columns:minmax(0,1fr);justify-items:center}}
+#dial text{fill:var(--muted);font-family:var(--f-mono);font-size:9px}
+.dev{font-family:var(--f-display);font-weight:900;font-size:52px;line-height:.9;font-variant-numeric:tabular-nums}
+#pcCanvas{width:100%;height:190px;background:#0f110f;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:6px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:7px 12px}
+.seg button.on{background:var(--accent);color:#120800}
+.term{background:#0b0c0b;font-family:var(--f-mono);font-size:12.5px;line-height:1.7;padding:16px 18px;overflow-x:auto;white-space:pre;color:#bdb9af;border-top:1px solid var(--line)}
+.term .p{color:var(--accent)}.term .c{color:#5f645d}.term .r{background:#2a2e2a;color:#2a2e2a;border-radius:2px}
+.cursor{display:inline-block;width:8px;height:14px;background:var(--ink);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.hl-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}
+.hl-in>div:last-child{border-left:1px solid var(--line)}
+@media (max-width:820px){.hl-in{grid-template-columns:minmax(0,1fr)}.hl-in>div:last-child{border-left:0}}
+.also{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.also>div{padding:20px 22px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.also>div+div{border-left:1px solid var(--line)}
+.also h4{margin:0;font-family:var(--f-display);font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:.02em}
+.also p{font-size:15px;color:#cfcbc1}
+@media (max-width:820px){.also{grid-template-columns:minmax(0,1fr)}.also>div+div{border-left:0;border-top:1px solid var(--line)}}
+.trail{display:grid;gap:10px;font-size:15px}
+.trail div{display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px}
+.trail div span:first-child{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);padding-top:3px}
+
+/* ---------- toolchain + footer ---------- */
+.tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.tools div{background:var(--bg);padding:20px}
+.tools h4{margin:0 0 10px;font-family:var(--f-mono);font-weight:400;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.tools p{font-size:15px;color:#cfcbc1}
+@media (max-width:820px){.tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.tools{grid-template-columns:minmax(0,1fr)}}
+footer{padding:100px 0 60px;position:relative;overflow:hidden}
+footer h2{font-size:clamp(54px,10vw,150px);font-weight:900;text-transform:uppercase;max-width:11ch}
+footer h2 span{color:var(--accent)}
+.foot-row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}
+
+@media (max-width:600px){
+  body{font-size:16px}
+  .hero{padding:96px 0 48px}
+  .sheet-sec{padding:72px 0 64px}
+  .sec-head{margin-bottom:36px}
+  .sub-h{margin:52px 0 16px}
+  .calc>div,.panel-b,.card-b,.cnc-in>div{padding:16px}
+  .bk{padding:16px}
+  .bk-steps button{font-size:9px;letter-spacing:.02em;white-space:normal}
+  .opt{flex-wrap:wrap;gap:2px 10px}
+  .stage-ctl{padding:8px 12px;gap:8px}
+  .readouts b{font-size:15px}
+  .duty{font-size:52px}
+  .fan-ico{width:64px;height:64px}
+  .json{font-size:11px;min-height:0}
+  .term{font-size:11px}
+  .rev td,.rev th{padding:8px}
+  .meta div{font-size:14px}
+  .sheet{font-size:10px}
+  .logo{font-size:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .arch .flow,.kl-flow,.cursor{animation:none}
+  .step{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="logo" href="#top">FIELD <b>/</b> NOTES</a>
+    <div class="sheet" id="sheetLabel">SHT <span id="sheetNo">00</span> / 04 · <span id="sheetName">Index</span></div>
+    <nav aria-label="Sections">
+      <a href="#airpure" data-nav="airpure">Airpure</a>
+      <a href="#vexis" data-nav="vexis">Vexis</a>
+      <a href="#spectrum" data-nav="spectrum">Spectrum CPR</a>
+      <a href="#bench" data-nav="bench">Bench &amp; Shop</a>
+    </nav>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<main id="top">
+<!-- ================= HERO ================= -->
+<section class="hero" data-sheet="00" data-sheet-name="Index">
+  <div class="hero-layer hero-grid" data-speed="0.25"></div>
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+
+  <div class="hero-draw d1" data-speed="0.45" aria-hidden="true">
+    <svg viewBox="0 0 300 380" fill="none" stroke="currentColor" stroke-width="1">
+      <ellipse cx="150" cy="40" rx="100" ry="22"/>
+      <path d="M50 40v200M250 40v200"/>
+      <ellipse cx="150" cy="240" rx="100" ry="22" stroke-dasharray="3 4"/>
+      <path d="M50 240a100 22 0 0 0 200 0"/>
+      <g stroke-opacity=".7"><path d="M70 70v150M86 74v152M102 77v153M118 79v153M134 80v153M150 80v153M166 80v153M182 79v153M198 77v153M214 74v152M230 70v150"/></g>
+      <rect x="40" y="262" width="220" height="80" />
+      <circle cx="150" cy="302" r="28"/><circle cx="150" cy="302" r="6"/>
+      <path d="M58 280h22M58 292h22M58 304h22M58 316h22M220 280h22M220 292h22M220 304h22M220 316h22"/>
+      <path d="M56 342v14M244 342v14"/>
+      <path d="M20 40v302M14 40h12M14 342h12" stroke="#ff6b1f" stroke-opacity=".8"/>
+      <text x="8" y="196" fill="#ff6b1f" font-family="JetBrains Mono,monospace" font-size="9" stroke="none" transform="rotate(-90 8 196)">ASSY · AIRPURE</text>
+      <path d="M150 10v-8M150 372v8" stroke-dasharray="6 3 1 3"/>
+      <text x="262" y="20" fill="currentColor" stroke="none" font-family="JetBrains Mono,monospace" font-size="9">A–A</text>
+    </svg>
+  </div>
+  <div class="hero-draw d2" data-speed="0.8" aria-hidden="true">
+    <svg viewBox="0 0 120 120" fill="none" stroke="currentColor"><rect x="4" y="4" width="112" height="112" rx="6"/><circle cx="60" cy="60" r="50"/><circle cx="60" cy="60" r="12"/><g><path d="M60 48c12-20 30-22 34-14M72 60c20 12 22 30 14 34M60 72c-12 20-30 22-34 14M48 60c-20-12-22-30-14-34"/></g><circle cx="12" cy="12" r="3"/><circle cx="108" cy="12" r="3"/><circle cx="12" cy="108" r="3"/><circle cx="108" cy="108" r="3"/></svg>
+  </div>
+  <div class="hero-draw d3" data-speed="0.6" aria-hidden="true">
+    <svg viewBox="0 0 300 200" fill="none" stroke="currentColor"><path d="M0 40h80l20 20h90M0 80h60l30 30h120l20-20h80M0 120h120l20 20h60M40 160h180l20-20"/><circle cx="190" cy="60" r="4"/><circle cx="210" cy="110" r="4"/><circle cx="200" cy="140" r="4"/><circle cx="220" cy="160" r="4"/><rect x="230" y="20" width="60" height="60"/><path d="M230 30h-6M230 40h-6M230 50h-6M230 60h-6M230 70h-6"/></svg>
+  </div>
+
+  <div class="wrap hero-in">
+    <div class="eyebrow mono"><i></i><span>Engineering portfolio</span><span>·</span><span>Hardware ↔ Software</span></div>
+    <h1>I build systems that connect <span class="sw">software</span> to the <span class="pw">physical world.</span></h1>
+    <p class="hero-sub">Embedded devices, sensors and custom enclosures. Desktop software that safely drives real hardware. Precision parts held to a thousandth of an inch. Everything here was designed, built, measured and debugged by hand.</p>
+    <div class="hero-foot">
+      <nav class="index" aria-label="Featured work">
+        <a href="#airpure"><span class="mono muted">Sheet 01</span><b>Airpure</b><span class="mono muted">Embedded · CAD</span></a>
+        <a href="#vexis"><span class="mono muted">Sheet 02</span><b>Vexis</b><span class="mono muted">.NET · Hardware</span></a>
+        <a href="#spectrum"><span class="mono muted">Sheet 03</span><b>Spectrum</b><span class="mono muted">Client web</span></a>
+        <a href="#bench"><span class="mono muted">Sheet 04</span><b>Bench</b><span class="mono muted">CNC · Systems</span></a>
+      </nav>
+      <div class="tblock" aria-label="Title block">
+        <div>Drawn</div><div>Field / Notes</div>
+        <div>Scale</div><div>NTS</div>
+        <div>Sheets</div><div>04</div>
+        <div>Rev</div><div>2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strip" aria-hidden="true">
+  <div class="strip-in" id="strip">
+    <span class="hot">Mechanical design</span><em>/</em><span>Embedded firmware</span><em>/</em><span class="hot">Desktop software</span><em>/</em><span>Instrumentation</span><em>/</em><span class="hot">Troubleshooting</span><em>/</em><span>Precision machining</span><em>/</em><span class="hot">Mechanical design</span><em>/</em><span>Embedded firmware</span><em>/</em><span class="hot">Desktop software</span><em>/</em><span>Instrumentation</span>
+  </div>
+</div>
+
+<!-- ================= 01 AIRPURE ================= -->
+<section class="sheet-sec" id="airpure" data-sheet="01" data-sheet-name="Airpure">
+  <div class="bignum" data-speed="-0.3" aria-hidden="true">01</div>
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2><small>Sheet 01 · Flagship hardware</small>Airpure</h2>
+        <p class="tag-line">A smart air purifier that measures its own filtration with two particulate sensors, one on each side of the filter.</p>
+      </div>
+      <div class="meta">
+        <div>Scope</div><div>Enclosure CAD, electronics, firmware, on-device dashboard, calibration</div>
+        <div>Core</div><div>ESP32-C6 · 2× PMS7003M · BME680 · Noctua 120 mm PWM</div>
+        <div>Build</div><div>PETG housing in Onshape · TPU lip seal · HEPA cartridge</div>
+        <div>Status</div><div><span class="status s-ok">Active</span></div>
+      </div>
+    </div>
+
+    <div class="story" id="story">
+      <div class="stage">
+        <div class="panel">
+          <div class="panel-h"><span class="mono muted">Section A–A · airflow schematic</span><span class="mono" id="stageLabel" style="color:var(--accent)">01 Intake</span></div>
+          <div class="stage-canvas"><canvas id="airCanvas" role="img" aria-label="Schematic of air entering the cylindrical filter housing, passing through the HEPA cartridge, dropping into the base and exiting through side slots"></canvas></div>
+          <div class="stage-ctl">
+            <label class="toggle" for="shaftToggle"><input type="checkbox" id="shaftToggle" checked> Seal support installed</label>
+            <div class="readouts">
+              <div><span>Pre</span><b id="roPre">118</b></div>
+              <div><span>Post</span><b id="roPost">4.0</b></div>
+              <div><span>Eff.</span><b id="roEff">96.6%</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="steps" id="steps">
+        <article class="step on" data-stage="0">
+          <span class="mono">01 · Intake</span>
+          <h3>Pulled in around the cylinder</h3>
+          <p>Room air enters through vertical slots in the 3D-printed upper housing. The first PMS7003M laser sensor samples this incoming air before it reaches the filter.</p>
+        </article>
+        <article class="step" data-stage="1">
+          <span class="mono">02 · Filter</span>
+          <h3>Through the HEPA cartridge</h3>
+          <p>A cylindrical HEPA cartridge sits inside the housing. A printed TPU lip seal closes off the top of the cartridge, held in place by a center column underneath it. The seal only works one way round, so its orientation is called out in the hardware notes.</p>
+        </article>
+        <article class="step" data-stage="2">
+          <span class="mono">03 · Measure</span>
+          <h3>A second sensor checks the result</h3>
+          <p>Filtered air passes a second PMS7003M. A BME680 adds temperature, humidity, pressure and a VOC trend. Both particulate sensors are matched with gain and offset before any efficiency is shown.</p>
+          <p class="muted" style="font-size:15px">Try it: switch off <em>Seal support installed</em> to see the bypass leak that once dragged a test to 57%.</p>
+        </article>
+        <article class="step" data-stage="3">
+          <span class="mono">04 · Blower base</span>
+          <h3>Down into the electronics base</h3>
+          <p>Clean air drops into a separate base where a Noctua NF-F12 iPPC-3000 PWM fan moves it. Fan speed follows particulate load, with spike detection, ramp-up and settling, and a manual override in the UI.</p>
+        </article>
+        <article class="step" data-stage="4">
+          <span class="mono">05 · Exhaust</span>
+          <h3>Out through the base slots</h3>
+          <p>Air leaves through ventilation slots around the base. Meanwhile the ESP32-C6 serves a six-tab dashboard from LittleFS over local Wi-Fi: no cloud account and no app to install.</p>
+          <div class="chips" style="margin-top:6px"><span class="chip a">Dashboard</span><span class="chip">Graphs</span><span class="chip">Fan</span><span class="chip">Device</span><span class="chip">Network</span><span class="chip">Support</span></div>
+        </article>
+      </div>
+    </div>
+
+    <h3 class="sub-h">Filtration <span>math</span></h3>
+    <div class="calc">
+      <div>
+        <div class="formula">corrected = gain × post<sub>raw</sub> + offset<br>efficiency = (pre − corrected) ÷ pre<br>if pre &lt; 15 µg/m³ → N/A</div>
+        <div class="field"><label for="cPre">Pre-filter PM2.5</label><output id="oPre">120 µg/m³</output><input type="range" id="cPre" min="0" max="600" step="1" value="120"></div>
+        <div class="field"><label for="cPost">Post-filter raw</label><output id="oPost">6.0 µg/m³</output><input type="range" id="cPost" min="0" max="120" step="0.5" value="6"></div>
+        <div class="field"><label for="cGain">Gain</label><output id="oGain">0.74</output><input type="range" id="cGain" min="0.5" max="1.5" step="0.01" value="0.74"></div>
+        <div class="field"><label for="cOff">Offset</label><output id="oOff">0.0</output><input type="range" id="cOff" min="-10" max="10" step="0.5" value="0"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:space-between;gap:20px">
+        <div>
+          <span class="mono muted">Reported efficiency</span>
+          <div class="big-eff" id="effOut">96.3%</div>
+          <p class="muted" id="effWhy" style="margin-top:10px;font-size:15px">Corrected post reading 4.4 µg/m³.</p>
+        </div>
+        <p style="font-size:15px;color:#cfcbc1;max-width:48ch">One post-filter sensor read 35% high before matching, so gain starts near 0.74 here.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-h">Debug <span>log</span></h3>
+    <div class="two">
+      <div class="log">
+        <div class="log-row">
+          <span class="status s-bad">Air path</span>
+          <div><h4>The filter wasn't the problem</h4><p>A test came back at 57%. Rather than blame the HEPA media, I traced the air path and found the center column that supports the top TPU seal was missing. Without it the seal could not hold against the cartridge, so unfiltered air slipped past the top of the filter and straight to the post-filter sensor.</p><div class="delta"><span class="muted">Sealed-chamber test</span><b style="color:var(--bad)">57%</b><span>→</span><b style="color:var(--ok)">96.6%</b></div></div>
+        </div>
+        <div class="log-row">
+          <span class="status s-warn">RF noise</span>
+          <div><h4>Wi-Fi made fake smoke</h4><p>Transmit bursts coupled into the sensor electronics and showed up as false PM spikes. Fixed with local bulk and ceramic decoupling, ferrite chokes on sensor cables, star grounding and more antenna separation.</p></div>
+        </div>
+        <div class="log-row">
+          <span class="status s-info">Calibration</span>
+          <div><h4>Two sensors, one truth</h4><p>Identical sensors disagreed by 35%. A two-parameter gain/offset match with validation guards brought the residual to −1.7% on that build.</p><div class="delta"><span class="muted">Post-sensor error</span><b style="color:var(--bad)">+35%</b><span>→</span><b style="color:var(--ok)">−1.7%</b></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="panel"><div class="panel-h"><span class="mono muted">Bill of materials</span><span class="mono muted">airfilter_v7</span></div>
+        <div class="panel-b"><table class="spec">
+          <tr><td>MCU</td><td>Waveshare ESP32-C6-DEV-KIT-NX, WROOM-1-N8, 8 MB flash</td></tr>
+          <tr><td>PM</td><td>2× PMS7003M laser particulate, pre and post filter</td></tr>
+          <tr><td>Env</td><td>BME680: temp, humidity, pressure, gas resistance</td></tr>
+          <tr><td>Fan</td><td>Noctua NF-F12 iPPC-3000, 4-pin PWM with tach</td></tr>
+                    <tr><td>Firmware</td><td>Arduino/ESP32, HTTP API, firmware + filesystem OTA</td></tr>
+                                      </table></div></div>
+        <p class="note"><b>Measurement note.</b> Each figure on this sheet is shown with the test it came from. Separate observations are kept separate rather than merged into one headline number.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 VEXIS ================= -->
+<section class="sheet-sec" id="vexis" data-sheet="02" data-sheet-name="Vexis">
+  <div class="bignum" data-speed="-0.3" aria-hidden="true">02</div>
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2><small>Sheet 02 · Flagship software</small>Vexis</h2>
+        <p class="tag-line">A Windows app that monitors and controls PC hardware, built so a crash or a bad sensor never leaves the fans in an unsafe state.</p>
+      </div>
+      <div class="meta">
+        <div>Stack</div><div>C# / .NET 8 WinForms host · WebView2 HTML/JS UI</div>
+        <div>Hardware</div><div>LibreHardwareMonitor · PawnIO · OpenRGB via local proxy</div>
+        <div>Shipping</div><div>Automated tests · GitHub Actions build and release</div>
+        <div>Privacy</div><div>No telemetry, analytics or accounts</div>
+      </div>
+    </div>
+
+    <div class="arch panel" aria-label="Architecture diagram">
+      <div class="panel-h"><span class="mono muted">Data path</span><span class="mono muted">host ↔ UI message bridge</span></div>
+      <svg viewBox="0 0 960 250" role="img" aria-label="Sensors flow through LibreHardwareMonitor into SensorService, which serializes a JSON snapshot to the WebView2 UI; UI messages return to the WinForms host and FanController drives the fans">
+        <rect class="box" x="20" y="40" width="170" height="64" rx="3"/><text x="34" y="68">Sensors + fans</text><text class="s" x="34" y="88">CPU · GPU · RAM · DISK</text>
+        <rect class="box" x="230" y="40" width="190" height="64" rx="3"/><text x="244" y="68">LibreHardwareMonitor</text><text class="s" x="244" y="88">+ PAWNIO ACCESS</text>
+        <rect class="box hot" x="460" y="40" width="190" height="64" rx="3"/><text x="474" y="68">SensorService</text><text class="s" x="474" y="88">250 MS · SMART/WMI 2 S</text>
+        <rect class="box" x="700" y="40" width="240" height="64" rx="3"/><text x="714" y="68">WebView2 UI</text><text class="s" x="714" y="88">HTML / JS · THEMES · POP-OUTS</text>
+        <rect class="box" x="700" y="160" width="240" height="64" rx="3"/><text x="714" y="188">WinForms host</text><text class="s" x="714" y="208">MESSAGE HANDLER</text>
+        <rect class="box hot" x="460" y="160" width="190" height="64" rx="3"/><text x="474" y="188">FanController</text><text class="s" x="474" y="208">CURVES · GUARDS · WATCHDOG</text>
+        <rect class="box" x="230" y="160" width="190" height="64" rx="3"/><text x="244" y="188">OpenRGB proxy</text><text class="s" x="244" y="208">PACKET LIMITS · TIMEOUTS</text>
+        <path class="flow" d="M190 72H230M420 72H460M650 72H700"/>
+        <text class="s" x="655" y="62">JSON</text>
+        <path class="flow c" d="M820 104V160M700 192H650M460 192H420"/>
+        <path class="flow c" d="M555 160V130H105V104"/>
+        <text class="s" x="560" y="146">PWM</text>
+      </svg>
+    </div>
+
+    <h3 class="sub-h">Fan curve <span>sandbox</span></h3>
+    <div class="vx-grid">
+      <div class="panel">
+        <div class="panel-h"><span class="mono muted">Drag the points · simulated sensor</span><span class="status s-ok" id="fanState">Normal</span></div>
+        <svg id="curve" viewBox="0 0 620 330" aria-label="Editable fan curve"></svg>
+        <div class="ctl-row">
+          <div class="field"><label for="tempIn">CPU temp</label><output id="tempOut">55 °C</output><input type="range" id="tempIn" min="25" max="100" step="0.5" value="55"></div>
+          <div class="field"><label for="hystIn">Hysteresis</label><output id="hystOut">3 °C</output><input type="range" id="hystIn" min="0" max="8" step="0.5" value="3"></div>
+          <div class="field"><label for="minIn">Minimum duty</label><output id="minOut">20%</output><input type="range" id="minIn" min="0" max="40" step="1" value="20"></div>
+        </div>
+        <div class="stage-ctl">
+          <div class="btns"><button class="primary" id="loadBtn" type="button">Run load test</button><button id="resetBtn" type="button">Reset curve</button></div>
+          <label class="toggle" for="staleToggle"><input type="checkbox" id="staleToggle"> Sensor goes stale</label>
+        </div>
+      </div>
+      <div class="panel" style="display:flex;flex-direction:column">
+        <div class="panel-h"><span class="mono muted"><span class="tick" id="tick"></span>SensorData snapshot</span><span class="mono muted">every 250 ms</span></div>
+        <div class="panel-b fan-state">
+          <svg class="fan-ico" viewBox="0 0 100 100" aria-hidden="true"><rect x="3" y="3" width="94" height="94" rx="8" fill="none" stroke="#2c302c"/><circle cx="50" cy="50" r="42" fill="none" stroke="#2c302c"/><g id="fanBlades" fill="none" stroke="#ff6b1f" stroke-width="2"><path d="M50 40c8-16 24-18 28-10M60 50c16 8 18 24 10 28M50 60c-8 16-24 18-28 10M40 50c-16-8-18-24-10-28"/><circle cx="50" cy="50" r="9"/></g></svg>
+          <div><span class="mono muted">Applied duty</span><div class="duty" id="dutyOut">38%</div><p class="muted" id="whyOut" style="font-size:14px">Following curve</p></div>
+        </div>
+        <pre class="json" id="json" aria-live="off"></pre>
+      </div>
+    </div>
+
+    <p class="note" style="position:relative;z-index:1">The sandbox models the guard behavior for illustration. It is not the app's source code.</p>
+  </div>
+</section>
+
+<!-- ================= 03 SPECTRUM ================= -->
+<section class="sheet-sec" id="spectrum" data-sheet="03" data-sheet-name="Spectrum CPR">
+  <div class="bignum" data-speed="-0.3" aria-hidden="true">03</div>
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2><small>Sheet 03 · Client delivery</small>Spectrum CPR</h2>
+        <p class="tag-line">A website for a family-run CPR and first-aid training business that grew into a booking and payments platform.</p>
+      </div>
+      <div class="meta">
+        <div>Client</div><div>CPR &amp; first-aid training company</div>
+        <div>Delivered</div><div>Website design and build, logo redesign</div>
+        <div>Role</div><div>Design, development, client communication, scope management</div>
+      </div>
+    </div>
+
+    <div class="sp-grid">
+      <div>
+        <div class="browser" aria-label="Illustrative booking flow">
+          <div class="br-bar"><i></i><i></i><i></i><div class="br-url">booking flow · illustrative redraw, no client data</div></div>
+          <div class="bk">
+            <div class="bk-steps" role="tablist">
+              <button type="button" class="on" data-bk="0">1 Course</button>
+              <button type="button" data-bk="1">2 Date</button>
+              <button type="button" data-bk="2">3 Location</button>
+              <button type="button" data-bk="3">4 Payment</button>
+            </div>
+            <div id="bkBody"></div>
+            <div class="bk-foot"><span id="bkHint">Step 1 of 4</span><button type="button" id="bkNext">Continue</button></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="panel"><div class="panel-h"><span class="mono muted">Revision block · how scope grew</span></div>
+        <div class="panel-b" style="overflow-x:auto">
+          <table class="rev">
+            <thead><tr><th>Rev</th><th>Change</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>A</td><td>Client-facing website</td><td><span class="status s-ok">Delivered</span></td></tr>
+              <tr><td>B</td><td>Logo redesign</td><td><span class="status s-ok">Delivered</span></td></tr>
+              <tr><td>C</td><td>Booking and scheduling</td><td><span class="status s-info">Agreed scope</span></td></tr>
+              <tr><td>D</td><td>Payment integration</td><td><span class="status s-info">Agreed scope</span></td></tr>
+              <tr><td>E</td><td>Service zones and travel pricing</td><td><span class="status s-mute">Discussed</span></td></tr>
+              <tr><td>F</td><td>Waitlist and scheduling extras</td><td><span class="status s-mute">Discussed</span></td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 BENCH ================= -->
+<section class="sheet-sec" id="bench" data-sheet="04" data-sheet-name="Bench &amp; Shop">
+  <div class="bignum" data-speed="-0.3" aria-hidden="true">04</div>
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2><small>Sheet 04 · Supporting work</small>Bench &amp; Shop</h2>
+        <p class="tag-line">The day job is cutting metal to a thousandth of an inch.</p>
+      </div>
+      <div class="meta">
+        <div>Shop</div><div>Machinist 1, mill side, precision manufacturing</div>
+      </div>
+    </div>
+
+    <div class="bench">
+      <!-- CNC -->
+      <article class="card c-cnc">
+        <div class="panel-h"><span class="mono muted">Professional experience</span><span class="status s-ok">Current role</span></div>
+        <div class="cnc-in">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <h3>Precision CNC machining</h3>
+            <p>Mill-side machinist in precision manufacturing, after earlier work as a CNC operator in a contract shop. Tight-tolerance parts, tool changes, offsets and tool-length offsets, in-process inspection, and titanium, where cutter geometry and tool wear decide whether a part passes.</p>
+            <div class="chips"><span class="chip a">±0.001 in work</span><span class="chip">Titanium</span><span class="chip">Tool offsets</span><span class="chip">Inspection</span><span class="chip">Process discipline</span></div>
+          </div>
+          <div>
+            <div class="dial-wrap">
+              <svg id="dial" viewBox="0 0 220 220" aria-label="Dial indicator reading"></svg>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <span class="mono muted">Balanced dial · 0.0001 in grads</span>
+                <div class="dev" id="devOut">+0.0004</div>
+                <span class="status s-ok" id="devState" style="align-self:flex-start">In tolerance</span>
+                <div class="field" style="margin:4px 0 0"><label for="devIn">Measured deviation</label><output>in</output><input type="range" id="devIn" min="-0.004" max="0.004" step="0.0001" value="0.0004"></div>
+                <p class="muted" style="font-size:14px">The whole ±0.001 in band is 0.002 in wide, finer than most human hairs.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card c-hl">
+        <div class="panel-h"><span class="mono muted">Also on the bench</span></div>
+        <div class="also">
+          <div><span class="status s-ok">Running</span><h4>Linux homelab</h4><p>Ubuntu server hosting a modded Minecraft world; SSH and service troubleshooting.</p></div>
+          <div><span class="status s-info">Built</span><h4>Custom PC</h4><p>Liquid-cooled Ryzen 9 9950X3D and RX 7900 XTX build.</p></div>
+          <div><span class="status s-warn">Exploring</span><h4>Klipper printer</h4><p>Manta M4P + CB1; looking at water cooling the hotend.</p></div>
+        </div>
+      </article>
+    </div>
+
+    <h3 class="sub-h">Tool<span>chain</span></h3>
+    <div class="tools">
+      <div><h4>Embedded</h4><p>ESP32-C6, Arduino C++, UART sensors, PWM and tach, OTA, LittleFS, mDNS</p></div>
+      <div><h4>Software</h4><p>C# / .NET 8, WinForms, WebView2, JavaScript, HTML/CSS, GitHub Actions</p></div>
+      <div><h4>Mechanical</h4><p>Onshape CAD, PETG and TPU printing, sealing and airflow design, Klipper</p></div>
+      <div><h4>Shop &amp; systems</h4><p>CNC milling, inspection, titanium, Ubuntu, SSH, LVM, custom liquid cooling</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="bignum" data-speed="-0.2" aria-hidden="true" style="top:20px">✓</div>
+  <div class="wrap" style="position:relative;z-index:1">
+    <span class="mono" style="color:var(--accent)">End of set</span>
+    <h2 style="margin-top:16px">Measured, <span>not</span> guessed.</h2>
+    <p class="hero-sub" style="margin-top:22px">I work best where hardware and software meet: building it, measuring it and finding out why it misbehaves.</p>
+    <div class="foot-row" id="contact"></div>
+  </div>
+</footer>
+
+<script>
+/* Contact details: fill these in before sharing. Leave empty to hide. */
+const CONTACT = { email: "", github: "" };
+
+(() => {
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp = (v,a,b)=>Math.min(b,Math.max(a,v));
+const $ = s=>document.querySelector(s);
+const $$ = s=>[...document.querySelectorAll(s)];
+const css = getComputedStyle(document.documentElement);
+const C = {accent:'#ff6b1f', clean:'#8ccfe0', ink:'#e8e5dc', muted:'#8f938b', line:'#2c302c', panel:'#151715', bg:'#0d0e0d', ok:'#7fc98f', bad:'#ff5a4f'};
+
+/* ---------- contact ---------- */
+(() => {
+  const el = $('#contact'); const parts = [];
+  if (CONTACT.email) parts.push(`<span class="mono">Email · <a href="mailto:${CONTACT.email}">${CONTACT.email}</a></span>`);
+  if (CONTACT.github) parts.push(`<a class="mono" href="${CONTACT.github}">GitHub ↗</a>`);
+  if (!parts.length) parts.push('<span class="mono muted">Contact details available on request</span>');
+  parts.push('<span class="mono muted">FIELD / NOTES · 2026</span>');
+  el.innerHTML = parts.join('');
+})();
+
+/* ---------- visibility tracking to pause offscreen animation ---------- */
+const visible = new WeakMap();
+const io = new IntersectionObserver(es=>es.forEach(e=>visible.set(e.target,e.isIntersecting)),{rootMargin:'100px'});
+const watch = el=>{visible.set(el,true);io.observe(el);return ()=>visible.get(el);};
+
+/* ---------- canvas helper ---------- */
+function fitCanvas(cv, onResize){
+  const ctx = cv.getContext('2d'); let w=0,h=0;
+  const r = ()=>{const b=cv.getBoundingClientRect(); const d=Math.min(devicePixelRatio||1,2); w=b.width; h=b.height; cv.width=Math.max(1,w*d); cv.height=Math.max(1,h*d); ctx.setTransform(d,0,0,d,0,0); onResize&&onResize(w,h);};
+  new ResizeObserver(r).observe(cv); r();
+  return {ctx, size:()=>({w,h})};
+}
+
+/* ---------- hero dust ---------- */
+(() => {
+  const cv = $('#heroCanvas'); const isVis = watch(cv.parentElement);
+  let pts=[]; const {ctx,size} = fitCanvas(cv,(w,h)=>{ const n=Math.round(clamp(w*h/9000,40,160)); pts=Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,r:Math.random()*1.6+.4,hot:Math.random()<.18}));});
+  const m={x:-1e4,y:-1e4};
+  cv.parentElement.addEventListener('pointermove',e=>{const b=cv.getBoundingClientRect();m.x=e.clientX-b.left;m.y=e.clientY-b.top;});
+  cv.parentElement.addEventListener('pointerleave',()=>{m.x=m.y=-1e4;});
+  function frame(){
+    if(isVis()){
+      const {w,h}=size(); ctx.clearRect(0,0,w,h);
+      for(const p of pts){
+        const dx=m.x-p.x, dy=m.y-p.y, d2=dx*dx+dy*dy;
+        if(d2<40000){const f=.018*(1-d2/40000);p.vx+=dx*f*.05;p.vy+=dy*f*.05;}
+        p.vx*=.97;p.vy*=.97;p.vx+=(Math.random()-.5)*.03;p.vy+=(Math.random()-.5)*.03-.004;
+        p.x+=p.vx;p.y+=p.vy;
+        if(d2<300){p.x=Math.random()*w;p.y=h+5;}
+        if(p.x<-5)p.x=w+5;if(p.x>w+5)p.x=-5;if(p.y<-5)p.y=h+5;if(p.y>h+5)p.y=-5;
+        ctx.fillStyle=p.hot?'rgba(255,107,31,.75)':'rgba(232,229,220,.35)';
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill();
+      }
+    }
+    if(!reduce) requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ---------- parallax, progress, sheet label, story step ---------- */
+const plx = $$('[data-speed]');
+const sections = $$('[data-sheet]');
+const steps = $$('.step');
+const strip = $('#strip');
+let activeStage = 0;
+const stageNames = ['01 Intake','02 Filter','03 Measure','04 Blower base','05 Exhaust'];
+function onScroll(){
+  const vh = innerHeight, sy = scrollY;
+  const max = document.documentElement.scrollHeight - vh;
+  $('#progress').style.transform = `scaleX(${max>0?sy/max:0})`;
+  if(!reduce){
+    for(const el of plx){
+      const host = el.parentElement.getBoundingClientRect();
+      if(host.bottom < -200 || host.top > vh+200) continue;
+      const sp = parseFloat(el.dataset.speed);
+      const off = el.closest('.hero') ? sy*sp : (host.top + host.height/2 - vh/2)*sp*0.35;
+      el.style.transform = `translate3d(0,${off.toFixed(1)}px,0)`;
+    }
+    strip.style.transform = `translate3d(${-(sy*0.25 % 1400)}px,0,0)`;
+  }
+  let cur = sections[0];
+  for(const s of sections){ if(s.getBoundingClientRect().top < vh*0.4) cur = s; }
+  $('#sheetNo').textContent = cur.dataset.sheet;
+  $('#sheetName').textContent = cur.dataset.sheetName;
+  $$('[data-nav]').forEach(a=>a.classList.toggle('on', a.dataset.nav===cur.id));
+  const line = innerWidth<=900 ? vh*0.74 : vh*0.5;
+  let best=0, bd=1e9;
+  steps.forEach((s,i)=>{const r=s.getBoundingClientRect(); const d=Math.abs(r.top+r.height/2-line); if(d<bd){bd=d;best=i;}});
+  if(best!==activeStage){ activeStage=best; }
+  steps.forEach((s,i)=>s.classList.toggle('on',i===activeStage));
+  $('#stageLabel').textContent = stageNames[activeStage];
+}
+let ticking=false;
+addEventListener('scroll',()=>{ if(!ticking){ticking=true;requestAnimationFrame(()=>{onScroll();ticking=false;});} },{passive:true});
+addEventListener('resize',onScroll);
+
+/* ---------- Airpure airflow schematic ---------- */
+const air = (() => {
+  const cv = $('#airCanvas'); const isVis = watch(cv);
+  const {ctx,size} = fitCanvas(cv);
+  const W=400,H=470;
+  let shaft = true, parts=[], deposits=[], last=performance.now(), spawnAcc=0;
+  let preV=118, postV=4.0;
+  $('#shaftToggle').addEventListener('change',e=>{shaft=e.target.checked;});
+  const R=()=>Math.random();
+  function spawn(){
+    const bypass = !shaft && R()<0.42;
+    const coreX = 200+(R()-.5)*40, exitSide = R()<.5?-1:1, outY = 352+R()*56;
+    let pts, filterIdx=-1;
+    const tail = [[coreX,300],[200+(R()-.5)*24,330],[200+(R()-.5)*10,372],[200+exitSide*96,outY],[200+exitSide*220,outY+(R()-.5)*20]];
+    if(bypass){
+      const side = R()<.5?-1:1, y0 = 84+R()*40;
+      pts=[[200+side*230,y0],[200+side*92,y0],[200+side*84,77],[200+side*52,74],[200+side*30,82],[coreX,120],...tail];
+    } else {
+      const side = R()<.5?-1:1, y0 = 92+R()*190;
+      pts=[[200+side*230,y0+(R()-.5)*30],[200+side*92,y0],[200+side*52,y0],[coreX,y0+(R()-.5)*8],...tail];
+      filterIdx=2;
+    }
+    parts.push({pts,seg:0,t:0,dirty:true,filterIdx,bypass,sp:70+R()*40});
+  }
+  function step(dt){
+    spawnAcc += dt*(reduce?0:34);
+    while(spawnAcc>1){spawn();spawnAcc--;}
+    for(const p of parts){
+      const a=p.pts[p.seg], b=p.pts[p.seg+1];
+      const len=Math.hypot(b[0]-a[0],b[1]-a[1])||1;
+      const speed = p.seg>=p.pts.length-4 ? p.sp*1.6 : p.sp;
+      p.t += speed*dt/len;
+      while(p.t>=1 && p.seg<p.pts.length-1){
+        p.t-=1; p.seg++;
+        if(p.seg===p.filterIdx && p.dirty){
+          if(R()<0.966){ p.dirty=false; if(R()<.5){ const q=p.pts[p.seg]; deposits.push({x:q[0]+(R()-.5)*30,y:q[1]+(R()-.5)*6}); if(deposits.length>260)deposits.shift(); } }
+        }
+        if(p.seg>=p.pts.length-1) break;
+      }
+    }
+    parts = parts.filter(p=>p.seg<p.pts.length-1);
+    const target = shaft ? 118*0.034 : 118*0.43;
+    preV += ((118+(R()-.5)*6)-preV)*dt*2;
+    postV += (target+(R()-.5)*.8-postV)*dt*1.5;
+  }
+  function pos(p){const a=p.pts[p.seg],b=p.pts[p.seg+1];return [a[0]+(b[0]-a[0])*p.t,a[1]+(b[1]-a[1])*p.t];}
+  function draw(time){
+    const {w,h}=size(); ctx.clearRect(0,0,w,h);
+    const s=Math.min(w/W,h/H), ox=(w-W*s)/2, oy=(h-H*s)/2;
+    ctx.save(); ctx.translate(ox,oy); ctx.scale(s,s);
+    const pulse = .45+.35*Math.sin(time/320);
+    const hi = (n)=>activeStage===n;
+    const glow = (n)=>hi(n)?`rgba(255,107,31,${pulse})`:'rgba(0,0,0,0)';
+    // grid
+    ctx.strokeStyle='rgba(44,48,44,.55)';ctx.lineWidth=1/s;
+    for(let x=0;x<=W;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<=H;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    ctx.lineWidth=1.4;
+    // housing
+    ctx.fillStyle='rgba(21,23,21,.92)'; ctx.fillRect(108,56,184,250);
+    ctx.strokeStyle=C.ink; ctx.strokeRect(108,56,184,250);
+    // intake slots
+    ctx.strokeStyle=hi(0)?C.accent:'#5c615a'; ctx.lineWidth=hi(0)?2.2:1.4;
+    for(let y=80;y<=280;y+=16){ ctx.beginPath();ctx.moveTo(108,y);ctx.lineTo(108,y+9);ctx.moveTo(292,y);ctx.lineTo(292,y+9);ctx.stroke(); }
+    ctx.fillStyle=C.bg; for(let y=80;y<=280;y+=16){ctx.fillRect(106,y,4,9);ctx.fillRect(290,y,4,9);}
+    if(hi(0)){ctx.strokeStyle=glow(0);ctx.lineWidth=6;ctx.strokeRect(104,52,192,258);}
+    // filter pleats
+    ctx.lineWidth=1;
+    for(const [x0,x1] of [[126,172],[228,274]]){
+      ctx.fillStyle=hi(1)?`rgba(255,107,31,${.08+pulse*.12})`:'rgba(232,229,220,.04)';
+      ctx.fillRect(x0,75,x1-x0,221);
+      ctx.strokeStyle=hi(1)?C.accent:'#4a4f49';
+      ctx.beginPath(); for(let x=x0;x<=x1;x+=5.75){ctx.moveTo(x,77);ctx.lineTo(x,294);} ctx.stroke();
+      ctx.strokeStyle=C.ink; ctx.strokeRect(x0,75,x1-x0,221);
+    }
+    // core outline + cap
+    ctx.strokeStyle='#3a3f39'; ctx.setLineDash([3,4]); ctx.strokeRect(172,76,56,220); ctx.setLineDash([]);
+    ctx.fillStyle='#2f332e'; ctx.fillRect(108,56,184,12); ctx.strokeStyle=C.ink; ctx.lineWidth=1.4; ctx.strokeRect(108,56,184,12);
+    // top TPU seal, held up by the center seal support
+    const sealOn = hi(1);
+    if(shaft){
+      ctx.fillStyle='#3b403a'; ctx.fillRect(195,76,10,220); ctx.strokeStyle='#5c615a'; ctx.lineWidth=1; ctx.strokeRect(195,76,10,220);
+      ctx.fillStyle=C.clean; ctx.fillRect(122,68,156,7);
+      ctx.fillStyle=C.muted; ctx.font='8px JetBrains Mono, monospace';
+      ctx.save(); ctx.translate(203,250); ctx.rotate(-Math.PI/2); ctx.fillText('SEAL SUPPORT',0,0); ctx.restore();
+    } else {
+      ctx.strokeStyle=C.clean; ctx.lineWidth=6; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(130,79); ctx.quadraticCurveTo(200,104,270,79); ctx.stroke(); ctx.lineCap='butt';
+      ctx.strokeStyle=C.bad; ctx.lineWidth=1.4; ctx.setLineDash([3,3]);
+      ctx.beginPath(); ctx.moveTo(122,70); ctx.lineTo(132,76); ctx.moveTo(278,70); ctx.lineTo(268,76); ctx.stroke(); ctx.setLineDash([]);
+    }
+    ctx.lineWidth=1.4;
+    // deposits
+    ctx.fillStyle='rgba(255,107,31,.75)'; for(const d of deposits){ctx.fillRect(d.x,d.y,1.8,1.8);}
+    // base
+    ctx.fillStyle='rgba(21,23,21,.95)'; ctx.fillRect(96,310,208,124); ctx.strokeStyle=C.ink; ctx.lineWidth=1.4; ctx.strokeRect(96,310,208,124);
+    if(hi(3)){ctx.strokeStyle=glow(3);ctx.lineWidth=6;ctx.strokeRect(92,306,216,132);}
+    // fan
+    ctx.lineWidth=1.4; ctx.strokeStyle=hi(3)?C.accent:C.ink; ctx.beginPath(); ctx.arc(200,372,40,0,7); ctx.stroke();
+    ctx.save(); ctx.translate(200,372); ctx.rotate(reduce?0:time/90);
+    ctx.beginPath(); for(let i=0;i<5;i++){ctx.rotate(Math.PI*2/5);ctx.moveTo(8,0);ctx.quadraticCurveTo(24,-14,34,-4);} ctx.stroke(); ctx.restore();
+    ctx.beginPath(); ctx.arc(200,372,7,0,7); ctx.stroke();
+    // exhaust slots
+    ctx.strokeStyle=hi(4)?C.accent:'#5c615a'; ctx.lineWidth=hi(4)?2.4:1.4;
+    for(let y=340;y<=414;y+=12){ctx.beginPath();ctx.moveTo(96,y);ctx.lineTo(96,y+6);ctx.moveTo(304,y);ctx.lineTo(304,y+6);ctx.stroke();}
+    ctx.fillStyle=C.bg; for(let y=340;y<=414;y+=12){ctx.fillRect(94,y,4,6);ctx.fillRect(302,y,4,6);}
+    if(hi(4)){ctx.fillStyle=glow(4);ctx.fillRect(84,334,10,90);ctx.fillRect(306,334,10,90);}
+    // feet
+    ctx.strokeStyle=C.ink;ctx.lineWidth=1.4;ctx.strokeRect(112,434,22,12);ctx.strokeRect(266,434,22,12);
+    // sensors
+    const sens=(x,y,lbl,on)=>{ctx.fillStyle=on?C.accent:'#2a2e2a';ctx.fillRect(x,y,38,18);ctx.strokeStyle=on?C.accent:C.ink;ctx.lineWidth=1.2;ctx.strokeRect(x,y,38,18);ctx.fillStyle=on?'#120800':C.ink;ctx.font='500 8px JetBrains Mono, monospace';ctx.fillText(lbl,x+5,y+12);};
+    sens(56,150,'PRE',hi(0)||hi(2));
+    sens(214,316,'POST',hi(2));
+    ctx.strokeStyle='#5c615a';ctx.lineWidth=1;ctx.setLineDash([2,3]);ctx.beginPath();ctx.moveTo(94,159);ctx.lineTo(108,159);ctx.stroke();ctx.setLineDash([]);
+    // electronics
+    ctx.strokeStyle=hi(4)||hi(2)?C.clean:'#5c615a'; ctx.lineWidth=1; ctx.strokeRect(112,320,40,24); ctx.fillStyle=C.muted; ctx.font='7px JetBrains Mono, monospace'; ctx.fillText('ESP32',116,335);
+    ctx.strokeRect(112,350,26,14); ctx.fillText('BME',115,360);
+    // labels
+    ctx.fillStyle=C.muted; ctx.font='9px JetBrains Mono, monospace';
+    ctx.fillText('HEPA',134,290); ctx.fillText('HEPA',236,290);
+    ctx.fillText('NF-F12',184,428);
+    ctx.fillText('INTAKE →',20,110); ctx.fillText('← INTAKE',318,110);
+    ctx.fillText('← EXHAUST',14,446); ctx.fillText('EXHAUST →',318,446);
+    ctx.fillText('TPU SEAL',180,50);
+    if(!shaft){ctx.fillStyle=C.bad; ctx.fillText('SEAL UNSUPPORTED · BYPASS',134,40);}
+    // particles
+    for(const p of parts){
+      const [x,y]=pos(p);
+      ctx.fillStyle = p.dirty ? 'rgba(255,107,31,.95)' : 'rgba(140,207,224,.85)';
+      ctx.beginPath(); ctx.arc(x,y,p.dirty?2:1.6,0,7); ctx.fill();
+    }
+    ctx.restore();
+  }
+  function frame(t){
+    const dt=Math.min(.05,(t-last)/1000); last=t;
+    if(isVis()){ if(!reduce) step(dt); draw(t);
+      $('#roPre').textContent=preV.toFixed(0); $('#roPost').textContent=postV.toFixed(1);
+      $('#roEff').textContent=((1-postV/preV)*100).toFixed(1)+'%';
+      $('#roEff').style.color = postV/preV>0.2?C.bad:C.ink;
+    }
+    requestAnimationFrame(frame);
+  }
+  if(reduce){ for(let i=0;i<300;i++) step(1/30); }
+  requestAnimationFrame(frame);
+})();
+
+/* ---------- efficiency calculator ---------- */
+(() => {
+  const ids=['cPre','cPost','cGain','cOff']; const el=Object.fromEntries(ids.map(i=>[i,$('#'+i)]));
+  function upd(){
+    const pre=+el.cPre.value, raw=+el.cPost.value, g=+el.cGain.value, o=+el.cOff.value;
+    $('#oPre').textContent=pre+' µg/m³'; $('#oPost').textContent=raw.toFixed(1)+' µg/m³'; $('#oGain').textContent=g.toFixed(2); $('#oOff').textContent=(o>0?'+':'')+o.toFixed(1);
+    const corr=Math.max(0,g*raw+o); const out=$('#effOut'), why=$('#effWhy');
+    if(pre<15){ out.textContent='N/A'; out.classList.add('na'); why.textContent=`Incoming ${pre} µg/m³ is below the 15 µg/m³ floor. The ratio would be mostly noise.`; return; }
+    out.classList.remove('na');
+    const e=(pre-corr)/pre*100; out.textContent=clamp(e,-999,100).toFixed(1)+'%';
+    out.style.color = e<50?C.bad:e<85?'#e8b54a':C.ink;
+    why.textContent=`Corrected post reading ${corr.toFixed(1)} µg/m³.`;
+  }
+  ids.forEach(i=>el[i].addEventListener('input',upd)); upd();
+})();
+
+/* ---------- Vexis fan curve sandbox ---------- */
+(() => {
+  const svg=$('#curve'); const NS='http://www.w3.org/2000/svg';
+  const X0=56,X1=600,Y0=290,Y1=20, T0=20,T1=100;
+  const tx=t=>X0+(t-T0)/(T1-T0)*(X1-X0), ty=d=>Y0-d/100*(Y0-Y1);
+  const ft=x=>T0+(x-X0)/(X1-X0)*(T1-T0), fd=y=>(Y0-y)/(Y0-Y1)*100;
+  const DEF=[[30,25],[50,35],[65,55],[78,80],[88,100]];
+  let pts=DEF.map(p=>[...p]);
+  let T=55, hyst=3, minD=20, stale=false, applied=38, anchor=55, state='Normal', why='Following curve';
+  const GUARD=90;
+  const mk=(tag,attrs)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;};
+  // static axes
+  for(let d=0;d<=100;d+=25){svg.append(mk('line',{x1:X0,x2:X1,y1:ty(d),y2:ty(d),class:'ax'}));const t=mk('text',{x:X0-8,y:ty(d)+4,'text-anchor':'end'});t.textContent=d+'%';svg.append(t);}
+  for(let t=20;t<=100;t+=10){svg.append(mk('line',{x1:tx(t),x2:tx(t),y1:Y0,y2:Y0+5,class:'ax'}));const e=mk('text',{x:tx(t),y:Y0+20,'text-anchor':'middle'});e.textContent=t+'°';svg.append(e);}
+  svg.append(mk('rect',{x:tx(GUARD),y:Y1,width:X1-tx(GUARD),height:Y0-Y1,fill:'rgba(255,90,79,.10)'}));
+  const gt=mk('text',{x:tx(GUARD)+6,y:Y1+14,fill:'#ff5a4f'});gt.textContent='GUARD';svg.append(gt);
+  const minLine=mk('line',{x1:X0,x2:X1,stroke:'#8ccfe0','stroke-dasharray':'4 4'}); svg.append(minLine);
+  const minTxt=mk('text',{x:X1-4,'text-anchor':'end',fill:'#8ccfe0'}); svg.append(minTxt);
+  const area=mk('path',{fill:'rgba(255,107,31,.10)'}); svg.append(area);
+  const path=mk('path',{fill:'none',stroke:'#ff6b1f','stroke-width':2.2}); svg.append(path);
+  const tLine=mk('line',{y1:Y1,y2:Y0,stroke:'#e8e5dc','stroke-opacity':.5}); svg.append(tLine);
+  const hBand=mk('rect',{y:Y1,height:Y0-Y1,fill:'rgba(140,207,224,.08)'}); svg.append(hBand);
+  const op=mk('circle',{r:7,fill:'#e8e5dc'}); svg.append(op);
+  const knots=pts.map((p,i)=>{const c=mk('circle',{r:9,class:'knot',tabindex:0,'aria-label':`Curve point ${i+1}`});svg.append(c);return c;});
+  function interp(t){ if(t<=pts[0][0])return pts[0][1]; for(let i=1;i<pts.length;i++){if(t<=pts[i][0]){const a=pts[i-1],b=pts[i];return a[1]+(b[1]-a[1])*(t-a[0])/(b[0]-a[0]);}} return pts[pts.length-1][1]; }
+  function control(){
+    const target=Math.max(minD,interp(T));
+    if(stale){applied=100;state='Fail-safe';why='No fresh reading: fans to 100%';}
+    else if(T>=GUARD){applied=100;state='Over-temp';why=`≥ ${GUARD} °C: guard forces 100%`;anchor=T;}
+    else if(target>=applied){applied=target;anchor=T;state='Normal';why=target===minD&&interp(T)<minD?'Held at minimum duty':'Following curve';}
+    else if(T>anchor-hyst){state='Hold';why=`Holding until ${(anchor-hyst).toFixed(1)} °C (hysteresis)`;}
+    else {applied=target;anchor=T;state='Normal';why='Following curve down';}
+  }
+  function render(){
+    const d=pts.map((p,i)=>(i?'L':'M')+tx(p[0])+' '+ty(p[1])).join(' ');
+    const full=`M${X0} ${ty(pts[0][1])} L`+d.slice(1)+` L${X1} ${ty(pts[pts.length-1][1])}`;
+    path.setAttribute('d',full); area.setAttribute('d',full+` L${X1} ${Y0} L${X0} ${Y0}Z`);
+    pts.forEach((p,i)=>{knots[i].setAttribute('cx',tx(p[0]));knots[i].setAttribute('cy',ty(p[1]));});
+    minLine.setAttribute('y1',ty(minD));minLine.setAttribute('y2',ty(minD));minTxt.setAttribute('y',ty(minD)-6);minTxt.textContent='MIN '+minD+'%';
+    tLine.setAttribute('x1',tx(T));tLine.setAttribute('x2',tx(T));
+    const hb=Math.max(X0,tx(anchor-hyst)); hBand.setAttribute('x',hb); hBand.setAttribute('width',Math.max(0,tx(anchor)-hb)); hBand.style.display=state==='Hold'?'':'none';
+    op.setAttribute('cx',tx(T));op.setAttribute('cy',ty(applied));op.setAttribute('fill',state==='Normal'?'#e8e5dc':state==='Hold'?'#8ccfe0':'#ff5a4f');
+    $('#tempOut').textContent=T.toFixed(1)+' °C'; $('#tempIn').value=T;
+    $('#dutyOut').textContent=Math.round(applied)+'%'; $('#whyOut').textContent=why;
+    const fs=$('#fanState'); fs.textContent=state; fs.className='status '+({Normal:'s-ok',Hold:'s-info','Over-temp':'s-bad','Fail-safe':'s-bad'}[state]);
+  }
+  function update(){control();render();}
+  // dragging
+  let drag=-1;
+  const toSvg=e=>{const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());};
+  knots.forEach((k,i)=>{
+    k.addEventListener('pointerdown',e=>{drag=i;k.classList.add('drag');svg.setPointerCapture(e.pointerId);e.preventDefault();});
+    k.addEventListener('keydown',e=>{const s=e.shiftKey?5:1;if(e.key==='ArrowUp')pts[i][1]=clamp(pts[i][1]+s,0,100);else if(e.key==='ArrowDown')pts[i][1]=clamp(pts[i][1]-s,0,100);else return;e.preventDefault();update();});
+  });
+  svg.addEventListener('pointermove',e=>{ if(drag<0)return; const p=toSvg(e);
+    const lo=drag?pts[drag-1][0]+2:T0, hi=drag<pts.length-1?pts[drag+1][0]-2:T1;
+    pts[drag][0]=clamp(Math.round(ft(p.x)),lo,hi); pts[drag][1]=clamp(Math.round(fd(p.y)),0,100); update(); });
+  const end=()=>{ if(drag>=0)knots[drag].classList.remove('drag'); drag=-1; };
+  svg.addEventListener('pointerup',end); svg.addEventListener('pointercancel',end);
+  $('#tempIn').addEventListener('input',e=>{T=+e.target.value;update();});
+  $('#hystIn').addEventListener('input',e=>{hyst=+e.target.value;$('#hystOut').textContent=hyst+' °C';update();});
+  $('#minIn').addEventListener('input',e=>{minD=+e.target.value;$('#minOut').textContent=minD+'%';update();});
+  $('#staleToggle').addEventListener('change',e=>{stale=e.target.checked;update();});
+  $('#resetBtn').addEventListener('click',()=>{pts=DEF.map(p=>[...p]);update();});
+  let anim=null;
+  $('#loadBtn').addEventListener('click',()=>{
+    if(anim){cancelAnimationFrame(anim);anim=null;$('#loadBtn').textContent='Run load test';return;}
+    const start=performance.now(), T0v=T; $('#loadBtn').textContent='Stop';
+    const run=now=>{ const k=(now-start)/9000; if(k>=1){anim=null;$('#loadBtn').textContent='Run load test';return;}
+      const prof = k<.35 ? k/.35 : k<.55 ? 1 : 1-(k-.55)/.45;
+      T = clamp(T0v + (94-T0v)*Math.sin(prof*Math.PI/2) + (Math.random()-.5)*1.2 - (k>.55? (T0v-40)*(k-.55)/.45 :0), 25, 100);
+      update(); anim=requestAnimationFrame(run); };
+    anim=requestAnimationFrame(run);
+  });
+  // snapshot ticker + fan spin
+  const jsonEl=$('#json'), tick=$('#tick'), blades=$('#fanBlades'); let ang=0, lastF=performance.now();
+  const isVis=watch(jsonEl);
+  setInterval(()=>{ if(!isVis())return;
+    tick.classList.add('on'); setTimeout(()=>tick.classList.remove('on'),90);
+    const rpm=Math.round(applied/100*3000*(stale?1:1)+(Math.random()-.5)*20);
+    const snap={timestamp:new Date().toISOString().slice(11,23),cpu:{tempC:stale?null:+T.toFixed(1),stale:stale},gpu:{tempC:+(T*0.82+4).toFixed(1)},fans:[{id:'cpu_fan',duty:Math.round(applied),rpm:Math.max(0,rpm)}],controller:{mode:'curve',state:state.toLowerCase(),hysteresisC:hyst,minDuty:minD}};
+    jsonEl.innerHTML=JSON.stringify(snap,null,2).replace(/"([^"]+)":/g,'<span class="k">"$1"</span>:').replace(/: (-?[\d.]+)/g,': <span class="n">$1</span>');
+  },250);
+  const spin=now=>{const dt=(now-lastF)/1000;lastF=now; if(!reduce){ang=(ang+applied*7*dt)%360; blades.style.transform=`rotate(${ang}deg)`;} requestAnimationFrame(spin);};
+  requestAnimationFrame(spin);
+  update();
+})();
+
+/* ---------- Spectrum booking mock ---------- */
+(() => {
+  const body=$('#bkBody'), btns=$$('[data-bk]'), hint=$('#bkHint'), next=$('#bkNext');
+  const views=[
+    {h:'Choose a course',o:[['CPR / AED','Adult, child, infant'],['First aid','Standard certification'],['CPR + first aid','Combined session']]},
+    {h:'Pick a date',o:[['Sat · morning','4 seats left'],['Sat · afternoon','<span class="wl">Full · join waitlist</span>'],['Wed · evening','9 seats left']]},
+    {h:'Where is training?',o:[['At our location','No travel fee'],['On-site · Zone 1','Travel fee by zone'],['On-site · Zone 2','Travel fee by zone']]},
+    {h:'Review and pay',o:[['Summary','Course, date, location'],['Payment','Handled by the payment processor'],['Confirmation','Sent by email']]}
+  ];
+  let cur=0; const sel=[0,0,0,0];
+  function show(i){ cur=i; btns.forEach((b,j)=>{b.classList.toggle('on',j===i);b.setAttribute('aria-selected',j===i);});
+    const v=views[i]; body.innerHTML=`<h4>${v.h}</h4>`+v.o.map((o,j)=>`<div class="opt${i<3&&sel[i]===j?' sel':''}" data-j="${j}" role="button" tabindex="0"><span>${o[0]}</span><small>${o[1]}</small></div>`).join('');
+    hint.textContent=`Step ${i+1} of 4`; next.textContent=i===3?'Start over':'Continue';
+    body.querySelectorAll('.opt').forEach(el=>{const pick=()=>{if(i<3){sel[i]=+el.dataset.j;show(i);}};el.addEventListener('click',pick);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});});
+  }
+  btns.forEach((b,i)=>b.addEventListener('click',()=>show(i)));
+  next.addEventListener('click',()=>show((cur+1)%4));
+  show(0);
+})();
+
+/* ---------- CNC dial indicator ---------- */
+(() => {
+  const svg=$('#dial'), NS='http://www.w3.org/2000/svg', cx=110, cy=110;
+  const mk=(tag,a)=>{const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  svg.append(mk('circle',{cx,cy,r:104,fill:'#0f110f',stroke:'#2c302c','stroke-width':2}));
+  // tolerance arc ±0.001 = ±36°
+  const arc=(a0,a1,r)=>{const p=a=>[cx+r*Math.sin(a*Math.PI/180),cy-r*Math.cos(a*Math.PI/180)];const [x0,y0]=p(a0),[x1,y1]=p(a1);return `M${x0} ${y0}A${r} ${r} 0 0 1 ${x1} ${y1}`;};
+  svg.append(mk('path',{d:arc(-36,36,88),stroke:'rgba(127,201,143,.35)','stroke-width':10,fill:'none'}));
+  for(let i=0;i<100;i++){const a=i*3.6*Math.PI/180, long=i%10===0, mid=i%5===0;
+    const r0=long?80:mid?86:90; svg.append(mk('line',{x1:cx+r0*Math.sin(a),y1:cy-r0*Math.cos(a),x2:cx+96*Math.sin(a),y2:cy-96*Math.cos(a),stroke:long?'#e8e5dc':'#5c615a','stroke-width':long?1.4:1}));
+    if(long){const v=i<=50?i:100-i;const t=mk('text',{x:cx+68*Math.sin(a),y:cy-68*Math.cos(a)+3,'text-anchor':'middle'});t.textContent=v;svg.append(t);}}
+  const lbl=mk('text',{x:cx,y:cy+34,'text-anchor':'middle'});lbl.textContent='.0001 IN';svg.append(lbl);
+  const needle=mk('g',{}); needle.append(mk('line',{x1:cx,y1:cy+16,x2:cx,y2:cy-92,stroke:'#ff6b1f','stroke-width':2})); needle.append(mk('circle',{cx,cy,r:6,fill:'#ff6b1f'}));
+  svg.append(needle);
+  let shown=0.0004, target=0.0004;
+  const inp=$('#devIn');
+  function upd(){ target=+inp.value; const ok=Math.abs(target)<=0.001+1e-9;
+    $('#devOut').textContent=(target>=0?'+':'−')+Math.abs(target).toFixed(4);
+    const s=$('#devState'); s.textContent=ok?'In tolerance':'Out of tolerance'; s.className='status '+(ok?'s-ok':'s-bad');
+    $('#devOut').style.color=ok?C.ink:C.bad; }
+  inp.addEventListener('input',upd); upd();
+  const loop=()=>{ shown+=(target-shown)*(reduce?1:.15); needle.setAttribute('transform',`rotate(${shown/0.01*360} ${cx} ${cy})`); requestAnimationFrame(loop);}; loop();
+})();
+
+
+onScroll();
+})();
+</script>
+</body>
+</html>
