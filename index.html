@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FIELD / NOTES Portfolio</title>
+<title>Nickolos Christensen Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -397,7 +397,7 @@ footer h2 span{color:var(--accent)}
   </div>
 
   <div class="wrap hero-in">
-    <div class="eyebrow mono"><i></i><span>Engineering portfolio</span><span>·</span><span>Hardware ↔ Software</span></div>
+    <div class="eyebrow mono"><i></i><span>Nickolos Christensen</span><span>·</span><span>Engineering portfolio</span><span>·</span><span>Hardware ↔ Software</span></div>
     <h1>I build systems that connect <span class="sw">software</span> to the <span class="pw">physical world.</span></h1>
     <p class="hero-sub">Embedded devices, sensors and custom enclosures. Desktop software that safely drives real hardware. Precision parts held to a thousandth of an inch. Everything here was designed, built, measured and debugged by hand.</p>
     <div class="hero-foot">
@@ -408,7 +408,7 @@ footer h2 span{color:var(--accent)}
         <a href="#bench"><span class="mono muted">Sheet 04</span><b>Bench</b><span class="mono muted">CNC · Systems</span></a>
       </nav>
       <div class="tblock" aria-label="Title block">
-        <div>Drawn</div><div>Field / Notes</div>
+        <div>Drawn</div><div>N. Christensen</div>
         <div>Scale</div><div>NTS</div>
         <div>Sheets</div><div>04</div>
         <div>Rev</div><div>2026</div>
@@ -617,45 +617,44 @@ footer h2 span{color:var(--accent)}
     <div class="sec-head">
       <div>
         <h2><small>Sheet 03 · Client delivery</small>Spectrum CPR</h2>
-        <p class="tag-line">A website for a family-run CPR and first-aid training business that grew into a booking and payments platform.</p>
+        <p class="tag-line">A website for a family-run CPR and first-aid business that travels to its customers, plus the booking system behind it.</p>
       </div>
       <div class="meta">
-        <div>Client</div><div>CPR &amp; first-aid training company</div>
-        <div>Delivered</div><div>Website design and build, logo redesign</div>
-        <div>Role</div><div>Design, development, client communication, scope management</div>
+        <div>Stack</div><div>Node.js + Express, SQLite, plain HTML/CSS/JS</div>
+        <div>Built</div><div>Website, logo, booking API, admin page</div>
+        <div>Tests</div><div>461 automated checks across 9 suites</div>
+        <div>Role</div><div>Design, development, client communication</div>
       </div>
     </div>
 
     <div class="sp-grid">
       <div>
-        <div class="browser" aria-label="Illustrative booking flow">
-          <div class="br-bar"><i></i><i></i><i></i><div class="br-url">booking flow · illustrative redraw, no client data</div></div>
-          <div class="bk">
-            <div class="bk-steps" role="tablist">
-              <button type="button" class="on" data-bk="0">1 Course</button>
-              <button type="button" data-bk="1">2 Date</button>
-              <button type="button" data-bk="2">3 Location</button>
-              <button type="button" data-bk="3">4 Payment</button>
-            </div>
-            <div id="bkBody"></div>
-            <div class="bk-foot"><span id="bkHint">Step 1 of 4</span><button type="button" id="bkNext">Continue</button></div>
-          </div>
-        </div>
-        <a class="demo-link" href="spectrum-demo/">Open the full booking + admin demo <span aria-hidden="true">→</span></a>
-        <p class="muted" style="font-size:14px;margin-top:10px">A working mock with fake data: book a class, join a waitlist, then manage it all from the admin panel.</p>
+        <div class="panel"><div class="panel-h"><span class="mono muted">Under the hood</span><span class="status s-ok">Built + tested</span></div>
+        <div class="panel-b"><table class="spec">
+          <tr><td>Seat holds</td><td>A seat is held for 20 minutes while the customer pays, and inside a transaction so a day can't be oversold</td></tr>
+          <tr><td>Time slots</td><td>The instructor publishes a working day; customers pick a start time, with travel time kept between visits</td></tr>
+          <tr><td>Travel zones</td><td>Distance from a bundled ZIP-code table sets the travel charge: free within 25 miles, then two paid zones</td></tr>
+          <tr><td>Group pricing</td><td>Per-person price moves with party size: +10% for 1–2, −5% for 3–4, −10% for 5+</td></tr>
+          <tr><td>Waitlist</td><td>When a seat opens, the next person is offered it and the seat is kept for them while they respond</td></tr>
+          <tr><td>Payments</td><td>Provider-agnostic, running on a mock processor until the real merchant account is connected</td></tr>
+          <tr><td>Records</td><td>Renewal reminders before cards expire; personal details cleared after the agreed 2 years</td></tr>
+          <tr><td>Admin</td><td>Repeating schedules, time off, prices, rosters, cancellations and payments</td></tr>
+        </table></div></div>
       </div>
       <div>
-        <div class="panel"><div class="panel-h"><span class="mono muted">Revision block · how scope grew</span></div>
+        <a class="demo-link" href="spectrum-demo/">Try the live demo <span aria-hidden="true">→</span></a>
+        <p class="prose muted" style="font-size:15px;margin-top:12px">The real site and admin page, with the actual server code running in your browser on fake data. Book a session, approve the test payment, then find the booking in the admin page.</p>
+        <div class="panel" style="margin-top:22px"><div class="panel-h"><span class="mono muted">Revision block</span></div>
         <div class="panel-b" style="overflow-x:auto">
           <table class="rev">
             <thead><tr><th>Rev</th><th>Change</th><th>Status</th></tr></thead>
             <tbody>
-              <tr><td>A</td><td>Client-facing website</td><td><span class="status s-ok">Delivered</span></td></tr>
-              <tr><td>B</td><td>Logo redesign</td><td><span class="status s-ok">Delivered</span></td></tr>
-              <tr><td>C</td><td>Booking and scheduling</td><td><span class="status s-info">Agreed scope</span></td></tr>
-              <tr><td>D</td><td>Payment integration</td><td><span class="status s-info">Agreed scope</span></td></tr>
-              <tr><td>E</td><td>Service zones and travel pricing</td><td><span class="status s-mute">Discussed</span></td></tr>
-              <tr><td>F</td><td>Waitlist and scheduling extras</td><td><span class="status s-mute">Discussed</span></td></tr>
+              <tr><td>A</td><td>Client-facing website</td><td><span class="status s-ok">Built</span></td></tr>
+              <tr><td>B</td><td>Logo redesign</td><td><span class="status s-ok">Built</span></td></tr>
+              <tr><td>C</td><td>Booking, time slots and holds</td><td><span class="status s-ok">Built</span></td></tr>
+              <tr><td>D</td><td>Travel zones and group pricing</td><td><span class="status s-ok">Built</span></td></tr>
+              <tr><td>E</td><td>Waitlist and admin page</td><td><span class="status s-ok">Built</span></td></tr>
+              <tr><td>F</td><td>Live card payments</td><td><span class="status s-info">Awaiting merchant account</span></td></tr>
             </tbody>
           </table>
         </div></div>
@@ -736,7 +735,7 @@ footer h2 span{color:var(--accent)}
 
 <script>
 /* Contact details: fill these in before sharing. Leave empty to hide. */
-const CONTACT = { email: "", github: "" };
+const CONTACT = { email: "nickc1604@gmail.com", github: "https://github.com/Vlottiz" };
 
 (() => {
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -749,10 +748,10 @@ const C = {accent:'#ff6b1f', clean:'#8ccfe0', ink:'#e8e5dc', muted:'#8f938b', li
 /* ---------- contact ---------- */
 (() => {
   const el = $('#contact'); const parts = [];
-  if (CONTACT.email) parts.push(`<span class="mono">Email · <a href="mailto:${CONTACT.email}">${CONTACT.email}</a></span>`);
+  if (CONTACT.email) parts.push(`<span class="mono">Email · <a href="mailto:${CONTACT.email}" style="text-transform:none">${CONTACT.email}</a></span>`);
   if (CONTACT.github) parts.push(`<a class="mono" href="${CONTACT.github}">GitHub ↗</a>`);
   if (!parts.length) parts.push('<span class="mono muted">Contact details available on request</span>');
-  parts.push('<span class="mono muted">FIELD / NOTES · 2026</span>');
+  parts.push('<span class="mono muted">Nickolos Christensen · 2026</span>');
   el.innerHTML = parts.join('');
 })();
 
@@ -1158,26 +1157,6 @@ const air = (() => {
   const spin=now=>{const dt=(now-lastF)/1000;lastF=now; if(!reduce){ang=(ang+applied*7*dt)%360; blades.style.transform=`rotate(${ang}deg)`;} requestAnimationFrame(spin);};
   requestAnimationFrame(spin);
   update();
-})();
-
-/* ---------- Spectrum booking mock ---------- */
-(() => {
-  const body=$('#bkBody'), btns=$$('[data-bk]'), hint=$('#bkHint'), next=$('#bkNext');
-  const views=[
-    {h:'Choose a course',o:[['CPR / AED','Adult, child, infant'],['First aid','Standard certification'],['CPR + first aid','Combined session']]},
-    {h:'Pick a date',o:[['Sat · morning','4 seats left'],['Sat · afternoon','<span class="wl">Full · join waitlist</span>'],['Wed · evening','9 seats left']]},
-    {h:'Where is training?',o:[['At our location','No travel fee'],['On-site · Zone 1','Travel fee by zone'],['On-site · Zone 2','Travel fee by zone']]},
-    {h:'Review and pay',o:[['Summary','Course, date, location'],['Payment','Handled by the payment processor'],['Confirmation','Sent by email']]}
-  ];
-  let cur=0; const sel=[0,0,0,0];
-  function show(i){ cur=i; btns.forEach((b,j)=>{b.classList.toggle('on',j===i);b.setAttribute('aria-selected',j===i);});
-    const v=views[i]; body.innerHTML=`<h4>${v.h}</h4>`+v.o.map((o,j)=>`<div class="opt${i<3&&sel[i]===j?' sel':''}" data-j="${j}" role="button" tabindex="0"><span>${o[0]}</span><small>${o[1]}</small></div>`).join('');
-    hint.textContent=`Step ${i+1} of 4`; next.textContent=i===3?'Start over':'Continue';
-    body.querySelectorAll('.opt').forEach(el=>{const pick=()=>{if(i<3){sel[i]=+el.dataset.j;show(i);}};el.addEventListener('click',pick);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});});
-  }
-  btns.forEach((b,i)=>b.addEventListener('click',()=>show(i)));
-  next.addEventListener('click',()=>show((cur+1)%4));
-  show(0);
 })();
 
 /* ---------- CNC dial indicator ---------- */

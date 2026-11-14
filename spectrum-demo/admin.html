@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>try{sessionStorage.setItem("spectrum_admin_token","demo")}catch(e){}</script>
+<script>window.BOOKING_API_BASE="";</script>
+<script src="vendor/sql-wasm.js"></script>
+<script src="demo-backend.js"></script>
+<style>
+.demo-strip{position:relative;z-index:9999;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:9px 16px;background:#141821;color:#e9ebf0;font:500 13px/1.4 Barlow,system-ui,sans-serif}
+.demo-strip b{background:#d8202f;color:#fff;font-weight:700;letter-spacing:.08em;font-size:11px;padding:3px 7px;border-radius:2px}
+.demo-strip span{flex:1;min-width:200px;color:#b9bfcc}
+.demo-strip .demo-links{display:flex;gap:6px;flex-wrap:wrap;position:static}
+.demo-strip .demo-links a,.demo-strip .demo-links button{all:unset;display:inline-block;box-sizing:border-box;font:600 13px/1.3 Barlow,system-ui,sans-serif;color:#e9ebf0;border:1px solid #3a4152;border-radius:2px;padding:5px 10px;cursor:pointer;width:auto;white-space:nowrap}
+.demo-strip .demo-links a:hover,.demo-strip .demo-links button:hover{border-color:#e9ebf0}
+.demo-strip .demo-links a:focus-visible,.demo-strip .demo-links button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media (max-width:640px){.demo-strip{padding:8px 12px}.demo-strip span{flex-basis:100%;order:3;font-size:12px}}
+.demo-strip .demo-links a.on{background:#e9ebf0;color:#141821;border-color:#e9ebf0}
+</style>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spectrum CPR — Admin (Demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141821; --ink-soft:#4a5261; --paper:#fff; --paper-2:#f2f4f7;
+    --rule:#d8dce3; --red:#d8202f; --red-dark:#a8141f;
+    --green:#2a9d4e; --amber:#c99f06; --blue:#2472c8; --purple:#7a3fc4;
+    --sans:'Barlow',system-ui,sans-serif; --cond:'Barlow Condensed','Barlow',sans-serif;
+  }
+  [data-theme="dark"]{
+    --ink:#e9edf4; --ink-soft:#98a1b2; --paper:#11141a; --paper-2:#1a1e26;
+    --rule:#2d333f; --red:#f2515e; --red-dark:#d8202f;
+    --green:#3fc16c; --amber:#e8c531; --blue:#4b93e8; --purple:#a069e8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:16px;line-height:1.55}
+  .spectrum-bar{height:4px;background:linear-gradient(90deg,#d8202f,#e8811a 20%,#c99f06 38%,#2a9d4e 58%,#2472c8 78%,#7a3fc4)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+
+  header{border-bottom:1px solid var(--rule);background:var(--paper);position:sticky;top:0;z-index:20}
+  .bar{display:flex;align-items:center;gap:18px;height:64px}
+  @media (max-width:560px){
+    /* Logo on its own line, the four buttons in a row under it. */
+    .bar{flex-wrap:wrap;height:auto;padding:10px 0;gap:8px}
+    .brand{width:100%;margin-right:0}
+    .bar .btn-sm{flex:1;padding:7px 4px;font-size:13px}
+  }
+  .brand{font-family:var(--cond);font-weight:700;font-size:23px;margin-right:auto;letter-spacing:.01em}
+  .brand span{display:block;font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:.2em;color:var(--ink-soft)}
+
+  .btn{font:inherit;font-weight:600;font-size:14.5px;padding:9px 16px;border:0;border-radius:2px;cursor:pointer;background:var(--red);color:#fff;font-family:var(--sans);white-space:nowrap}
+  .btn:hover{background:var(--red-dark)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn-ghost{background:none;border:1.5px solid var(--ink);color:var(--ink)}
+  .btn-ghost:hover{background:var(--ink);color:var(--paper)}
+  .btn-sm{padding:5px 11px;font-size:13px}
+
+  /* login gate */
+  #gate{max-width:380px;margin:14vh auto;padding:0 22px}
+  #gate h1{font-family:var(--cond);font-size:32px;margin:0 0 6px}
+  #gate p{color:var(--ink-soft);font-size:15px;margin:0 0 22px}
+
+  label{display:block;font-size:13.5px;font-weight:600;margin:0 0 5px}
+  input,select,textarea{width:100%;padding:10px 11px;border:1.5px solid var(--rule);border-radius:2px;
+    font-family:var(--sans);font-size:15px;background:var(--paper);color:var(--ink);margin-bottom:14px}
+  input:focus,select:focus{outline:2px solid var(--red);outline-offset:1px;border-color:var(--ink)}
+
+  .err{background:#fdeaec;border:1px solid var(--red);color:var(--red-dark);padding:9px 12px;
+    font-size:14px;margin-bottom:14px;border-radius:2px;display:none}
+  [data-theme="dark"] .err{background:#3a1519;color:#ffb3ba}
+  .err.show{display:block}
+
+  /* dashboard */
+  main{display:none;padding:28px 0 60px}
+  main.on{display:block}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:30px}
+  .stat{border:1px solid var(--rule);padding:15px 17px;background:var(--paper-2)}
+  .stat b{display:block;font-family:var(--cond);font-size:31px;line-height:1.1}
+  .stat span{font-size:12.5px;color:var(--ink-soft);letter-spacing:.02em}
+
+  h2{font-family:var(--cond);font-size:27px;margin:0 0 4px}
+  .sub{color:var(--ink-soft);font-size:14.5px;margin:0 0 18px}
+  .head-row{display:flex;align-items:flex-end;gap:16px;margin-bottom:18px}
+  .head-row div{margin-right:auto}
+
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th{text-align:left;font-family:var(--cond);font-size:15px;font-weight:600;padding:9px 10px;
+     border-bottom:1.5px solid var(--ink);white-space:nowrap}
+  td{padding:11px 10px;border-bottom:1px solid var(--rule);vertical-align:middle}
+  tr.past td{opacity:.5}
+  tr.cancelled td{opacity:.45;text-decoration:line-through}
+  .tag{font-size:11.5px;font-weight:600;color:#fff;padding:2px 7px;border-radius:2px;display:inline-block}
+  .num{font-family:var(--cond);font-size:17px;font-weight:600}
+  .ok{color:var(--green);font-weight:600}
+  .low{color:var(--red);font-weight:600}
+  .muted{color:var(--ink-soft)}
+  .nowrap{white-space:nowrap}
+
+  /* modal */
+  /* The pop-up scrolls inside itself, with its own scroll bar; the page
+     behind stays still and the × stays in view. */
+  .veil{position:fixed;inset:0;background:rgba(20,24,33,.55);z-index:50;display:none;
+        align-items:flex-start;justify-content:center;padding:5vh 18px;overflow:hidden}
+  .veil.open{display:flex}
+  .box{background:var(--paper);border:1.5px solid var(--ink);width:100%;max-width:560px;
+       display:flex;flex-direction:column;max-height:90vh;max-height:90dvh}
+  .box-head{padding:16px 20px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;gap:14px;
+       flex:none}
+  .box-head h3{margin:0;font-family:var(--cond);font-size:21px}
+  .box-body{padding:20px;overflow-y:auto;overscroll-behavior:contain;min-height:0}
+  .x{background:none;border:0;font-size:23px;cursor:pointer;color:var(--ink-soft);line-height:1}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+
+  /* group price bands */
+  .tiers{border:1.5px solid var(--rule);margin:0 0 6px}
+  .tier{display:grid;grid-template-columns:52px 52px 64px 1fr 28px;gap:0 8px;
+        align-items:start;padding:10px 11px;border-bottom:1px solid var(--rule)}
+  .tier:last-child{border-bottom:0}
+  .tier input,.tier textarea{margin:0;padding:7px 8px;font-size:14px}
+  .tier textarea{min-height:52px;resize:vertical;width:100%;
+    border:1.5px solid var(--rule);border-radius:2px;background:var(--paper);
+    color:var(--ink);font-family:var(--sans)}
+  .tier .drop{background:none;border:0;color:var(--ink-soft);font-size:19px;
+    cursor:pointer;line-height:1;padding:4px}
+  .tier .drop:hover{color:var(--red)}
+  .tier-head{display:grid;grid-template-columns:52px 52px 64px 1fr 28px;gap:0 8px;
+    padding:7px 11px;background:var(--paper-2);border-bottom:1px solid var(--rule);
+    font-size:11.5px;font-weight:600;letter-spacing:.04em;color:var(--ink-soft)}
+  .tier-preview{font-size:13px;color:var(--ink-soft);margin:0 0 14px}
+  .tier-preview b{color:var(--ink);font-family:var(--cond);font-size:15px}
+
+  /* travel zones */
+  .zones{border:1.5px solid var(--rule);margin:0 0 6px}
+  .zone-row{display:grid;grid-template-columns:1fr 110px;gap:0 12px;align-items:center;
+    padding:9px 12px;border-bottom:1px solid var(--rule)}
+  .zone-row:last-child{border-bottom:0}
+  .zone-row b{font-family:var(--cond);font-size:16px}
+  .zone-row span{display:block;font-size:12.5px;color:var(--ink-soft)}
+  .zone-row input{margin:0;padding:7px 8px;font-size:14px}
+  .zone-note{font-size:12.5px;color:var(--ink-soft);margin:0 0 14px}
+
+  /* schedule, time off and notice panels */
+  .panels{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:14px;margin:0 0 30px}
+  .price-row{display:grid;grid-template-columns:1fr 92px;gap:8px;align-items:center;
+    padding:5px 0;font-size:13.5px}
+  .price-row input{margin:0;padding:7px 8px}
+  /* trainers per day, in each week heading */
+  /* ---- training days, laid out like the customer's schedule ---- */
+  .days{margin-top:6px}
+  .a-week{margin:0 0 34px}
+  .week-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    padding-bottom:8px;border-bottom:1.5px solid var(--ink);margin:0 0 4px}
+  .week-head h3{font-family:var(--sans);font-size:14px;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-soft);margin:0}
+  .week-head .btn{padding:5px 12px;font-size:13px}
+  .a-day{display:grid;grid-template-columns:120px 1fr;gap:0 22px;padding:16px 0;
+    border-bottom:1px solid var(--rule)}
+  .a-date b{display:block;font-family:var(--cond);font-size:15px;font-weight:600;
+    text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);line-height:1.15}
+  .a-date .big{display:block;font-family:var(--cond);font-size:28px;font-weight:700;line-height:1.1}
+  .a-date.past{opacity:.55}
+
+  /* trainers, right under the date */
+  .tday{margin-top:10px;padding:7px 8px;border:1.5px solid var(--rule);border-radius:3px;
+    background:var(--paper);width:max-content;min-width:104px}
+  .tday small{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-soft)}
+  .tday .mini{display:flex;align-items:center;gap:2px;margin-top:3px}
+  .tday .mini button{background:none;border:1.5px solid var(--rule);border-radius:2px;width:30px;height:30px;
+    font:inherit;font-size:18px;font-weight:700;line-height:1;color:var(--ink);cursor:pointer;padding:0}
+  .tday .mini button:hover:not(:disabled){border-color:var(--ink)}
+  .tday .mini button:disabled{opacity:.3;cursor:not-allowed}
+  .tday b{font-family:var(--cond);font-size:24px;font-weight:700;min-width:30px;text-align:center;line-height:1}
+  .tday em{display:block;font-style:normal;font-size:11.5px;font-weight:600;margin-top:4px}
+  .tday.more{border-color:var(--blue);background:color-mix(in srgb, var(--blue) 12%, var(--paper))}
+  .tday.more b, .tday.more em{color:var(--blue)}
+  .tday.none{border-color:var(--red);background:color-mix(in srgb, var(--red) 10%, var(--paper))}
+  .tday.none b, .tday.none em{color:var(--red)}
+
+  /* one course on a day */
+  .day-row{border-left:4px solid var(--rule);padding:6px 0 6px 14px;margin:0 0 14px}
+  .day-row:last-child{margin-bottom:0}
+  .day-row.cancelled .what, .day-row.cancelled .avail{text-decoration:line-through;opacity:.55}
+  .day-row.past{opacity:.55}
+  .day-top{display:grid;grid-template-columns:1fr auto auto;gap:6px 20px;align-items:center}
+  .day-top .what b{font-size:16px;font-weight:600}
+  .day-top .hours{display:block;font-size:14px;color:var(--ink-soft);margin-top:2px}
+  .day-top .avail{text-align:right;font-size:14px;font-weight:600}
+  .day-top .avail .sub{display:block;font-size:12.5px;font-weight:400;color:var(--ink-soft);margin-top:2px}
+  .day-top .acts{display:flex;gap:6px}
+  .day-row .visit-list{margin-top:12px}
+  @media (max-width:700px){
+    .a-day{grid-template-columns:1fr;gap:10px}
+    .a-date{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .a-date .big{font-size:24px}
+    .tday{margin:0 0 0 auto;display:flex;align-items:center;gap:8px}
+    .tday .mini{margin:0}
+    .tday em{margin:0}
+    .day-top{grid-template-columns:1fr}
+    .day-top .avail{text-align:left}
+    .day-top .acts .btn{flex:1;padding:9px}
+  }
+
+  /* the week's trainers, one stepper per day */
+  .steps{border:1.5px solid var(--rule);margin:0 0 14px}
+  .step-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;
+    padding:9px 12px;border-bottom:1px solid var(--rule)}
+  .step-row:last-child{border-bottom:0}
+  .step-row.all{background:var(--paper-2)}
+  .step-row .day b{display:block;font-size:15px}
+  .step-row .day span{font-size:12.5px;color:var(--ink-soft)}
+  .step-row .day span.none{color:var(--red);font-weight:600}
+  .step-row .day span.more{color:var(--blue);font-weight:600}
+  .stepper{display:flex;align-items:center;border:1.5px solid var(--rule);border-radius:2px}
+  .stepper button{background:none;border:0;font:inherit;font-size:20px;font-weight:600;
+    width:40px;height:38px;cursor:pointer;color:var(--ink);line-height:1}
+  .stepper button:disabled{opacity:.3;cursor:not-allowed}
+  .stepper output{font-family:var(--cond);font-size:20px;font-weight:700;min-width:34px;
+    text-align:center;border-left:1px solid var(--rule);border-right:1px solid var(--rule);line-height:38px}
+  .panel{border:1px solid var(--rule);padding:15px 17px}
+  .panel h3{font-family:var(--cond);font-size:19px;margin:0 0 8px}
+  .panel p{margin:0}
+  .panel select{margin:0}
+  .sched-item{border-left:4px solid var(--green);padding:4px 0 4px 11px;margin:0 0 12px}
+  .sched-item:last-child{margin-bottom:0}
+  .sched-item.paused{border-left-color:var(--rule);opacity:.7}
+  .sched-item b{display:block;font-size:14.5px}
+  .sched-item span{display:block;font-size:13px;color:var(--ink-soft)}
+  .row-btns{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+  .off-item{display:flex;justify-content:space-between;align-items:center;gap:8px;
+    padding:6px 0;border-bottom:1px solid var(--rule);font-size:14px}
+  .off-item:last-child{border-bottom:0}
+  .off-item .x{font-size:20px}
+  .repeat-tag{font-size:11px;color:var(--ink-soft);white-space:nowrap}
+  .wk-row.crs-row{grid-template-columns:1fr 1fr 110px}
+  @media (max-width:1100px){ .panels{grid-template-columns:1fr 1fr} }
+  @media (max-width:600px){ .panels{grid-template-columns:1fr} }
+
+  /* one day or weekly hours */
+  .mode{display:flex;gap:0;margin:0 0 16px;border:1.5px solid var(--ink);width:max-content}
+  .mode button{font:inherit;font-weight:600;font-size:14px;padding:8px 14px;border:0;
+    background:none;color:var(--ink);cursor:pointer}
+  .mode button.on{background:var(--ink);color:var(--paper)}
+  .week{border:1.5px solid var(--rule);margin:0 0 8px}
+  .wk-row{display:grid;grid-template-columns:110px 1fr 1fr;gap:0 10px;align-items:center;
+    padding:7px 11px;border-bottom:1px solid var(--rule)}
+  .wk-row:last-child{border-bottom:0}
+  .wk-row label{margin:0;display:flex;gap:8px;align-items:center;font-size:14.5px;cursor:pointer}
+  .wk-row label input{width:auto;margin:0}
+  .wk-row input[type=time]{margin:0;padding:6px 8px;font-size:14px}
+  .wk-row.off input[type=time]{opacity:.35}
+  .wk-preview{font-size:13px;color:var(--ink-soft);margin:0 0 16px}
+  .wk-preview b{color:var(--ink)}
+
+  /* week headings in the day table */
+  /* the day's visits, listed under its row */
+  .visit-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .visit-list li{display:grid;grid-template-columns:150px 1fr auto;gap:4px 16px;align-items:center;
+    background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--blue);
+    padding:11px 14px;border-radius:3px}
+  .visit-list li.next{border-left-color:var(--green);
+    box-shadow:0 0 0 1px color-mix(in srgb, var(--green) 45%, transparent)}
+  .visit-list .when{font-family:var(--cond);font-size:20px;font-weight:700;line-height:1.1;white-space:nowrap}
+  .visit-list .when small{display:block;font-family:var(--sans);font-size:11px;font-weight:700;
+    letter-spacing:.08em;color:var(--ink-soft);margin-bottom:2px}
+  .visit-list li.next .when small{color:var(--green)}
+  .visit-list .where{font-size:15.5px;font-weight:600;line-height:1.3}
+  .visit-list .where a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--rule);
+    text-underline-offset:3px}
+  .visit-list .where a:hover{text-decoration-color:var(--ink)}
+  .visit-list .who{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:3px}
+  .visit-list .tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .vtag{font-size:12px;font-weight:700;padding:3px 8px;border-radius:2px;white-space:nowrap;color:#fff}
+  .vtag.z1{background:var(--green)}
+  .vtag.z2{background:var(--amber);color:#2d2400}
+  .vtag.z3{background:var(--red)}
+  /* removed: kept for records, greyed and crossed out */
+  .visit-list li.removed{opacity:.5;border-left-color:var(--rule);background:none}
+  .visit-list li.removed .when, .visit-list li.removed .where, .visit-list li.removed .who{
+    text-decoration:line-through}
+  .vtag.gone{background:none;color:var(--ink-soft);border:1.5px solid var(--rule)}
+  .roster-row.removed-row{opacity:.55}
+  .roster-row.removed-row .who b, .roster-row.removed-row .who span{text-decoration:line-through}
+  .roster-row .who span{display:block}
+  .p-removed{background:var(--paper-2);color:var(--ink-soft);border:1px solid var(--rule)}
+
+  /* customer records */
+  .rec-tabs{display:flex;gap:0;border:1.5px solid var(--ink);width:max-content;margin:0 0 14px}
+  .rec-tabs button{font:inherit;font-weight:600;font-size:14px;padding:8px 14px;border:0;
+    background:none;color:var(--ink);cursor:pointer}
+  .rec-tabs button.on{background:var(--ink);color:var(--paper)}
+  .rec-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 12px}
+  .rec-bar input,.rec-bar select{width:auto;margin:0;padding:7px 9px;font-size:14px}
+  .rec-bar input{flex:1;min-width:150px}
+  .rec-list{border:1px solid var(--rule)}
+  .rec-row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:9px 11px;
+    border-bottom:1px solid var(--rule);font-size:13.5px}
+  .rec-row:last-child{border-bottom:0}
+  .rec-row b{font-size:14.5px}
+  .rec-row .r{text-align:right;white-space:nowrap}
+  .rec-row .d{color:var(--ink-soft)}
+  .rec-row.removed{opacity:.55}
+  .rec-row.removed b{text-decoration:line-through}
+  .rec-row .soon{color:var(--amber);font-weight:700}
+  .rec-row .late{color:var(--red);font-weight:700}
+  .rec-note{font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+  .vtag.paid{background:none;color:var(--green);border:1.5px solid var(--green)}
+  .vtag.unpaid{background:none;color:var(--amber);border:1.5px solid var(--amber)}
+  @media (max-width:820px){
+    .visit-list li{grid-template-columns:1fr}
+    .visit-list .tags{justify-content:flex-start}
+  }
+
+  @media (max-width:700px){
+    .head-row{flex-wrap:wrap}
+    .head-row .btn{width:100%}
+  }
+
+  .roster-row{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--rule);font-size:14px}
+  .roster-row:last-child{border-bottom:0}
+  .roster-row .who{flex:1;min-width:0}
+  .roster-row .who b{display:block}
+  .roster-row .who span{color:var(--ink-soft);font-size:13px}
+  /* group bookings on the roster */
+  .group-block{border:1.5px solid var(--rule);border-left:4px solid var(--purple);
+    margin:0 0 14px;background:var(--paper-2)}
+  .group-head{display:flex;align-items:center;gap:10px;padding:10px 13px;
+    border-bottom:1px solid var(--rule);flex-wrap:wrap}
+  .group-head b{font-family:var(--cond);font-size:16px}
+  .group-head .who{flex:1;min-width:0;font-size:13px;color:var(--ink-soft)}
+  .group-block .roster-row{padding:8px 13px;border-bottom:1px solid var(--rule)}
+  .group-block .roster-row:last-child{border-bottom:0}
+  .group-tag{background:var(--purple);color:#fff;font-size:11px;font-weight:600;
+    padding:2px 7px;border-radius:2px;white-space:nowrap}
+  .solo-head{font-family:var(--cond);font-size:16px;margin:18px 0 4px;color:var(--ink-soft)}
+
+  /* one visit on the day's run sheet */
+  .visit{border:1.5px solid var(--rule);border-left:4px solid var(--blue);
+    margin:0 0 14px;background:var(--paper-2)}
+  .visit-head{padding:11px 13px;border-bottom:1px solid var(--rule)}
+  .visit-time{font-family:var(--cond);font-size:19px;font-weight:700;display:block}
+  .visit-addr{font-size:13.5px;margin-top:3px}
+  .visit-addr a{color:var(--blue);font-weight:600}
+  .visit-notes{font-size:12.5px;color:var(--ink-soft);margin-top:4px;font-style:italic}
+  .visit .roster-row{padding:8px 13px;border-bottom:1px solid var(--rule)}
+  .visit .roster-row:last-child{border-bottom:0}
+  .visit-meta{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
+  .zone-tag{font-size:11px;font-weight:600;padding:1px 6px;border-radius:2px;
+    background:var(--blue);color:#fff;margin-right:4px}
+
+  .pill{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:2px;white-space:nowrap}
+  .p-confirmed{background:var(--green);color:#fff}
+  .p-held{background:var(--amber);color:#3a2f00}
+  .p-offered{background:var(--blue);color:#fff}
+  .p-waitlist{background:var(--paper-2);color:var(--ink-soft);border:1px solid var(--rule)}
+
+  /* guided tour */
+  .tour{position:fixed;inset:0;z-index:90}
+  .tour[hidden]{display:none}
+  .tour-spot{position:fixed;border-radius:4px;pointer-events:none;
+    box-shadow:0 0 0 3px var(--red), 0 0 0 9999px rgba(8,10,14,.68);transition:all .25s ease}
+  .tour-spot.none{box-shadow:0 0 0 9999px rgba(8,10,14,.68);width:0;height:0}
+  .tour-card{position:fixed;width:min(380px, calc(100vw - 24px));background:var(--paper);
+    border:1.5px solid var(--ink);padding:16px 18px;box-shadow:0 10px 30px rgba(0,0,0,.35);
+    transition:top .25s ease, left .25s ease}
+  .tour-card h3{font-family:var(--cond);font-size:21px;margin:2px 0 6px}
+  .tour-card p{margin:0 0 14px;font-size:14.5px;line-height:1.5}
+  .tour-step{font-size:11.5px;font-weight:700;letter-spacing:.08em;color:var(--red);text-transform:uppercase}
+  .tour-btns{display:flex;gap:8px;align-items:center}
+  @media (prefers-reduced-motion:reduce){ .tour-spot,.tour-card{transition:none} }
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);
+    color:var(--paper);padding:11px 20px;border-radius:2px;font-size:14.5px;font-weight:600;
+    z-index:80;opacity:0;pointer-events:none;transition:opacity .2s}
+  .toast.show{opacity:1}
+
+  @media (max-width:820px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .two{grid-template-columns:1fr}
+    .hide-sm{display:none}
+    .wk-row{grid-template-columns:76px 1fr 1fr;padding:7px 9px;gap:0 7px}
+    .wrap{padding:0 16px}
+    .bar{gap:10px}
+    .stat{padding:12px 14px}
+    .stat b{font-size:26px}
+    .veil{padding:12px 8px}
+    .box{max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px)}
+    .box-body{padding:16px}
+    .tier,.tier-head{grid-template-columns:44px 44px 56px 1fr 24px;gap:0 6px;padding-left:8px;padding-right:8px}
+    /* The reason gets its own full-width line instead of a sliver. */
+    .tier{grid-template-columns:1fr 1fr 1fr 28px;gap:6px}
+    .tier textarea{grid-column:1 / -1;grid-row:2}
+    .tier-head{grid-template-columns:1fr 1fr 1fr 28px}
+    .tier-head span:nth-child(4){display:none}
+    .zone-row{grid-template-columns:1fr 92px}
+    /* 16px or larger stops iPhones zooming the page when a field is tapped. */
+    input,select,textarea,.tier input,.tier textarea,.zone-row input,.wk-row input[type=time]{font-size:16px}
+  }
+</style>
+</head>
+<body>
+<div class="demo-strip" role="note"><b>DEMO</b><span>A copy of the Spectrum CPR booking system running entirely in your browser, with fake data. No real bookings or payments.</span><div class="demo-links"><a href="./">Booking site</a><a href="admin.html" class="on">Admin</a><button type="button" onclick="SpectrumDemo.reset()">Reset data</button><a href="../">&larr; Portfolio</a></div></div>
+<div class="spectrum-bar"></div>
+
+<!-- ============================ login ============================ -->
+<div id="gate">
+  <h1>Admin</h1>
+  <p>Spectrum CPR + First Aid — class and booking management.</p>
+  <div class="err" id="gateErr"></div>
+  <label for="tok">Admin token</label>
+  <input id="tok" type="password" placeholder="Your admin token"
+         onkeydown="if(event.key==='Enter')Admin.login()">
+  <button class="btn" style="width:100%" onclick="Admin.login()">Sign in</button>
+  <p style="font-size:13px;margin-top:16px">
+    This is the <code>ADMIN_TOKEN</code> set on the server.
+  </p>
+</div>
+
+<!-- ========================== dashboard ========================== -->
+<header id="topbar" style="display:none">
+  <div class="wrap bar">
+    <div class="brand">SPECTRUM<span>ADMIN</span></div>
+    <button class="btn btn-ghost btn-sm" id="recordsBtn" onclick="Admin.records()">Records</button>
+    <button class="btn btn-ghost btn-sm" id="tourBtn" onclick="Admin.tour()">Tour</button>
+    <button class="btn btn-ghost btn-sm" onclick="Admin.toggleTheme()">Theme</button>
+    <button class="btn btn-ghost btn-sm" onclick="Admin.logout()">Sign out</button>
+  </div>
+</header>
+
+<main id="app">
+  <div class="wrap">
+    <div class="stats" id="stats"></div>
+
+    <div class="panels">
+      <section class="panel" id="panelSchedule">
+        <h3>Repeating schedule</h3>
+        <div id="schedList"><p class="muted">Loading…</p></div>
+      </section>
+      <section class="panel" id="panelTimeOff">
+        <h3>Time off</h3>
+        <div id="offList"><p class="muted">Loading…</p></div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="Admin.newTimeOff()">Add time off</button>
+      </section>
+      <section class="panel" id="panelRules">
+        <h3>Booking rules</h3>
+        <label for="notice" style="font-weight:400;color:var(--ink-soft)">How far ahead customers must book</label>
+        <select id="notice" aria-label="Minimum booking notice" onchange="Admin.setNotice(this.value)"></select>
+        <label for="travel" style="font-weight:400;color:var(--ink-soft);margin-top:12px">
+          Travel time between visits</label>
+        <select id="travel" onchange="Admin.setTravel(this.value)"></select>
+        <label for="trainersDefault" style="font-weight:400;color:var(--ink-soft);margin-top:12px">
+          Trainers on a normal day</label>
+        <select id="trainersDefault" onchange="Admin.setDefaultTrainers(this.value)"></select>
+        <p class="muted" style="font-size:12.5px;margin-top:6px">Someone joining or calling
+          out? Use <b>−</b> and <b>+</b> under that date below.</p>
+      </section>
+      <section class="panel" id="panelPrices">
+        <h3>Course prices</h3>
+        <p class="muted" style="font-size:13px;margin-bottom:8px">Per person, the same every
+          week. A change applies to every upcoming day at once; people already
+          booked keep what they paid.</p>
+        <div id="priceList"></div>
+      </section>
+    </div>
+
+    <div class="head-row">
+      <div>
+        <h2>Training days</h2>
+        <p class="sub">Each row is a day you're available and the hours you'll work.
+          Customers can only pick start times inside those hours.</p>
+      </div>
+      <button class="btn" id="addDaysBtn" onclick="Admin.newClass()">Add days</button>
+    </div>
+
+    <div id="rows" class="days"><p class="muted">Loading…</p></div>
+  </div>
+</main>
+
+<!-- Closes only from its × button, so a stray click outside can't lose a half-filled form. -->
+<div class="veil" id="veil">
+  <div class="box">
+    <div class="box-head">
+      <h3 id="boxTitle">—</h3>
+      <button class="x" onclick="Admin.closeBox()" aria-label="Close">&times;</button>
+    </div>
+    <div class="box-body" id="boxBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- guided tour: a spotlight on one part of the page and a card explaining it -->
+<div id="tour" class="tour" hidden>
+  <div class="tour-spot" id="tourSpot"></div>
+  <div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+    <div class="tour-step" id="tourStep"></div>
+    <h3 id="tourTitle"></h3>
+    <p id="tourText"></p>
+    <div class="tour-btns">
+      <button class="btn btn-ghost btn-sm" id="tourSkip" onclick="Admin.endTour()">Skip tour</button>
+      <span style="flex:1"></span>
+      <button class="btn btn-ghost btn-sm" id="tourBack" onclick="Admin.tourStep(-1)">Back</button>
+      <button class="btn btn-sm" id="tourNext" onclick="Admin.tourStep(1)">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const Admin = (() => {
+  const API = window.BOOKING_API_BASE || '';
+  let token = null;
+  let classes = [];
+  let sessionMinutes = 240;   // replaced by the server's figure once the list loads
+
+  // Matches ZONES in src/zones.js.
+  const ZONES = [
+    { zone: 1, label: '0 – 25 miles',      fee: 'no travel charge' },
+    { zone: 2, label: '25.01 – 50 miles',  fee: '$50 travel charge' },
+    { zone: 3, label: '50.01 – 90 miles',  fee: '$100 travel charge' },
+  ];
+  const WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  // ------------------------------------------------------------- utilities
+
+  const $ = (id) => document.getElementById(id);
+
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g,
+    (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  const money = (c) => (c/100).toLocaleString(undefined,{style:'currency',currency:'USD'});
+
+  // Server speaks UTC; staff think in local time.
+  const fmtDate = (iso) => new Date(iso).toLocaleDateString(undefined,
+    {weekday:'short', month:'short', day:'numeric', year:'numeric'});
+  const fmtTime = (iso) => new Date(iso).toLocaleTimeString(undefined,
+    {hour:'numeric', minute:'2-digit'});
+
+  /** UTC ISO -> value for <input type="datetime-local">, in local time. */
+  function toLocalInput(iso){
+    const d = new Date(iso);
+    const pad = (n) => String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}` +
+           `T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  /** ...and back. new Date() reads the local value, toISOString gives UTC. */
+  const fromLocalInput = (v) => new Date(v).toISOString();
+
+  const swatch = (c) => ({CPR:'#d8202f', HEARTSAVER:'#e8811a', BABYSIT:'#2472c8'}[c]
+    // Days created under the old course list still need a colour.
+    || '#7a8194');
+
+  function toast(msg){
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  async function api(path, opts = {}){
+    const res = await fetch(API + path, {
+      ...opts,
+      headers: {'Content-Type':'application/json', 'x-admin-token': token, ...(opts.headers||{})},
+    });
+    if (res.status === 401){ logout(); throw new Error('unauthorized'); }
+    let data = {};
+    try { data = await res.json(); } catch {}
+    return { status: res.status, data };
+  }
+
+  // ----------------------------------------------------------------- login
+
+  async function login(){
+    const val = $('tok').value.trim();
+    if (!val) return;
+    token = val;
+    try {
+      const { status, data } = await api('/api/admin/summary');
+
+      // A 404 here means the server predates the admin routes. Say so rather
+      // than signing in to an empty dashboard that sits on "Loading…".
+      if (status === 404){
+        token = null;
+        $('gateErr').textContent =
+          'This server does not have the admin endpoints. Update src/server.js and restart.';
+        $('gateErr').classList.add('show');
+        return;
+      }
+      if (status === 401 || status === 503 || !data.ok){
+        token = null;
+        $('gateErr').textContent = status === 503
+          ? 'Admin is disabled on the server — ADMIN_TOKEN is not set.'
+          : 'That token was not accepted.';
+        $('gateErr').classList.add('show');
+        return;
+      }
+      // Session storage, not local: closing the tab signs you out.
+      sessionStorage.setItem('spectrum_admin_token', token);
+      show();
+    } catch {
+      $('gateErr').textContent = 'Could not reach the server. Is it running?';
+      $('gateErr').classList.add('show');
+    }
+  }
+
+  function logout(){
+    token = null;
+    sessionStorage.removeItem('spectrum_admin_token');
+    $('gate').style.display = '';
+    $('topbar').style.display = 'none';
+    $('app').classList.remove('on');
+  }
+
+  function show(){
+    $('gate').style.display = 'none';
+    $('topbar').style.display = '';
+    $('app').classList.add('on');
+    refresh().then(() => {
+      let seen = true;
+      try { seen = Boolean(localStorage.getItem(TOUR_SEEN)); } catch { /* private window */ }
+      if (!seen) tour();
+    });
+  }
+
+  // ---------------------------------------------------------------- tour
+
+  /**
+   * A short guided tour of the page. Each step points at one part of it and
+   * says, in plain words, what it's for. Steps whose part isn't on the page
+   * (no days yet, say) are skipped.
+   */
+  const TOUR = [
+    { el: null, title: 'Welcome',
+      text: 'This quick tour shows where everything is. It takes about a minute. '
+          + 'You can run it again any time with the Tour button at the top.' },
+    { el: '#stats', title: 'Your numbers',
+      text: 'Upcoming days, people booked, people waiting, and the money expected from upcoming classes.' },
+    { el: '#addDaysBtn', title: 'Add days',
+      text: 'Set your hours and courses here. Choose "Keep repeating" and the calendar fills itself '
+          + 'every week — you only come back to change something.' },
+    { el: '#panelSchedule', title: 'Repeating schedule',
+      text: 'Your weekly hours, once set. Edit them, pause them for a while, or delete them here.' },
+    { el: '#panelTimeOff', title: 'Time off',
+      text: 'Vacation or a day off? Add the dates. Nothing can be booked on them, and anyone already '
+          + 'booked is listed so you can contact them.' },
+    { el: '#panelRules', title: 'Booking rules',
+      text: 'How far ahead customers must book, how long you need to drive between visits, '
+          + 'and how many trainers work on a normal day.' },
+    { el: '#panelPrices', title: 'Course prices',
+      text: 'One price per person for each course, the same every week. Change it here and every '
+          + 'upcoming day updates. People already booked keep what they paid.' },
+    { el: '.a-day', title: 'Your days',
+      text: 'Each date is listed with the classes that run on it, just like customers see it.' },
+    { el: '.tday[data-day]', title: 'Trainers that day',
+      text: 'How many people are teaching that date. Use − and + if someone joins or calls out. '
+          + 'Set it to 0 and the day stops taking bookings.' },
+    { el: '.week-head button[data-week]', title: 'A whole week at once',
+      text: 'Change the trainers for every day of that week in one go.' },
+    { el: '.day-row .acts', title: 'Roster and Edit',
+      text: 'Roster shows who’s booked, where to drive and who has paid — and lets you mark cash '
+          + 'payments or remove someone. Edit changes that day’s hours or cancels it.' },
+    { el: '.visit-list li', title: 'Booked visits',
+      text: 'Each booking: when, the address (tap it for directions), the travel zone and whether '
+          + 'it’s paid. The next one is marked NEXT UP in green.' },
+    { el: '#recordsBtn', title: 'Customer records',
+      text: 'Everyone who has paid, for your books, and everyone whose card is due for renewal. '
+          + 'Both download as a spreadsheet. Removed people stay on the record, crossed out.' },
+    { el: '#tourBtn', title: 'That’s it',
+      text: 'Most weeks you’ll only glance at your days and adjust trainers. '
+          + 'Press Tour any time to see this again.' },
+  ];
+  const TOUR_SEEN = 'spectrum_admin_tour_seen';
+
+  /** The Add days form, one choice at a time. */
+  const FORM_TOUR = [
+    { el: null, title: 'Adding your days',
+      text: 'Four choices: which courses, which days and hours, for how long, and how many '
+          + 'people. This walks through each one — about a minute.' },
+    { el: '#courseList', title: 'Which courses',
+      text: 'Tick every course you’ll teach in these hours. Prices come from Course prices on '
+          + 'the main page, so every week is the same.' },
+    { el: '.box .mode', title: 'Weekly hours or one day',
+      text: 'Weekly hours is for your regular week. One day is for a one-off date — '
+          + 'just pick the date and the hours.' },
+    { el: '#weekWhen', title: 'Starting, and for how long',
+      text: 'Pick the first day. "Keep repeating" is the hands-off choice: new days are added by '
+          + 'themselves every week. Or choose a set number of weeks.' },
+    { el: '#aheadRow', title: 'How far ahead people can book',
+      text: 'How many weeks of days stay open for booking. 8 weeks is a good start.' },
+    { el: '#week', title: 'Your open hours',
+      text: 'Tick the days you work and set the hours. A day needs at least 4 hours for one class. '
+          + 'Customers never see times outside these hours.' },
+    { el: '#wkPreview', title: 'Check before saving',
+      text: 'This line says exactly what will be added, so you can catch a mistake first.' },
+    { el: '#capRow', title: 'Max group size',
+      text: 'The most people one booking can bring. Customers can’t pick more than this, and it '
+          + 'also caps how many you’ll train in that course on one day.' },
+    { el: '#tiers', title: 'Group prices',
+      text: 'Smaller groups pay a bit more, bigger groups a bit less. Leave these as they are unless '
+          + 'you want to change the discounts. Customers see the reason you write.' },
+    { el: '.box .zones', title: 'Trips per zone',
+      text: 'Optional. For example 1 in Zone 3, so you’re never sent to two far-apart Zone 3 '
+          + 'visits on the same day. Leave blank for no limit.' },
+    { el: '#saveBtn', title: 'Save',
+      text: 'That’s it. With "Keep repeating" this starts your schedule — you can edit or pause it '
+          + 'later from Repeating schedule on the main page.' },
+  ];
+  const FORM_TOUR_SEEN = 'spectrum_admin_adddays_tour_seen';
+  let tourSeenKey = TOUR_SEEN;
+
+  let tourSteps = [];
+  let tourAt = 0;
+
+  /** The steps whose part is actually on the page right now. */
+  const visible = (sel) => {
+    if (!sel) return true;
+    const el = document.querySelector(sel);
+    if (!el || el.closest('[hidden]')) return false;
+    // Inside a part switched off on the form (weekly fields in One day mode).
+    if (el.closest('[style*="display:none"], [style*="display: none"]')) return false;
+    // No layout at all (a test harness): being on the page is enough.
+    if (!document.body.getClientRects().length) return true;
+    return el.getClientRects().length > 0;
+  };
+
+  function tour(){
+    closeBox();
+    runTour(TOUR, TOUR_SEEN);
+  }
+
+  /** The Add days tour, over the open form. */
+  function formTour(){
+    runTour(FORM_TOUR, FORM_TOUR_SEEN);
+  }
+
+  function runTour(steps, seenKey){
+    tourSteps = steps.filter((t) => visible(t.el));
+    tourSeenKey = seenKey;
+    tourAt = 0;
+    $('tour').hidden = false;
+    document.addEventListener('keydown', tourKeys);
+    window.addEventListener('resize', placeTour);
+    window.addEventListener('scroll', placeTour, true);
+    showTourStep();
+  }
+
+  function endTour(){
+    $('tour').hidden = true;
+    document.removeEventListener('keydown', tourKeys);
+    window.removeEventListener('resize', placeTour);
+    window.removeEventListener('scroll', placeTour, true);
+    try { localStorage.setItem(tourSeenKey, '1'); } catch { /* private window */ }
+  }
+
+  function tourStep(delta){
+    const next = tourAt + delta;
+    if (next >= tourSteps.length) return endTour();
+    tourAt = Math.max(0, next);
+    showTourStep();
+  }
+
+  function tourKeys(e){
+    if (e.key === 'Escape') endTour();
+    else if (e.key === 'ArrowRight') tourStep(1);
+    else if (e.key === 'ArrowLeft') tourStep(-1);
+  }
+
+  function showTourStep(){
+    const step = tourSteps[tourAt];
+    $('tourStep').textContent = `Step ${tourAt + 1} of ${tourSteps.length}`;
+    $('tourTitle').textContent = step.title;
+    $('tourText').textContent = step.text;
+    $('tourBack').style.visibility = tourAt === 0 ? 'hidden' : '';
+    $('tourNext').textContent = tourAt === tourSteps.length - 1 ? 'Done' : 'Next';
+    $('tourSkip').style.visibility = tourAt === tourSteps.length - 1 ? 'hidden' : '';
+    const el = step.el && document.querySelector(step.el);
+    if (el) el.scrollIntoView?.({ block: 'center', behavior: 'smooth' });
+    // Let the scroll settle before measuring.
+    setTimeout(placeTour, el ? 320 : 0);
+    $('tourNext').focus?.();
+  }
+
+  /** Put the spotlight round the step's part and the card beside it. */
+  function placeTour(){
+    if ($('tour').hidden) return;
+    const step = tourSteps[tourAt];
+    const spot = $('tourSpot');
+    const card = $('tourCard');
+    const el = step && step.el && document.querySelector(step.el);
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const cw = card.offsetWidth || 360, ch = card.offsetHeight || 180;
+
+    if (!el){
+      spot.className = 'tour-spot none';
+      spot.style.cssText = `left:${vw / 2}px;top:${vh / 2}px`;
+      card.style.left = `${Math.max(12, (vw - cw) / 2)}px`;
+      card.style.top = `${Math.max(12, (vh - ch) / 2)}px`;
+      return;
+    }
+    const r = el.getBoundingClientRect();
+    const pad = 6;
+    spot.className = 'tour-spot';
+    spot.style.cssText = `left:${r.left - pad}px;top:${r.top - pad}px;`
+      + `width:${r.width + pad * 2}px;height:${r.height + pad * 2}px`;
+
+    // Below the part if it fits, otherwise above, otherwise pinned to the bottom.
+    let top = r.bottom + pad + 12;
+    if (top + ch > vh - 12) top = r.top - pad - 12 - ch;
+    if (top < 12) top = vh - ch - 12;
+    const left = Math.min(Math.max(12, r.left), vw - cw - 12);
+    card.style.left = `${left}px`;
+    card.style.top = `${top}px`;
+  }
+
+  // ------------------------------------------------------------- dashboard
+
+  async function refresh(){
+    const [{ data: sum }, { data: list }] = await Promise.all([
+      api('/api/admin/summary'),
+      api('/api/admin/classes'),
+      loadSchedules(),
+    ]);
+
+    if (sum.ok){
+      $('stats').innerHTML = `
+        <div class="stat"><b>${sum.upcomingClasses}</b><span>UPCOMING DAYS</span></div>
+        <div class="stat"><b>${sum.confirmedStudents}</b><span>BOOKED STUDENTS</span></div>
+        <div class="stat"><b>${sum.waitlisted}</b><span>ON WAITLISTS</span></div>
+        <div class="stat"><b>${money(sum.expectedRevenueCents)}</b><span>EXPECTED REVENUE</span></div>`;
+    }
+
+    if (!list.ok){
+      $('rows').innerHTML =
+        '<p class="muted">Could not load classes. ' +
+        'The server may need updating — restart it with the latest src/server.js.</p>';
+      return;
+    }
+    classes = list.classes;
+    if (list.sessionMinutes) sessionMinutes = list.sessionMinutes;
+    const now = Date.now();
+
+    $('rows').innerHTML = classes.length ? renderDays(classes, now)
+      : '<p class="muted">No training days yet. Use <b>Add days</b> to get started.</p>';
+  }
+
+  /** "This week · Nov 9 – Nov 15", "Next week · …", or "Week of …". */
+  function weekLabel(monday){
+    const d = new Date();
+    const thisMonday = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+    const weeks = Math.round((monday - thisMonday) / (7 * 86400000));
+    const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
+    const md = (x) => x.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+    const span = `${md(monday)} – ${md(sunday)}`;
+    if (weeks === 0) return `This week · ${span}`;
+    if (weeks === 1) return `Next week · ${span}`;
+    if (weeks < 0) return `Past · week of ${span}`;
+    return `Week of ${span}`;
+  }
+
+  /**
+   * The days, grouped like the booking page: a section per week, a block per
+   * date with the date and its trainers down the left, and each course that
+   * runs that date beside it.
+   */
+  function renderDays(list, now){
+    const weeks = new Map();
+    for (const c of list){
+      const d = new Date(c.startsAt);
+      const monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+      const wk = ymdOf(monday);
+      if (!weeks.has(wk)) weeks.set(wk, { monday, days: new Map() });
+      const day = ymdOf(d);
+      const w = weeks.get(wk);
+      if (!w.days.has(day)) w.days.set(day, []);
+      w.days.get(day).push(c);
+    }
+    const today = ymdOf(new Date());
+    return [...weeks.values()].map(({ monday, days }) => {
+      const sunday = ymdOf(new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6));
+      return `
+      <section class="a-week">
+        <div class="week-head">
+          <h3>${weekLabel(monday)}</h3>
+          ${sunday >= today ? `<button class="btn btn-ghost btn-sm" data-week="${ymdOf(monday)}"
+              onclick="Admin.editTrainers('${monday.toISOString()}')">Trainers for the week</button>` : ''}
+        </div>
+        ${[...days.entries()].map(([ymd, cs]) => {
+          const d = new Date(cs[0].startsAt);
+          const past = ymd < today;
+          return `
+          <div class="a-day">
+            <div class="a-date ${past ? 'past' : ''}">
+              <b>${d.toLocaleDateString(undefined, {weekday:'long'})}</b>
+              <span class="big">${d.toLocaleDateString(undefined, {month:'short', day:'numeric'})}</span>
+              ${past ? '' : trainerBox(ymd)}
+            </div>
+            <div class="a-classes">
+              ${cs.map((c) => dayRow(c, now)).join('')}
+            </div>
+          </div>`;
+        }).join('')}
+      </section>`;
+    }).join('');
+  }
+
+  /** The trainers working a date, with − and + to change it on the spot. */
+  function trainerBox(ymd){
+    const n = trainersOn(ymd);
+    const kind = n === 0 ? 'none' : n !== defaultTrainers ? 'more' : '';
+    return `
+      <div class="tday ${kind}" data-day="${ymd}">
+        <small>Trainers</small>
+        <div class="mini">
+          <button type="button" aria-label="One fewer trainer" ${n <= 0 ? 'disabled' : ''}
+                  onclick="Admin.bumpTrainers('${ymd}', -1)">−</button>
+          <b>${n}</b>
+          <button type="button" aria-label="One more trainer" ${n >= MAX_TRAINERS ? 'disabled' : ''}
+                  onclick="Admin.bumpTrainers('${ymd}', 1)">+</button>
+        </div>
+        ${n === 0 ? '<em>Nobody — no bookings</em>' : kind === 'more' ? '<em>Not the usual</em>' : ''}
+      </div>`;
+  }
+
+  const ymdOf = (d) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  /** Trainers working a date: its own number, or the usual one. */
+  const trainersOn = (ymd) => trainerDays[ymd] ?? defaultTrainers;
+
+  const MAX_TRAINERS = 10;
+  const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+
+  /** The Monday-to-Sunday dates of the week an instant falls in, from today on. */
+  function weekDates(iso){
+    const d = new Date(iso);
+    const monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+    const today = ymdOf(new Date());
+    return Array.from({ length: 7 }, (_, i) =>
+      new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i))
+      .filter((x) => ymdOf(x) >= today);
+  }
+
+  /**
+   * One line per week: who's working, in words, and a button to change it.
+   * "1 trainer each day", or "1 trainer each day, except Wed: 2 · Thu: nobody".
+   */
+  // The week open in the trainers editor: [{ ymd, date, n }]
+  let trainerEdit = [];
+
+  /** A simple editor: the whole week at once, or day by day, with + and −. */
+  function editTrainers(iso){
+    trainerEdit = weekDates(iso).map((x) => ({ ymd: ymdOf(x), date: x, n: trainersOn(ymdOf(x)) }));
+    openBox(`Trainers — week of ${weekOf(iso)}`, `
+      <div class="err" id="fErr"></div>
+      <p class="sub" style="margin:-4px 0 14px">How many people are teaching each
+        day. Each trainer can do one visit at a time. Set a day to 0 if nobody's
+        available — it stops taking bookings.</p>
+      <div class="steps" id="steps"></div>
+      <button class="btn" style="width:100%" onclick="Admin.saveTrainers()">Save</button>
+      <button class="btn btn-ghost" style="width:100%;margin-top:9px"
+              onclick="Admin.resetTrainers()">Back to the usual (${plural(defaultTrainers, 'trainer')})</button>`);
+    renderSteps();
+  }
+
+  function renderSteps(){
+    const box = $('steps');
+    if (!box) return;
+    const same = trainerEdit.every((x) => x.n === trainerEdit[0].n);
+    const stepper = (n, onMinus, onPlus, label) => `
+      <div class="stepper" role="group" aria-label="${label}">
+        <button type="button" onclick="${onMinus}" ${n <= 0 ? 'disabled' : ''} aria-label="One fewer">−</button>
+        <output>${n}</output>
+        <button type="button" onclick="${onPlus}" ${n >= MAX_TRAINERS ? 'disabled' : ''} aria-label="One more">+</button>
+      </div>`;
+    const note = (n) => n === 0 ? '<span class="none">Nobody — no bookings</span>'
+      : n !== defaultTrainers ? `<span class="more">${n > defaultTrainers ? 'More' : 'Fewer'} than usual</span>`
+      : '<span>Usual</span>';
+    const all = same ? trainerEdit[0].n : null;
+    box.innerHTML = `
+      <div class="step-row all">
+        <div class="day"><b>Every day this week</b>
+          <span>${same ? 'Change them all at once' : 'Days differ — set them all the same'}</span></div>
+        ${stepper(all ?? '–', `Admin.stepTrainers(-1, -1)`, `Admin.stepTrainers(-1, 1)`, 'Every day')}
+      </div>
+      ${trainerEdit.map((x, i) => `
+        <div class="step-row" data-day="${x.ymd}">
+          <div class="day"><b>${x.date.toLocaleDateString(undefined, {weekday:'long', month:'short', day:'numeric'})}</b>
+            ${note(x.n)}</div>
+          ${stepper(x.n, `Admin.stepTrainers(${i}, -1)`, `Admin.stepTrainers(${i}, 1)`, `Trainers on ${x.ymd}`)}
+        </div>`).join('')}`;
+  }
+
+  /** i = -1 changes every day; otherwise just that one. */
+  function stepTrainers(i, delta){
+    const clamp = (n) => Math.max(0, Math.min(MAX_TRAINERS, n));
+    if (i < 0){
+      const base = trainerEdit.every((x) => x.n === trainerEdit[0].n)
+        ? trainerEdit[0].n : Math.max(...trainerEdit.map((x) => x.n));
+      trainerEdit.forEach((x) => { x.n = clamp(base + delta); });
+    } else {
+      trainerEdit[i].n = clamp(trainerEdit[i].n + delta);
+    }
+    renderSteps();
+  }
+
+  /** − / + under a date: save straight away, no window. */
+  async function bumpTrainers(ymd, delta){
+    const n = Math.max(0, Math.min(MAX_TRAINERS, trainersOn(ymd) + delta));
+    const { data } = await api('/api/admin/trainers', {method:'POST',
+      body: JSON.stringify({ days: [ymd], trainers: n === defaultTrainers ? null : n })});
+    if (!data.ok){ toast(data.message || 'Could not save'); return; }
+    if (data.overbooked && data.overbooked.length){
+      const o = data.overbooked[0];
+      alert(`Saved — but ${o.mostAtOnce} visits are already booked at the same time that day, `
+        + `with ${plural(o.trainers, 'trainer')}. Open the Roster to move or cancel one.`);
+    } else {
+      toast(n === 0 ? 'Nobody working that day — no new bookings' : `${plural(n, 'trainer')} that day`);
+    }
+    refresh();
+  }
+
+  function resetTrainers(){
+    trainerEdit.forEach((x) => { x.n = defaultTrainers; });
+    renderSteps();
+  }
+
+  async function saveTrainers(){
+    // One request per distinct number; the usual number clears the day back.
+    const groups = new Map();
+    for (const x of trainerEdit){
+      const key = x.n === defaultTrainers ? 'usual' : x.n;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(x.ymd);
+    }
+    const over = [];
+    for (const [key, days] of groups){
+      const { data } = await api('/api/admin/trainers', {method:'POST',
+        body: JSON.stringify({ days, trainers: key === 'usual' ? null : key })});
+      if (!data.ok) return formErr(data.message || 'Could not save.');
+      over.push(...(data.overbooked || []));
+    }
+    closeBox();
+    if (over.length){
+      alert('Saved — but on these days more visits are already booked at the same time '
+        + 'than there are trainers:\n\n'
+        + over.map((o) => `• ${fmtYmd(o.day, {weekday:'long', month:'short', day:'numeric'})}: `
+          + `${o.mostAtOnce} at once, ${plural(o.trainers, 'trainer')}`).join('\n')
+        + '\n\nOpen that day\'s Roster to move or cancel a visit.');
+    } else {
+      toast('Trainers saved');
+    }
+    refresh();
+  }
+
+  /** "Mon, Nov 16" — the Monday starting the week a date falls in. */
+  function weekOf(iso){
+    const d = new Date(iso);
+    const monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+    return monday.toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric'});
+  }
+
+  /** "Z3 1/1 · Z2 0/3", only for zones with a limit set. */
+  function zoneSummary(c){
+    const parts = ZONES
+      .filter((z) => c.zoneLimits && c.zoneLimits[z.zone] !== null && c.zoneLimits[z.zone] !== undefined)
+      .map((z) => {
+        const used = (c.zoneTrips && c.zoneTrips[z.zone] && c.zoneTrips[z.zone].used) || 0;
+        const limit = c.zoneLimits[z.zone];
+        return `<span class="${used >= limit ? 'low' : ''}">Z${z.zone} ${used}/${limit}</span>`;
+      });
+    return parts.length ? parts.join(' · ') : '<span class="muted">no limits</span>';
+  }
+
+  /**
+   * The day's booked visits as a short list under its row — time, then the
+   * address to drive to — so the whole run of travel is visible without
+   * opening each run sheet. The first visit still to come is marked NEXT.
+   */
+  function visitRows(c, now){
+    const visits = c.visits || [];
+    if (!visits.length) return '';
+    const next = visits.find((v) => !v.removed && new Date(v.slotEnd).getTime() > now);
+    return `
+        <ul class="visit-list visits-row">
+          ${visits.map((v) => `
+            <li class="${v.removed ? 'removed' : v === next ? 'next' : ''}"
+                title="${v.removed ? 'Removed — kept for your records' : ''}">
+              <span class="when"><small>${v.removed ? 'REMOVED' : v === next ? 'NEXT UP' : 'VISIT'}</small>${
+                fmtTime(v.slotStart)} – ${fmtTime(v.slotEnd)}</span>
+              <span>
+                <span class="where">${v.address
+                  ? `<a href="https://www.google.com/maps/search/?api=1&query=${
+                      encodeURIComponent(v.address)}" target="_blank" rel="noopener">${esc(v.address)}</a>`
+                  : '<span class="muted">No address on file</span>'}</span>
+                <span class="who">${esc(v.contact) || 'Customer'}${
+                  v.people > 1 ? ` + ${v.people - 1} more · ${v.people} people` : ' · 1 person'}</span>
+              </span>
+              <span class="tags">
+                ${v.zone ? `<span class="vtag z${v.zone}">Zone ${v.zone}${
+                  v.miles != null ? ` · ${Math.round(v.miles)} mi` : ''}</span>` : ''}
+                ${v.removed ? `<span class="vtag gone">Removed${v.removedAt ? ` ${fmtYmd(v.removedAt.slice(0, 10), {month:'short', day:'numeric'})}` : ''}</span>` : ''}
+                <span class="vtag ${v.paid ? 'paid' : 'unpaid'}">${v.paid ? 'Paid' : 'Unpaid'}</span>
+              </span>
+            </li>`).join('')}
+        </ul>`;
+  }
+
+  function dayRow(c, now){
+    const past = new Date(c.endsAt).getTime() < now;
+    const cls = c.status === 'cancelled' ? 'cancelled' : (past ? 'past' : '');
+    const slots = c.availableSlots || 0;
+    const tight = slots === 0 || c.available === 0;
+    const zones = zoneSummary(c);
+    return `
+      <div class="day-row ${cls}" style="border-left-color:${swatch(c.courseCode)}">
+        <div class="day-top">
+          <div class="what">
+            <span class="tag" style="background:${swatch(c.courseCode)}">${esc(c.courseCode)}</span>
+            <b>${esc(c.title)}</b>
+            ${c.scheduleId ? '<span class="repeat-tag" title="Made by the repeating schedule">· repeats</span>' : ''}
+            ${c.status === 'cancelled' ? ' <span class="muted">(cancelled)</span>' : ''}
+            <span class="hours">Open ${fmtTime(c.startsAt)} – ${fmtTime(c.endsAt)} · ${money(c.priceCents)} per person</span>
+          </div>
+          <div class="avail ${tight ? 'low' : 'ok'}">
+            ${slots} time slot${slots === 1 ? '' : 's'} available ·
+            ${c.available} seat${c.available === 1 ? '' : 's'} available
+            <span class="sub">${c.taken}/${c.capacity} taken · ${c.confirmed} paid${
+              c.waitlist ? ` · ${c.waitlist} waiting` : ''}${
+              zones.includes('no limits') ? '' : ` · zone trips ${zones}`}</span>
+          </div>
+          <div class="acts">
+            <button class="btn btn-ghost btn-sm" onclick="Admin.roster(${c.id})">Roster</button>
+            <button class="btn btn-ghost btn-sm" onclick="Admin.edit(${c.id})">Edit</button>
+          </div>
+        </div>
+        ${visitRows(c, now)}
+      </div>`;
+  }
+
+  // ------------------------------------------------------------ class form
+
+  const openBox = (title, html) => {
+    $('boxTitle').textContent = title;
+    $('boxBody').innerHTML = html;
+    $('boxBody').scrollTop = 0;
+    $('veil').classList.add('open');
+    document.body.style.overflow = 'hidden';   // the page behind stays put
+  };
+  const closeBox = () => {
+    $('veil').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  // Course code, name, and the starting price for a new day.
+  const COURSES = [
+    ['CPR',        'CPR / AED',                          85],
+    ['HEARTSAVER', 'Heartsaver CPR / AED / First Aid',   95],
+    ['BABYSIT',    'Babysitter Safety',                  55],
+  ];
+
+  // Local "YYYY-MM-DD" and "HH:MM" pieces of a UTC instant.
+  const datePart = (iso) => toLocalInput(iso).slice(0, 10);
+  const timePart = (iso) => toLocalInput(iso).slice(11, 16);
+
+  // Weekly hours being edited: one row per weekday, Sunday first.
+  let weekRows = [];
+  let formMode = 'week';
+  let editingSchedule = null;   // the schedule open in the form, when editing one
+
+  const STARTER_WEEK = () => WEEKDAYS.map((_, i) => ({
+    on: i >= 1 && i <= 5, open: '09:00', close: '17:00',
+  }));
+
+  const WEEKS_AHEAD = [4, 6, 8, 12, 16, 26];
+
+  function hoursFields(c){
+    if (c) {
+      // Editing one existing day: just its date and hours.
+      return `
+        <label for="fDate">Date</label>
+        <input id="fDate" type="date" value="${datePart(c.startsAt)}">
+        <div class="two">
+          <div><label for="fOpen">Opens</label>
+            <input id="fOpen" type="time" step="900" value="${timePart(c.startsAt)}"></div>
+          <div><label for="fClose">Closes</label>
+            <input id="fClose" type="time" step="900" value="${timePart(c.endsAt)}"></div>
+        </div>`;
+    }
+    const today = toLocalInput(new Date().toISOString()).slice(0, 10);
+    const s = editingSchedule;
+    return `
+      <div class="mode" role="tablist" style="${s ? 'display:none' : ''}">
+        <button type="button" id="modeWeek" class="${formMode === 'week' ? 'on' : ''}"
+                onclick="Admin.setMode('week')">Weekly hours</button>
+        <button type="button" id="modeDay" class="${formMode === 'day' ? 'on' : ''}"
+                onclick="Admin.setMode('day')">One day</button>
+      </div>
+
+      <div id="dayFields" style="${formMode === 'day' ? '' : 'display:none'}">
+        <label for="fDate">Date</label>
+        <input id="fDate" type="date" value="${today}">
+        <div class="two">
+          <div><label for="fOpen">Opens</label>
+            <input id="fOpen" type="time" step="900" value="09:00"></div>
+          <div><label for="fClose">Closes</label>
+            <input id="fClose" type="time" step="900" value="17:00"></div>
+        </div>
+      </div>
+
+      <div id="weekFields" style="${formMode === 'week' ? '' : 'display:none'}">
+        <div class="two" id="weekWhen">
+          <div><label for="fFrom">Starting</label>
+            <input id="fFrom" type="date" value="${s ? s.startsOn : today}" onchange="Admin.previewWeek()"></div>
+          <div><label for="fWeeks">For how long</label>
+            <select id="fWeeks" onchange="Admin.previewWeek()" ${s ? 'disabled' : ''}>
+              <option value="repeat">Keep repeating</option>
+              ${[1,2,3,4,5,6,8,10,12].map((n) =>
+                `<option value="${n}">${n} week${n === 1 ? '' : 's'} only</option>`).join('')}
+            </select></div>
+        </div>
+        <div id="aheadRow">
+          <label for="fAhead">Keep this far ahead open for booking</label>
+          <select id="fAhead" onchange="Admin.previewWeek()">
+            ${WEEKS_AHEAD.map((n) => `<option value="${n}" ${n === (s ? s.weeksAhead : 8) ? 'selected' : ''}>
+              ${n} weeks</option>`).join('')}
+          </select>
+        </div>
+        <label>Open hours</label>
+        <p class="sub" style="margin:-4px 0 8px;font-size:13px">
+          Tick the days you're open and set the hours. Customers only see start
+          times inside these hours — closed days and hours never appear.
+        </p>
+        <div class="week" id="week"></div>
+        <p class="wk-preview" id="wkPreview"></p>
+      </div>`;
+  }
+
+  function renderWeek(){
+    const box = $('week');
+    if (!box) return;
+    // Monday first, the way staff read a week.
+    const order = [1, 2, 3, 4, 5, 6, 0];
+    box.innerHTML = order.map((i) => {
+      const r = weekRows[i];
+      return `
+        <div class="wk-row ${r.on ? '' : 'off'}">
+          <label><input type="checkbox" id="wkOn${i}" ${r.on ? 'checked' : ''}
+                        onchange="Admin.editWeek(${i},'on',this.checked)"> ${WEEKDAYS[i]}</label>
+          <input type="time" step="900" id="wkOpen${i}" value="${r.open}" aria-label="${WEEKDAYS[i]} opens"
+                 oninput="Admin.editWeek(${i},'open',this.value)">
+          <input type="time" step="900" id="wkClose${i}" value="${r.close}" aria-label="${WEEKDAYS[i]} closes"
+                 oninput="Admin.editWeek(${i},'close',this.value)">
+        </div>`;
+    }).join('');
+    previewWeek();
+  }
+
+  function editWeek(i, field, value){
+    weekRows[i][field] = value;
+    if (field === 'on') renderWeek(); else previewWeek();
+  }
+
+  const repeating = () => formMode === 'week' && ($('fWeeks')?.value === 'repeat');
+
+  function saveLabel(){
+    if (editingSchedule) return 'Save schedule';
+    if (formMode === 'day') return 'Add the day';
+    return repeating() ? 'Start this schedule' : 'Add these days';
+  }
+
+  function setMode(mode){
+    formMode = mode;
+    $('modeWeek').classList.toggle('on', mode === 'week');
+    $('modeDay').classList.toggle('on', mode === 'day');
+    $('weekFields').style.display = mode === 'week' ? '' : 'none';
+    $('dayFields').style.display = mode === 'day' ? '' : 'none';
+    previewWeek();
+  }
+
+  /**
+   * Every open day the weekly hours produce, as UTC open/close pairs.
+   *
+   * Built from local dates and times in this browser, so a run of weeks that
+   * crosses a daylight saving change still opens at 9:00 on both sides of it.
+   */
+  function weekDays(weeksOverride){
+    const from = $('fFrom')?.value;
+    const weeks = weeksOverride || parseInt($('fWeeks')?.value, 10) || 1;
+    if (!from) return [];
+    const [y, m, d] = from.split('-').map(Number);
+    const out = [];
+    for (let n = 0; n < weeks * 7; n++){
+      const day = new Date(y, m - 1, d + n);
+      const r = weekRows[day.getDay()];
+      if (!r || !r.on) continue;
+      const ymd = toLocalInput(day.toISOString()).slice(0, 10);
+      out.push({
+        label: day.toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric'}),
+        weekday: day.getDay(),
+        open: r.open, close: r.close,
+        startsAt: r.open ? fromLocalInput(`${ymd}T${r.open}`) : null,
+        endsAt: r.close ? fromLocalInput(`${ymd}T${r.close}`) : null,
+      });
+    }
+    return out;
+  }
+
+  function previewWeek(){
+    const btn = $('saveBtn');
+    if (btn) btn.textContent = saveLabel();
+    const ahead = $('aheadRow');
+    if (ahead) ahead.style.display = repeating() ? '' : 'none';
+
+    const el = $('wkPreview');
+    if (!el) return;
+    const open = WEEKDAYS.filter((_, i) => weekRows[i] && weekRows[i].on);
+    const courses = checkedCourses().length || 1;
+    if (!open.length){ el.innerHTML = 'No open days picked yet.'; return; }
+
+    if (repeating()){
+      const weeks = parseInt($('fAhead')?.value, 10) || 8;
+      el.innerHTML = `Open <b>${open.join(', ')}</b>, always <b>${weeks} weeks</b> ahead. ` +
+        `New days are added by themselves each day — nothing to redo.`;
+      return;
+    }
+    const days = weekDays();
+    const shown = days.slice(0, 8).map((x) => x.label).join(', ');
+    el.innerHTML = `Adds <b>${days.length} day${days.length === 1 ? '' : 's'}</b>` +
+      (courses > 1 ? ` × ${courses} courses` : '') + `: ${shown}` +
+      (days.length > 8 ? ` and ${days.length - 8} more` : '') + '.';
+  }
+
+  /** Which courses a new day or schedule offers, with each one's price. */
+  function courseFields(selected){
+    const chosen = new Map((selected || []).map((c) => [c.code, c]));
+    const fresh = !selected;
+    return `
+      <label>Courses offered</label>
+      <p class="sub" style="margin:-4px 0 8px;font-size:13px">
+        Tick every course you'll teach in these hours. There's one of you, so a
+        booking for any course blocks that time for the others.
+      </p>
+      <div class="week" id="courseList">
+        ${COURSES.map(([code, label, price]) => {
+          const on = fresh ? code === 'CPR' : chosen.has(code);
+          return `
+          <div class="wk-row crs-row ${on ? '' : 'off'}">
+            <label style="grid-column:span 2"><input type="checkbox" id="crsOn_${code}" ${on ? 'checked' : ''}
+                   onchange="this.closest('.crs-row').classList.toggle('off', !this.checked);Admin.previewWeek();Admin.previewTiers()">
+              ${label}</label>
+            <span class="muted" style="text-align:right">${money(priceOf(code))}</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <p class="zone-note">Prices per person are set once for each course, under
+        <b>Course prices</b>, so every week matches.</p>`;
+  }
+
+  function checkedCourses(){
+    return COURSES
+      .filter(([code]) => $(`crsOn_${code}`)?.checked)
+      .map(([code, title]) => ({ code, title, priceCents: priceOf(code) }));
+  }
+
+  /** A course's one current price, in cents. */
+  const priceOf = (code) =>
+    (coursePrices.find((c) => c.code === code) || {}).priceCents
+    ?? (COURSES.find(([c]) => c === code) || [, , 0])[2] * 100;
+
+  function zoneFields(c){
+    const limits = (c && c.zoneLimits) || {};
+    return `
+      <label>Trips per zone, per day</label>
+      <p class="sub" style="margin:-4px 0 8px;font-size:13px">
+        Distance is from 97116. Set how many visits you'll make into each zone
+        on a day — e.g. 1 for Zone 3 stops you being sent to opposite edges of
+        it. Leave blank for no limit, or 0 to skip that zone. Counted across
+        every class on the same date.
+      </p>
+      <div class="zones">
+        ${ZONES.map((z) => `
+          <div class="zone-row">
+            <div><b>Zone ${z.zone}</b><span>${z.label} · ${z.fee}</span></div>
+            <input id="fZone${z.zone}" type="number" min="0" max="50" step="1"
+                   placeholder="No limit" aria-label="Zone ${z.zone} trips per day"
+                   value="${limits[z.zone] ?? ''}">
+          </div>`).join('')}
+      </div>
+      <p class="zone-note">Customers see their zone and its travel charge as
+        soon as they enter their ZIP, and it's added to their total.</p>`;
+  }
+
+  /**
+   * The add / edit form.
+   *
+   * c is an existing day being edited (one course, one date); without it the
+   * form adds days — one, a fixed run of weeks, or a repeating schedule —
+   * for one or more courses.
+   */
+  function classForm(c){
+    const s = editingSchedule;
+    return `
+      <div class="err" id="fErr"></div>
+      ${c ? '' : `<button type="button" class="btn btn-ghost btn-sm" id="formTourBtn"
+          style="float:right;margin:-2px 0 8px 12px" onclick="Admin.formTour()">Show me how</button>`}
+      <p class="sub" style="margin:-4px 0 16px">
+        You travel to the customer, so set the hours you're willing to work.
+        Sessions are booked inside those hours.
+      </p>
+
+      ${c ? `
+        <label for="fTitle">Course name</label>
+        <input id="fTitle" value="${esc(c.title)}" placeholder="CPR / AED">
+
+        <label for="fCode">Course type</label>
+        <select id="fCode">
+          ${COURSES.map(([code,label]) =>
+            `<option value="${code}" ${c.courseCode===code?'selected':''}>${label}</option>`).join('')}
+        </select>` : courseFields(s ? s.courses : null)}
+
+      ${hoursFields(c)}
+
+      <input id="fLoc" type="hidden" value="">
+
+      <div class="two" id="capRow">
+        <div>
+          <label for="fCap">Max group size</label>
+          <input id="fCap" type="number" min="1" value="${c?.capacity ?? s?.capacity ?? 20}">
+          ${c && c.taken ? `<p class="sub" style="margin-top:-8px;font-size:13px">
+            ${c.taken} already booked — cannot go below this.</p>` : ''}
+        </div>
+        ${c ? `<div>
+          <label>Price per person</label>
+          <p style="margin:6px 0 0"><b>${money(c.priceCents)}</b>
+            <span class="muted" style="font-size:13px">— set under Course prices</span></p>
+        </div>` : ''}
+      </div>
+
+      <label>Group price bands</label>
+      <p class="sub" style="margin:-4px 0 8px;font-size:13px">
+        A visit costs the same to travel to and set up whatever the headcount,
+        so party size moves the per-person price. Customers are shown the reason
+        you write here.
+      </p>
+      <div class="tiers" id="tiers"></div>
+      <button type="button" class="btn btn-ghost btn-sm" style="margin:0 0 10px"
+              onclick="Admin.addTier()">Add a band</button>
+      <div class="tier-preview" id="tierPreview"></div>
+
+      ${zoneFields(c || s)}
+
+      <button class="btn" id="saveBtn" style="width:100%" onclick="Admin.save(${c ? c.id : 'null'})">
+        ${c ? 'Save changes' : saveLabel()}
+      </button>
+
+      ${s ? `<p class="zone-note" style="margin-top:10px">Saving rebuilds this
+        schedule's upcoming days that nobody has booked. Booked days keep their
+        hours and price.</p>` : ''}
+
+      ${c && c.status === 'open' ? `
+        <button class="btn btn-ghost" style="width:100%;margin-top:9px"
+                onclick="Admin.cancelClass(${c.id})">Cancel this day</button>` : ''}
+      ${c && c.status === 'cancelled' ? `
+        <button class="btn btn-ghost" style="width:100%;margin-top:9px"
+                onclick="Admin.reopen(${c.id})">Reopen this day</button>` : ''}`;
+  }
+
+  // Matches DEFAULT_TIERS on the server.
+  const STARTER_TIERS = [
+    { minSize: 1, maxSize: 2, adjustPct: 10, label: 'Small group rate',
+      reason: 'A visit costs the same to travel to and set up whether it trains '
+            + 'two people or eight, so smaller bookings carry a share of that.' },
+    { minSize: 3, maxSize: 4, adjustPct: -5, label: 'Group discount',
+      reason: 'Three or more makes the trip worthwhile, so the per-person price comes down.' },
+    { minSize: 5, maxSize: null, adjustPct: -10, label: 'Large group discount',
+      reason: 'Our best rate — one visit, more people trained, less cost each.' },
+  ];
+
+  function newClass(mode = 'week'){
+    tierRows = JSON.parse(JSON.stringify(STARTER_TIERS));
+    weekRows = STARTER_WEEK();
+    formMode = mode;
+    editingSchedule = null;
+    openBox('Add training days', classForm(null));
+    renderTiers();
+    renderWeek();
+    let seen = true;
+    try { seen = Boolean(localStorage.getItem(FORM_TOUR_SEEN)); } catch { /* private window */ }
+    if (!seen && $('tour').hidden) setTimeout(formTour, 150);
+  }
+
+  function edit(id){
+    const c = classes.find((x) => x.id === id);
+    if (!c) return;
+    editingSchedule = null;
+    tierRows = c.pricingTiers && c.pricingTiers.length
+      ? JSON.parse(JSON.stringify(c.pricingTiers))
+      : JSON.parse(JSON.stringify(STARTER_TIERS));
+    openBox(`Edit — ${fmtDate(c.startsAt)}`, classForm(c));
+    renderTiers();
+  }
+
+  function editSchedule(id){
+    const s = schedules.find((x) => x.id === id);
+    if (!s) return;
+    editingSchedule = s;
+    formMode = 'week';
+    weekRows = JSON.parse(JSON.stringify(s.week));
+    tierRows = s.pricingTiers && s.pricingTiers.length
+      ? JSON.parse(JSON.stringify(s.pricingTiers))
+      : JSON.parse(JSON.stringify(STARTER_TIERS));
+    openBox('Edit repeating schedule', classForm(null));
+    renderTiers();
+    renderWeek();
+  }
+
+  function formErr(msg){
+    $('fErr').textContent = msg;
+    $('fErr').classList.add('show');
+    $('fErr').scrollIntoView?.({ block: 'nearest' });
+  }
+
+  /** Trips per zone from the form; blank is no limit. Null when one is invalid. */
+  function readZoneLimits(){
+    const out = {};
+    for (const z of ZONES){
+      const raw = ($(`fZone${z.zone}`)?.value || '').trim();
+      if (raw === '') { out[z.zone] = null; continue; }
+      const n = Number(raw);
+      if (!Number.isInteger(n) || n < 0) return null;
+      out[z.zone] = n;
+    }
+    return out;
+  }
+
+  /** What's wrong with one day's hours, or null. */
+  function hoursProblem(startsAt, endsAt, prefix = ''){
+    if (!startsAt || !endsAt) return `${prefix}Set the hours you'll be working.`;
+    if (new Date(endsAt) <= new Date(startsAt)) return `${prefix}Closing time must be after opening.`;
+    // Below one session length there is nothing anyone could book.
+    if (new Date(endsAt) - new Date(startsAt) < sessionMinutes * 60000) {
+      const h = sessionMinutes / 60;
+      return `${prefix}Open at least ${h} hour${h === 1 ? '' : 's'} — one full session.`;
+    }
+    return null;
+  }
+
+  async function save(id){
+    const capacity = parseInt($('fCap').value, 10);
+
+    // Editing one existing day keeps its single course; anything new offers
+    // whichever courses are ticked.
+    let courses = null;
+    if (id){
+      if ($('fTitle').value.trim().length < 2) return formErr('Give the course a name.');
+    } else {
+      courses = checkedCourses();
+      if (!courses.length) return formErr('Tick at least one course.');
+    }
+
+    // One day (new or edited), a fixed run of weeks, or a repeating schedule.
+    const schedule = !id && (editingSchedule || repeating());
+    const weekly = !id && formMode === 'week';
+    let days = [];
+    if (weekly){
+      if (!WEEKDAYS.some((_, i) => weekRows[i].on)) return formErr('Tick at least one open day.');
+      // Check one of each open weekday's hours, whatever the run length.
+      for (const x of weekDays(1)){
+        const problem = hoursProblem(x.startsAt, x.endsAt, `${WEEKDAYS[x.weekday]}: `);
+        if (problem) return formErr(problem);
+      }
+      if (!schedule) days = weekDays();
+    } else {
+      const date = $('fDate').value;
+      const open = $('fOpen').value;
+      const close = $('fClose').value;
+      if (!date || !open || !close) return formErr('Set the date and the hours you\'ll be working.');
+      const startsAt = fromLocalInput(`${date}T${open}`);
+      const endsAt = fromLocalInput(`${date}T${close}`);
+      const problem = hoursProblem(startsAt, endsAt);
+      if (problem) return formErr(problem);
+      days = [{ startsAt, endsAt }];
+    }
+
+    if (!Number.isInteger(capacity) || capacity < 1) return formErr('Set at least one place.');
+
+    const bandProblem = tierProblem();
+    if (bandProblem) return formErr(bandProblem);
+
+    const zoneLimits = readZoneLimits();
+    if (!zoneLimits) return formErr('Zone trips must be whole numbers, or blank for no limit.');
+
+    const shared = {
+      location: $('fLoc').value.trim(),
+      capacity,
+      zoneLimits,
+      pricingTiers: tierRows.map((t) => ({
+        minSize: t.minSize ?? 1,
+        maxSize: t.maxSize ?? null,
+        adjustPct: Number(t.adjustPct) || 0,
+        label: String(t.label || 'Group rate'),
+        reason: String(t.reason || '').trim(),
+      })),
+    };
+    const courseList = courses && courses.map(({ code, title, priceCents }) => ({ code, title, priceCents }));
+
+    const post = (path, body) => api(path, {method:'POST', body:JSON.stringify(body)});
+    let data;
+    if (id){
+      ({ data } = await post(`/api/admin/classes/${id}/update`, {
+        ...shared, ...days[0],
+        title: $('fTitle').value.trim(),
+        courseCode: $('fCode').value,
+      }));
+    } else if (schedule){
+      const body = {
+        ...shared, courses: courseList, week: weekRows,
+        weeksAhead: parseInt($('fAhead').value, 10) || 8,
+        startsOn: $('fFrom').value,
+      };
+      ({ data } = editingSchedule
+        ? await post(`/api/admin/schedules/${editingSchedule.id}/update`, body)
+        : await post('/api/admin/schedules', body));
+    } else {
+      ({ data } = await post('/api/admin/classes/bulk', {
+        ...shared, courses: courseList,
+        days: days.map(({ startsAt, endsAt }) => ({ startsAt, endsAt })),
+      }));
+    }
+
+    if (!data.ok) return formErr(data.message || `Could not save (${data.reason}).`);
+
+    closeBox();
+    if (id) toast('Day updated');
+    else if (editingSchedule) toast('Schedule saved — upcoming days rebuilt');
+    else if (schedule) toast(`Schedule started — ${data.created} days open for booking`);
+    else toast(`${data.created} day${data.created === 1 ? '' : 's'} added` +
+               (data.skippedTimeOff ? ` (${data.skippedTimeOff} skipped as time off)` : ''));
+    if (data.promoted) toast(`${data.promoted} waitlisted student offered a seat`);
+    editingSchedule = null;
+    refresh();
+  }
+
+  // ----------------------------------------------- schedules, time off, notice
+
+  let schedules = [];
+  let timeOff = [];
+  let coursePrices = [];
+  let defaultTrainers = 1;
+  let trainerDays = {};
+
+  const NOTICE = [[0, 'No minimum'], [2, '2 hours'], [12, '12 hours'], [24, '24 hours'],
+                  [48, '2 days'], [72, '3 days'], [168, '1 week']];
+
+  const fmtHHMM = (hhmm) => {
+    const [h, m] = hhmm.split(':').map(Number);
+    return new Date(2000, 0, 1, h, m).toLocaleTimeString(undefined, {hour:'numeric', minute:'2-digit'});
+  };
+  const fmtYmd = (ymd, opts = {month:'short', day:'numeric'}) => {
+    const [y, m, d] = ymd.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString(undefined, opts);
+  };
+
+  /** "Mon–Fri 9:00 AM – 5:00 PM · Sat 8:00 AM – 12:00 PM" */
+  function weekSummary(week){
+    const order = [1, 2, 3, 4, 5, 6, 0];
+    const runs = [];
+    for (const i of order){
+      const d = week[i];
+      if (!d.on) continue;
+      const hours = `${fmtHHMM(d.open)} – ${fmtHHMM(d.close)}`;
+      const last = runs[runs.length - 1];
+      if (last && last.hours === hours && order.indexOf(last.to) === order.indexOf(i) - 1) last.to = i;
+      else runs.push({ from: i, to: i, hours });
+    }
+    return runs.map((r) =>
+      `${WEEKDAYS[r.from]}${r.to !== r.from ? `–${WEEKDAYS[r.to]}` : ''} ${r.hours}`).join(' · ');
+  }
+
+  async function loadSchedules(){
+    const { data } = await api('/api/admin/schedules');
+    if (!data.ok) return;
+    schedules = data.schedules;
+    timeOff = data.timeOff;
+    coursePrices = data.courses || [];
+    defaultTrainers = data.defaultTrainers ?? 1;
+    trainerDays = data.trainerDays || {};
+
+    $('priceList').innerHTML = coursePrices.map((c) => `
+      <div class="price-row">
+        <label for="price_${c.code}" style="margin:0;font-weight:500">${esc(c.title)}</label>
+        <input id="price_${c.code}" type="number" min="0" step="0.01" inputmode="decimal"
+               value="${(c.priceCents / 100).toFixed(2)}"
+               onchange="Admin.setPrice('${c.code}', this.value)">
+      </div>`).join('');
+
+    const travel = data.bufferMinutes ?? 60;
+    const TRAVEL = [[30, '30 minutes'], [45, '45 minutes'], [60, '1 hour'], [75, '1¼ hours'],
+                    [90, '1½ hours'], [120, '2 hours']];
+    $('travel').innerHTML = TRAVEL.map(([m, label]) =>
+      `<option value="${m}" ${m === travel ? 'selected' : ''}>${label}</option>`).join('') +
+      (TRAVEL.some(([m]) => m === travel) ? '' : `<option value="${travel}" selected>${travel} minutes</option>`);
+
+    $('trainersDefault').innerHTML = Array.from({ length: 11 }, (_, i) =>
+      `<option value="${i}" ${i === defaultTrainers ? 'selected' : ''}>${i}</option>`).join('');
+
+    $('schedList').innerHTML = schedules.length ? schedules.map((s) => `
+      <div class="sched-item ${s.active ? '' : 'paused'}">
+        <b>${esc(weekSummary(s.week))}</b>
+        <span>${s.courses.map((c) => `${esc(c.title)} ${money(c.priceCents)}`).join(' · ')}</span>
+        <span>${s.active ? `Keeps ${s.weeksAhead} weeks open — new days add themselves`
+                         : 'Paused — no new days are being added'}</span>
+        <div class="row-btns">
+          <button class="btn btn-ghost btn-sm" onclick="Admin.editSchedule(${s.id})">Edit</button>
+          <button class="btn btn-ghost btn-sm" onclick="Admin.toggleSchedule(${s.id}, ${!s.active})">
+            ${s.active ? 'Pause' : 'Resume'}</button>
+          <button class="btn btn-ghost btn-sm" onclick="Admin.deleteSchedule(${s.id})">Delete</button>
+        </div>
+      </div>`).join('')
+      : `<p class="muted">None yet. Use <b>Add days → Weekly hours → Keep repeating</b>
+           and the calendar fills itself.</p>`;
+
+    $('offList').innerHTML = timeOff.length ? timeOff.map((t) => `
+      <div class="off-item">
+        <span><b>${fmtYmd(t.startsOn)}${t.endsOn !== t.startsOn ? ` – ${fmtYmd(t.endsOn)}` : ''}</b>
+          ${t.note ? `<span class="muted"> · ${esc(t.note)}</span>` : ''}</span>
+        <button class="x" title="Remove this time off" aria-label="Remove this time off"
+                onclick="Admin.removeTimeOff(${t.id})">&times;</button>
+      </div>`).join('') : '<p class="muted">No time off booked.</p>';
+
+    $('notice').innerHTML = NOTICE.map(([h, label]) =>
+      `<option value="${h}" ${h === data.minNoticeHours ? 'selected' : ''}>${label}</option>`).join('') +
+      (NOTICE.some(([h]) => h === data.minNoticeHours) ? ''
+        : `<option value="${data.minNoticeHours}" selected>${data.minNoticeHours} hours</option>`);
+  }
+
+  async function toggleSchedule(id, active){
+    await api(`/api/admin/schedules/${id}/${active ? 'resume' : 'pause'}`, {method:'POST', body:'{}'});
+    toast(active ? 'Schedule resumed' : 'Schedule paused — existing days stay');
+    refresh();
+  }
+
+  async function deleteSchedule(id){
+    if (!confirm('Delete this schedule? Its upcoming days that nobody has booked are removed. '
+               + 'Booked days stay.')) return;
+    const { data } = await api(`/api/admin/schedules/${id}/delete`, {method:'POST', body:'{}'});
+    toast(`Schedule deleted — ${data.removed || 0} empty days removed`);
+    refresh();
+  }
+
+  function newTimeOff(){
+    const today = toLocalInput(new Date().toISOString()).slice(0, 10);
+    openBox('Add time off', `
+      <div class="err" id="fErr"></div>
+      <p class="sub" style="margin:-4px 0 16px">No classes are offered on these dates.
+        Days already there with nobody booked are removed; days with bookings
+        stay so you can contact those customers.</p>
+      <div class="two">
+        <div><label for="offFrom">First day off</label>
+          <input id="offFrom" type="date" value="${today}"
+                 onchange="const to=document.getElementById('offTo'); if (to.value < this.value) to.value = this.value"></div>
+        <div><label for="offTo">Last day off</label>
+          <input id="offTo" type="date" value="${today}"></div>
+      </div>
+      <label for="offNote">Note <span class="muted" style="font-weight:400">(optional)</span></label>
+      <input id="offNote" maxlength="120" placeholder="Vacation, conference, …">
+      <button class="btn" style="width:100%" onclick="Admin.saveTimeOff()">Add time off</button>`);
+  }
+
+  async function saveTimeOff(){
+    const startsOn = $('offFrom').value;
+    const endsOn = $('offTo').value || startsOn;
+    if (!startsOn) return formErr('Pick the first day off.');
+    if (endsOn < startsOn) return formErr('The last day off is before the first.');
+    const { data } = await api('/api/admin/time-off', {method:'POST',
+      body: JSON.stringify({ startsOn, endsOn, note: $('offNote').value.trim() })});
+    if (!data.ok) return formErr(data.message || 'Could not save.');
+    closeBox();
+    if (data.kept && data.kept.length){
+      alert(`Time off saved. ${data.kept.length} day${data.kept.length === 1 ? ' has' : 's have'} `
+        + 'bookings and were kept — contact those customers, then cancel the day:\n\n'
+        + data.kept.map((k) => `• ${fmtDate(k.startsAt)} — ${k.title} (${k.people} ${k.people === 1 ? 'person' : 'people'})`).join('\n'));
+    } else {
+      toast(`Time off saved${data.removed ? ` — ${data.removed} day${data.removed === 1 ? '' : 's'} removed` : ''}`);
+    }
+    refresh();
+  }
+
+  async function removeTimeOff(id){
+    if (!confirm('Remove this time off? Repeating schedules will fill those dates again.')) return;
+    await api(`/api/admin/time-off/${id}/delete`, {method:'POST', body:'{}'});
+    toast('Time off removed');
+    refresh();
+  }
+
+  async function setPrice(code, value){
+    const cents = Math.round(parseFloat(value) * 100);
+    const c = coursePrices.find((x) => x.code === code);
+    if (!(cents >= 0)) { toast('Enter a valid price'); return refresh(); }
+    if (c && cents === c.priceCents) return;
+    if (!confirm(`Change ${c ? c.title : code} to ${money(cents)} per person?\n\n`
+      + 'Every upcoming day of this course changes at once and the booking page shows the '
+      + 'new price straight away. People who already booked keep what they paid.')) return refresh();
+    const { data } = await api(`/api/admin/courses/${code}/price`, {method:'POST',
+      body: JSON.stringify({ priceCents: cents })});
+    toast(data.ok ? `Price saved — ${data.daysUpdated} upcoming day${data.daysUpdated === 1 ? '' : 's'} updated`
+                  : (data.message || 'Could not save the price'));
+    refresh();
+  }
+
+  async function setTravel(value){
+    const { data } = await api('/api/admin/settings', {method:'POST',
+      body: JSON.stringify({ bufferMinutes: Number(value) })});
+    toast(data.ok ? 'Travel time saved — open times updated' : (data.message || 'Could not save'));
+    refresh();
+  }
+
+  async function setDefaultTrainers(value){
+    const { data } = await api('/api/admin/settings', {method:'POST',
+      body: JSON.stringify({ defaultTrainers: Number(value) })});
+    toast(data.ok ? `${data.defaultTrainers} trainer${data.defaultTrainers === 1 ? '' : 's'} on a normal day`
+                  : (data.message || 'Could not save'));
+    refresh();
+  }
+
+  async function setNotice(hours){
+    const { data } = await api('/api/admin/settings', {method:'POST',
+      body: JSON.stringify({ minNoticeHours: Number(hours) })});
+    toast(data.ok ? 'Booking notice saved' : 'Could not save the notice');
+  }
+
+  async function cancelClass(id){
+    if (!confirm('Cancel this day? If nobody is booked it is deleted. Otherwise it stays, '
+               + 'crossed out, until you have removed everyone on it — contact them yourself.')) return;
+    const { data } = await api(`/api/admin/classes/${id}/cancel`, {method:'POST', body:'{}'});
+    closeBox();
+    toast(data.deleted ? 'Day cancelled and removed' : 'Day cancelled — remove its customers to clear it');
+    refresh();
+  }
+
+  async function reopen(id){
+    await api(`/api/admin/classes/${id}/update`,
+      {method:'POST', body:JSON.stringify({status:'open'})});
+    closeBox(); toast('Day reopened'); refresh();
+  }
+
+
+
+  // ------------------------------------------------------- price bands
+
+  let tierRows = [];
+
+  /**
+   * Bands are held in an array while editing rather than read off the DOM, so
+   * adding or removing one doesn't lose what's already typed elsewhere.
+   */
+  function renderTiers(){
+    const box = $('tiers');
+    if (!box) return;
+
+    box.innerHTML = `
+      <div class="tier-head">
+        <span>FROM</span><span>TO</span><span>CHANGE</span>
+        <span>REASON CUSTOMERS SEE</span><span></span>
+      </div>` +
+      tierRows.map((t, i) => `
+        <div class="tier">
+          <input type="number" min="1" value="${t.minSize ?? 1}"
+                 oninput="Admin.editTier(${i},'minSize',this.value)">
+          <input type="number" min="1" placeholder="∞"
+                 value="${t.maxSize ?? ''}"
+                 oninput="Admin.editTier(${i},'maxSize',this.value)">
+          <input type="number" step="1" value="${t.adjustPct ?? 0}"
+                 oninput="Admin.editTier(${i},'adjustPct',this.value)">
+          <textarea placeholder="Why this band costs what it does"
+                    oninput="Admin.editTier(${i},'reason',this.value)">${esc(t.reason || '')}</textarea>
+          <button type="button" class="drop" title="Remove this band"
+                  onclick="Admin.dropTier(${i})">&times;</button>
+        </div>`).join('');
+
+    previewTiers();
+  }
+
+  function editTier(i, field, value){
+    if (field === 'reason') { tierRows[i].reason = value; return; }
+    if (field === 'maxSize') {
+      // Blank means open-ended, which the last band needs.
+      tierRows[i].maxSize = value === '' ? null : parseInt(value, 10);
+    } else {
+      tierRows[i][field] = parseInt(value, 10);
+    }
+    previewTiers();
+  }
+
+  function addTier(){
+    const last = tierRows[tierRows.length - 1];
+    const from = last ? (last.maxSize ?? (last.minSize ?? 1)) + 1 : 1;
+    // Close off the previous open-ended band, or the new one is unreachable.
+    if (last && last.maxSize === null) last.maxSize = (last.minSize ?? 1);
+    tierRows.push({ minSize: from, maxSize: null, adjustPct: 0, label: 'Group rate', reason: '' });
+    renderTiers();
+  }
+
+  function dropTier(i){
+    tierRows.splice(i, 1);
+    if (tierRows.length) tierRows[tierRows.length - 1].maxSize = null;
+    renderTiers();
+  }
+
+  /** Show what a few party sizes would actually pay. */
+  function previewTiers(){
+    const el = $('tierPreview');
+    if (!el) return;
+
+    // An existing day's own price, or the first ticked course's.
+    // The course's one price: the day being edited, or the first ticked.
+    const base = $('fCode') ? priceOf($('fCode').value) : (checkedCourses()[0]?.priceCents || 0);
+    if (!base || !tierRows.length) { el.innerHTML = ''; return; }
+
+    const priceAt = (n) => {
+      const t = tierRows.find((x) =>
+        n >= (x.minSize ?? 1) &&
+        (x.maxSize === null || x.maxSize === undefined || n <= x.maxSize));
+      const pct = t ? (Number(t.adjustPct) || 0) : 0;
+      return Math.round(base * (1 + pct / 100));
+    };
+
+    el.innerHTML = [1, 2, 3, 5, 8]
+      .map((n) => `${n}: <b>${money(priceAt(n))}</b> each`)
+      .join(' &nbsp;·&nbsp; ');
+  }
+
+  /** Warn about the mistakes the server would reject anyway. */
+  function tierProblem(){
+    if (!tierRows.length) return 'Add at least one price band.';
+
+    const sorted = [...tierRows].sort((a, b) => (a.minSize ?? 1) - (b.minSize ?? 1));
+    if ((sorted[0].minSize ?? 1) !== 1) return 'The first band has to start at 1 person.';
+
+    const last = sorted[sorted.length - 1];
+    if (last.maxSize !== null && last.maxSize !== undefined) {
+      return 'Leave the last band\'s "to" blank so every group size is covered.';
+    }
+    for (let i = 0; i < sorted.length - 1; i++) {
+      const max = sorted[i].maxSize;
+      if (max === null || max === undefined) return 'Only the last band can be open-ended.';
+      if ((sorted[i + 1].minSize ?? 1) !== max + 1) {
+        return `Nothing covers a group of ${max + 1}.`;
+      }
+    }
+    if (sorted.some((t) => !String(t.reason || '').trim())) {
+      return 'Every band needs a reason — customers are shown it.';
+    }
+    return null;
+  }
+
+  // --------------------------------------------------------------- rosters
+
+  async function roster(id){
+    const c = classes.find((x) => x.id === id);
+    openBox(`Run sheet — ${c ? fmtDate(c.startsAt) : ''}`, '<p class="muted">Loading…</p>');
+
+    const { data } = await api(`/api/admin/classes/${id}/roster`);
+    if (!data.ok) return;
+
+    // Removed people stay on the record, crossed out, below everyone else.
+    const removed = data.roster.filter((p) => p.status === 'cancelled');
+    const people = data.roster.filter((p) => p.status !== 'cancelled');
+    if (!people.length && !removed.length){
+      $('boxBody').innerHTML = '<p class="muted">Nothing booked yet.</p>';
+      return;
+    }
+
+    // Grouped by visit: the instructor drives to one address at one time, so
+    // that's the unit that matters when planning the day.
+    const visits = new Map();
+    const waiting = [];
+    for (const p of people){
+      if (p.status === 'waitlist' || !p.slot_start){ waiting.push(p); continue; }
+      const key = `${p.slot_start}|${p.address}`;
+      if (!visits.has(key)) visits.set(key, []);
+      visits.get(key).push(p);
+    }
+
+    const row = (p) => `
+      <div class="roster-row">
+        <div class="who">
+          <b>${esc(p.student_name)}</b>
+          <span>${esc(p.student_email)}${p.student_phone ? ' · ' + esc(p.student_phone) : ''}</span>
+        </div>
+        <span class="pill p-${p.status}">${p.status}</span>
+        ${p.status !== 'confirmed' ? `
+          <button class="btn btn-ghost btn-sm" title="Record a cash or cheque payment"
+                  onclick="Admin.markPaid('${p.public_ref}')">Mark paid</button>` : ''}
+        <button class="btn btn-ghost btn-sm"
+                onclick="Admin.dropStudent('${p.public_ref}', ${id})">Remove</button>
+      </div>`;
+
+    const visitHtml = [...visits.entries()]
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([key, rows]) => {
+        const [slotStart, address] = key.split('|');
+        const lead = rows[0];
+        const paid = rows.filter((r) => r.status === 'confirmed').length;
+        const value = rows.reduce((sum, r) =>
+          sum + (r.status === 'confirmed' ? r.amount_cents + (r.travel_cents || 0) : 0), 0);
+        const travel = rows.reduce((sum, r) => sum + (r.travel_cents || 0), 0);
+        const end = new Date(new Date(slotStart).getTime() + sessionMinutes * 60000).toISOString();
+
+        return `
+          <div class="visit">
+            <div class="visit-head">
+              <span class="visit-time">${fmtTime(slotStart)} – ${fmtTime(end)}</span>
+              <div class="visit-addr">
+                ${address
+                  ? `<a href="https://www.google.com/maps/search/?api=1&query=${
+                      encodeURIComponent(address)}" target="_blank" rel="noopener">${esc(address)}</a>`
+                  : '<span class="muted">No address on file</span>'}
+              </div>
+              ${lead.address_notes ? `<div class="visit-notes">${esc(lead.address_notes)}</div>` : ''}
+              <div class="visit-meta">
+                ${lead.travel_zone ? `<span class="zone-tag">Zone ${lead.travel_zone}</span>
+                  ${lead.travel_miles != null ? `${lead.travel_miles} mi · ` : ''}
+                  ${travel ? `${money(travel)} travel` : 'no travel charge'} · ` : ''}
+                ${rows.length} ${rows.length === 1 ? 'person' : 'people'} ·
+                ${paid} paid · ${money(value)}
+                ${lead.group_ref ? ` · <a href="#" onclick="Admin.cancelGroup('${
+                  lead.group_ref}', ${id});return false;">cancel this visit</a>` : ''}
+              </div>
+            </div>
+            ${rows.map(row).join('')}
+          </div>`;
+      }).join('');
+
+    $('boxBody').innerHTML = `
+      <p class="sub">
+        ${visits.size} visit${visits.size === 1 ? '' : 's'} ·
+        ${data.seats.available} seat${data.seats.available === 1 ? '' : 's'} available
+        (${data.seats.taken} of ${data.seats.capacity} taken)
+        ${waiting.length ? ` · ${waiting.length} waiting` : ''}
+      </p>
+      ${visitHtml}
+      ${removed.length ? `<div class="solo-head">Removed — kept for your records</div>
+        ${removed.map((p) => `
+          <div class="roster-row removed-row">
+            <div class="who">
+              <b>${esc(p.student_name)}</b>
+              <span>${esc(p.student_email)}${p.student_phone ? ' · ' + esc(p.student_phone) : ''}</span>
+              <span>${p.slot_start ? `${fmtTime(p.slot_start)} · ` : ''}${esc(p.address || '')}</span>
+            </div>
+            <span class="pill p-removed">${p.confirmed_at
+              ? `Paid ${money(p.amount_cents + (p.travel_cents || 0))}` : 'Not paid'}</span>
+            <span class="muted" style="font-size:12.5px;white-space:nowrap">Removed ${
+              p.cancelled_at ? fmtDate(p.cancelled_at) : ''}</span>
+          </div>`).join('')}` : ''}
+      ${waiting.length ? `<div class="solo-head">Waiting list</div>
+        ${waiting.map((p) => `
+          <div class="roster-row">
+            <div class="who">
+              <b>${esc(p.student_name)}</b>
+              <span>${esc(p.student_email)}${p.notes ? ' · ' + esc(p.notes) : ''}</span>
+            </div>
+            <span class="pill p-waitlist">waitlist</span>
+            <button class="btn btn-ghost btn-sm"
+                    onclick="Admin.dropStudent('${p.public_ref}', ${id})">Remove</button>
+          </div>`).join('')}` : ''}
+      ${(() => {
+        const emails = [...new Set(people
+          .filter((p) => p.status === 'confirmed')
+          .map((p) => p.student_email))];
+        return emails.length ? `
+          <button class="btn btn-ghost" style="width:100%;margin-top:16px"
+                  onclick="Admin.copyEmails('${emails.join(',')}')">
+            Copy ${emails.length} contact email${emails.length === 1 ? '' : 's'}
+          </button>` : '';
+      })()}`;
+  }
+
+  // ------------------------------------------------------------- records
+
+  let recTab = 'billing';
+  let recRows = [];
+  let recMeta = {};
+
+  /**
+   * Customer records: everyone who paid (for the books) and everyone whose
+   * card is coming up for renewal (for the reminder email). Both download as
+   * a spreadsheet.
+   */
+  async function records(tab = recTab){
+    recTab = tab;
+    openBox('Customer records', `
+      <div class="rec-tabs" role="tablist">
+        <button type="button" class="${tab === 'billing' ? 'on' : ''}" onclick="Admin.records('billing')">Paid bookings</button>
+        <button type="button" class="${tab === 'renewals' ? 'on' : ''}" onclick="Admin.records('renewals')">Card renewals</button>
+      </div>
+      <div class="rec-bar">
+        <input id="recSearch" type="search" placeholder="Search name, email, address" oninput="Admin.drawRecords()">
+        ${tab === 'renewals' ? `<select id="recWithin" onchange="Admin.drawRecords()" aria-label="Expiring within">
+          <option value="30">Expiring in 30 days</option>
+          <option value="60">Expiring in 60 days</option>
+          <option value="90" selected>Expiring in 90 days</option>
+          <option value="">Everyone</option>
+        </select>` : ''}
+        <button class="btn btn-ghost btn-sm" onclick="Admin.downloadRecords()">Download spreadsheet</button>
+        ${tab === 'renewals' ? '<button class="btn btn-ghost btn-sm" onclick="Admin.copyRecordEmails()">Copy emails</button>' : ''}
+      </div>
+      <div id="recList"><p class="muted">Loading…</p></div>
+      <p class="rec-note" id="recNote"></p>`);
+    const { data } = await api(`/api/admin/records?type=${tab}`);
+    if (!data.ok){ $('recList').innerHTML = '<p class="muted">Could not load records.</p>'; return; }
+    recRows = data.rows;
+    recMeta = data;
+    drawRecords();
+  }
+
+  /** The rows matching the search (and, for renewals, the date window). */
+  function shownRecords(){
+    const q = ($('recSearch')?.value || '').trim().toLowerCase();
+    const within = $('recWithin')?.value;
+    return recRows.filter((r) =>
+      (!q || [r.name, r.email, r.phone, r.address, r.course].join(' ').toLowerCase().includes(q))
+      && (recTab !== 'renewals' || !within || r.daysLeft <= Number(within)));
+  }
+
+  function drawRecords(){
+    const rows = shownRecords();
+    if (!rows.length){
+      $('recList').innerHTML = `<p class="muted">${recRows.length ? 'Nobody matches.'
+        : recTab === 'billing' ? 'No paid bookings yet.' : 'No certified customers yet.'}</p>`;
+    } else if (recTab === 'billing'){
+      const total = rows.filter((r) => !r.removed).reduce((n, r) => n + r.seatCents + (r.travelCents || 0), 0);
+      $('recList').innerHTML = `<p class="sub" style="margin:0 0 8px">${rows.length} paid booking${
+          rows.length === 1 ? '' : 's'} · ${money(total)} kept${
+          rows.some((r) => r.removed) ? ' · removed people shown crossed out' : ''}</p>
+        <div class="rec-list">${rows.map((r) => `
+          <div class="rec-row ${r.removed ? 'removed' : ''}">
+            <div><b>${esc(r.name)}</b>
+              <div class="d">${esc(r.email)}${r.phone ? ` · ${esc(r.phone)}` : ''}</div>
+              <div class="d">${esc(r.address || '')}</div>
+              <div class="d">${esc(r.course)} · ${fmtDate(r.classAt)}${r.groupRef ? ` · group ${esc(r.groupRef)}` : ''}</div>
+            </div>
+            <div class="r"><b>${money(r.seatCents + (r.travelCents || 0))}</b>
+              <div class="d">paid ${fmtDate(r.paidAt)}</div>
+              <div class="d">${esc(r.paidBy === 'manual' ? 'cash / cheque' : r.paidBy || '')}</div>
+              ${r.removed ? `<div class="d">removed ${r.removedAt ? fmtDate(r.removedAt) : ''}</div>` : ''}
+            </div>
+          </div>`).join('')}</div>`;
+    } else {
+      $('recList').innerHTML = `<p class="sub" style="margin:0 0 8px">${rows.length}
+          ${rows.length === 1 ? 'person' : 'people'}</p>
+        <div class="rec-list">${rows.map((r) => `
+          <div class="rec-row">
+            <div><b>${esc(r.name)}</b>
+              <div class="d">${esc(r.email)}${r.phone ? ` · ${esc(r.phone)}` : ''}</div>
+              <div class="d">${esc(r.course)} · certified ${fmtDate(r.classAt)}</div>
+            </div>
+            <div class="r"><b class="${r.daysLeft < 0 ? 'late' : r.daysLeft <= 60 ? 'soon' : ''}">
+                ${r.daysLeft < 0 ? 'Expired' : 'Expires'} ${fmtDate(r.expiresAt)}</b>
+              <div class="d">${r.daysLeft < 0 ? `${-r.daysLeft} days ago` : `in ${r.daysLeft} days`}</div>
+              <div class="d">${r.reminderSentAt ? `reminder queued ${fmtDate(r.reminderSentAt)}` : ''}</div>
+            </div>
+          </div>`).join('')}</div>`;
+    }
+    $('recNote').textContent = recTab === 'billing'
+      ? `Kept for ${Math.round(recMeta.retentionDays / 365)} years from the class, as customers agree at checkout; `
+        + 'after that names and contact details are cleared automatically and the amounts stay.'
+      : `A renewal reminder is written to each customer automatically ${recMeta.reminderDays} days `
+        + 'before their card expires. It goes out once email sending is connected.';
+  }
+
+  /** Download what's on screen as a spreadsheet (CSV opens in Excel and Sheets). */
+  function downloadRecords(){
+    const rows = shownRecords();
+    const cols = recTab === 'billing'
+      ? [['Name','name'],['Email','email'],['Phone','phone'],['Address','address'],['Course','course'],
+         ['Class date', (r) => r.classAt.slice(0, 10)],['Seat $', (r) => (r.seatCents / 100).toFixed(2)],
+         ['Travel $', (r) => ((r.travelCents || 0) / 100).toFixed(2)],['Zone','zone'],
+         ['Paid on', (r) => (r.paidAt || '').slice(0, 10)],['Paid by','paidBy'],['Payment ref','paymentRef'],
+         ['Booking ref','ref'],['Group ref','groupRef'],['Status', (r) => (r.removed ? 'removed' : 'paid')],
+         ['Removed on', (r) => (r.removedAt || '').slice(0, 10)],['Agreed to keep details', (r) => (r.consentAt || '').slice(0, 10)]]
+      : [['Name','name'],['Email','email'],['Phone','phone'],['Course','course'],
+         ['Certified on', (r) => r.classAt.slice(0, 10)],['Card expires', (r) => r.expiresAt.slice(0, 10)],
+         ['Days left','daysLeft'],['Reminder queued', (r) => (r.reminderSentAt || '').slice(0, 10)]];
+    const cell = (v) => {
+      const t = String(v ?? '');
+      return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+    };
+    const csv = [cols.map(([h]) => h).join(','),
+      ...rows.map((r) => cols.map(([, k]) => cell(typeof k === 'function' ? k(r) : r[k])).join(','))]
+      .join('\r\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = `spectrum-${recTab === 'billing' ? 'paid-bookings' : 'card-renewals'}-${ymdOf(new Date())}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    toast('Spreadsheet downloaded');
+  }
+
+  function copyRecordEmails(){
+    const emails = [...new Set(shownRecords().map((r) => r.email).filter(Boolean))];
+    if (!emails.length){ toast('No emails to copy'); return; }
+    copyEmails(emails.join(','));
+  }
+
+  async function cancelGroup(ref, classId){
+    if (!confirm('Cancel every seat in this group booking? The seats are freed and offered to the waitlist.')) return;
+    const { data } = await api(`/api/admin/groups/${ref}/cancel`, {method:'POST', body:'{}'});
+    if (!data.ok){ toast('Could not cancel the group'); return; }
+    toast(`${data.cancelled} seats released`);
+    closeBox(); refresh();
+  }
+
+  async function markPaid(ref){
+    const { data } = await api(`/api/admin/registrations/${ref}/mark-paid`,
+      {method:'POST', body:JSON.stringify({note:'recorded in admin'})});
+    if (!data.ok){ toast('Could not mark paid'); return; }
+    toast('Marked paid');
+    closeBox(); refresh();
+  }
+
+  async function dropStudent(ref, classId){
+    if (!confirm('Remove this person? Their seat is freed and offered to the waitlist. '
+               + 'They stay on the run sheet, crossed out, for your records.')) return;
+    await api(`/api/admin/registrations/${ref}/cancel`, {method:'POST', body:'{}'});
+    toast('Removed');
+    await refresh();
+    // The last person off a cancelled day deletes the day, run sheet and all.
+    if (classes.some((c) => c.id === classId)) roster(classId); else closeBox();
+  }
+
+  function copyEmails(list){
+    navigator.clipboard.writeText(list.split(',').join(', '))
+      .then(() => toast('Emails copied'))
+      .catch(() => toast('Could not copy'));
+  }
+
+  // ------------------------------------------------------------------ misc
+
+  function toggleTheme(){
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    localStorage.setItem('spectrum_admin_theme', dark ? 'light' : 'dark');
+  }
+
+
+  // boot
+  const savedTheme = localStorage.getItem('spectrum_admin_theme');
+  document.documentElement.setAttribute('data-theme',
+    savedTheme || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+
+  const saved = sessionStorage.getItem('spectrum_admin_token');
+  if (saved){ token = saved; show(); }
+
+  return { login, logout, refresh, newClass, edit, save, cancelClass, reopen,
+           tour, formTour, tourStep, endTour,
+           records, drawRecords, downloadRecords, copyRecordEmails,
+           roster, markPaid, dropStudent, cancelGroup, copyEmails, closeBox, toggleTheme,
+           addTier, dropTier, editTier, previewTiers,
+           setMode, editWeek, previewWeek,
+           editSchedule, toggleSchedule, deleteSchedule,
+           newTimeOff, saveTimeOff, removeTimeOff, setNotice,
+           setPrice, setDefaultTrainers, setTravel,
+           editTrainers, stepTrainers, resetTrainers, saveTrainers, bumpTrainers };
+})();
+window.Admin = Admin;
+</script>
+</body>
+</html>
