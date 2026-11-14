@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spectrum CPR Booking Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout idea: a friendly, light client site (booking) and a dense, practical admin console, switched from one demo bar. */
+  --bg:#f4f2ed;
+  --card:#ffffff;
+  --ink:#1c1e1b;
+  --muted:#6a6d67;
+  --line:#dcd8ce;
+  --red:#c8392a;
+  --ok:#2f7d46;
+  --warn:#a86a00;
+  --f-body:"Barlow","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;overflow-x:clip}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+h1,h2,h3{margin:0;line-height:1.15;text-wrap:balance}
+button{font:inherit;cursor:pointer}
+input,select{font:inherit}
+.mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.muted{color:var(--muted)}
+
+/* demo bar */
+.demo{position:sticky;top:0;z-index:30;background:#121412;color:#e8e5dc;display:flex;align-items:center;gap:12px;padding:8px 16px;flex-wrap:wrap}
+.demo a{color:#e8e5dc;text-decoration:none;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.demo a:hover{color:#ff6b1f}
+.badge{background:#ff6b1f;color:#120800;font-family:var(--f-mono);font-size:10px;font-weight:500;letter-spacing:.08em;padding:3px 7px;border-radius:2px}
+.demo .sw{margin-left:auto;display:inline-flex;border:1px solid #3a3f39;border-radius:3px;overflow:hidden}
+.demo .sw a{padding:6px 12px}
+.demo .sw a.on{background:#e8e5dc;color:#121412}
+.demo .note{font-size:13px;color:#a7aaa2}
+@media (max-width:640px){.demo{flex-wrap:nowrap;gap:10px;padding:8px 12px}.demo .note,.demo .long{display:none}.demo .sw a{padding:6px 10px}}
+
+/* ===== booking site ===== */
+.site-h{background:var(--card);border-bottom:1px solid var(--line)}
+.site-h .in{max-width:980px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.mark{width:34px;height:34px;border-radius:50%;background:var(--red);display:grid;place-items:center;color:#fff;font-weight:700}
+.mark svg{width:18px;height:18px}
+.site-h b{font-weight:700;font-size:18px;display:block;line-height:1.1}
+.site-h small{color:var(--muted);font-size:13px}
+.hero{max-width:980px;margin:0 auto;padding:28px 16px 8px}
+.hero h1{font-size:clamp(28px,5vw,40px);font-weight:700}
+.hero p{color:var(--muted);margin-top:6px;max-width:56ch}
+.book{max-width:980px;margin:0 auto;padding:16px 16px 48px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+@media (max-width:820px){.book{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px}
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.steps button{background:none;border:0;border-bottom:3px solid transparent;padding:12px 4px;font-size:13px;color:var(--muted);text-align:center}
+.steps button.on{color:var(--red);border-color:var(--red);font-weight:600}
+.steps button.done{color:var(--ink)}
+.steps button:disabled{cursor:default;opacity:.5}
+.steps span{display:block;font-family:var(--f-mono);font-size:10px}
+@media (max-width:520px){.steps button{font-size:0}.steps span{font-size:11px}}
+.pane{padding:20px}
+.pane h2{font-size:21px;font-weight:600;margin-bottom:14px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:6px;background:#fff;text-align:left;width:100%;color:var(--ink)}
+.opt:hover{border-color:#b9b4a8}
+.opt.sel{border-color:var(--red);box-shadow:inset 3px 0 0 var(--red)}
+.opt b{font-weight:600;display:block}
+.opt small{color:var(--muted);font-size:13px}
+.opt .r{text-align:right;white-space:nowrap;font-weight:600}
+.seats{font-family:var(--f-mono);font-size:11px}
+.seats.low{color:var(--warn)}.seats.full{color:var(--red)}
+.field{display:grid;gap:4px;margin-bottom:12px}
+.field label{font-size:13px;font-weight:600}
+.field input,.field select{padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:#fff;width:100%}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:520px){.row2{grid-template-columns:minmax(0,1fr)}}
+.nav{display:flex;justify-content:space-between;gap:10px;padding:14px 20px;border-top:1px solid var(--line)}
+.btn{background:var(--red);color:#fff;border:0;border-radius:6px;padding:11px 18px;font-weight:600}
+.btn:hover{background:#a92c1f}
+.btn:disabled{background:#d8a49e;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn.sm{padding:6px 10px;font-size:13px;font-weight:500}
+.sum{padding:18px}
+.sum h3{font-size:16px;font-weight:600;margin-bottom:10px}
+.sum dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;margin:0;font-size:14px}
+.sum dt{color:var(--muted)}
+.sum dd{margin:0;text-align:right}
+.total{display:flex;justify-content:space-between;border-top:1px solid var(--line);margin-top:12px;padding-top:12px;font-weight:700;font-size:18px}
+.info{font-size:13px;color:var(--muted);background:#f8f6f1;border:1px dashed var(--line);border-radius:6px;padding:10px 12px;margin-top:12px}
+.done-box{text-align:center;padding:30px 20px}
+.done-box .ok{width:54px;height:54px;border-radius:50%;background:#e3f1e7;color:var(--ok);display:grid;place-items:center;margin:0 auto 12px;font-size:26px}
+.ref{font-family:var(--f-mono);background:#f1efe9;padding:3px 8px;border-radius:4px}
+.week{font-family:var(--f-mono);font-size:11px;color:var(--muted);margin:14px 0 6px;letter-spacing:.06em;text-transform:uppercase}
+.week:first-child{margin-top:0}
+
+/* ===== admin ===== */
+.adm{display:grid;grid-template-columns:200px minmax(0,1fr);min-height:calc(100vh - 44px)}
+.side{background:#1c1e1b;color:#cfcbc1;padding:16px 10px;display:flex;flex-direction:column;gap:2px}
+.side .who{padding:6px 10px 16px;font-size:13px;color:#8f938b}
+.side .who b{display:block;color:#e8e5dc;font-size:15px}
+.side button{background:none;border:0;color:#cfcbc1;text-align:left;padding:10px 12px;border-radius:5px;display:flex;justify-content:space-between;align-items:center}
+.side button:hover{background:#2a2d29}
+.side button.on{background:#e8e5dc;color:#1c1e1b;font-weight:600}
+.side .cnt{font-family:var(--f-mono);font-size:11px;background:#3a3f39;color:#e8e5dc;border-radius:10px;padding:1px 7px}
+.side button.on .cnt{background:var(--red);color:#fff}
+.side .reset{margin-top:auto;font-size:13px;color:#8f938b}
+.main{padding:22px;min-width:0}
+.main h1{font-size:24px;font-weight:700}
+.main .sub{color:var(--muted);font-size:14px;margin:4px 0 18px}
+@media (max-width:760px){
+  .adm{grid-template-columns:minmax(0,1fr)}
+  .side{flex-direction:row;overflow-x:auto;padding:8px;gap:4px;position:sticky;top:44px;z-index:5}
+  .side .who{display:none}
+  .side button{white-space:nowrap;padding:8px 10px;gap:6px}
+  .side .reset{margin-top:0;margin-left:auto}
+  .main{padding:16px}
+}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
+.kpi span{font-size:13px;color:var(--muted)}
+.kpi b{display:block;font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.kpi small{font-size:12px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px}
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.panel-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.panel-h h2{font-size:16px;font-weight:600}
+.cap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.cap:last-child{border-bottom:0}
+.bar{grid-column:1/-1;height:6px;border-radius:3px;background:#ebe8e1;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok)}
+.bar i.hi{background:var(--warn)}.bar i.full{background:var(--red)}
+.log{list-style:none;margin:0;padding:0;font-size:14px}
+.log li{padding:10px 14px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:62px minmax(0,1fr);gap:8px}
+.log li:last-child{border-bottom:0}
+.log time{font-family:var(--f-mono);font-size:11px;color:var(--muted);padding-top:2px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+.tools input,.tools select{padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:14px}
+.tools input{flex:1;min-width:160px}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-weight:600;font-size:12px;color:var(--muted);padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap;background:#faf9f6}
+td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.pill{font-size:12px;font-weight:600;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.p-paid{background:#e3f1e7;color:var(--ok)}
+.p-pending{background:#fbefd9;color:var(--warn)}
+.p-cancelled{background:#efedea;color:var(--muted);text-decoration:line-through}
+.acts{display:flex;gap:6px;justify-content:flex-end;white-space:nowrap}
+.empty{padding:24px 14px;color:var(--muted);text-align:center;font-size:14px}
+.sess{border-bottom:1px solid var(--line)}
+.sess:last-child{border-bottom:0}
+.sess .cap{border-bottom:0}
+.wl{padding:0 14px 12px;display:grid;gap:6px}
+.wl div{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f8f6f1;border-radius:6px;padding:8px 10px;font-size:14px}
+.num-in{width:90px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;text-align:right;font-variant-numeric:tabular-nums}
+
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,0);background:#1c1e1b;color:#f4f2ed;padding:11px 16px;border-radius:6px;font-size:14px;z-index:60;max-width:calc(100% - 32px);box-shadow:0 10px 30px -10px rgba(0,0,0,.5);transition:opacity .25s;opacity:0;pointer-events:none}
+.toast.show{opacity:1}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="demo">
+  <span class="badge">DEMO</span>
+  <a href="../">← Portfolio</a>
+  <span class="note">Portfolio mock with fake data and sample pricing. Nothing here is a real booking or payment.</span>
+  <nav class="sw" aria-label="Demo view"><a href="#book" data-view="book">Booking<span class="long"> site</span></a><a href="#admin" data-view="admin">Admin<span class="long"> panel</span></a></nav>
+</div>
+
+<!-- ============ BOOKING SITE ============ -->
+<section id="viewBook">
+  <header class="site-h"><div class="in">
+    <div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.6 4.5c2.1 0 3.5 1.2 4.4 2.5.9-1.3 2.3-2.5 4.4-2.5 3.6 0 5.7 3.8 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></div>
+    <div><b>Spectrum CPR &amp; First Aid</b><small>Training for families, teams and workplaces</small></div>
+  </div></header>
+  <div class="hero">
+    <h1>Book a class</h1>
+    <p>Pick a course, choose a session, and train at our center or have us come to you.</p>
+  </div>
+  <div class="book">
+    <div class="card">
+      <div class="steps" id="steps"></div>
+      <div class="pane" id="pane"></div>
+      <div class="nav" id="nav"></div>
+    </div>
+    <aside class="card sum" id="sum" aria-live="polite"></aside>
+  </div>
+</section>
+
+<!-- ============ ADMIN ============ -->
+<section id="viewAdmin" hidden>
+  <div class="adm">
+    <nav class="side" id="side" aria-label="Admin sections">
+      <div class="who">Signed in as<b>Demo admin</b></div>
+      <button type="button" data-tab="overview" class="on">Overview</button>
+      <button type="button" data-tab="bookings">Bookings <span class="cnt" id="cB"></span></button>
+      <button type="button" data-tab="sessions">Sessions &amp; waitlist <span class="cnt" id="cW"></span></button>
+      <button type="button" data-tab="pricing">Pricing &amp; zones</button>
+      <button type="button" class="reset" id="resetBtn">Reset demo data</button>
+    </nav>
+    <div class="main" id="main"></div>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>'$'+n.toLocaleString('en-US');
+const fmtDay=d=>d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+const now=()=>new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+
+/* ---------- seeded fake data ---------- */
+let seed=7; const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646;};
+const FIRST=['Maya','Jordan','Priya','Luis','Hannah','Marcus','Elena','Theo','Grace','Owen','Sofia','Daniel','Ava','Noah','Isla','Ethan','Lena','Caleb','Rosa','Miles'];
+const LAST=['Alvarez','Brooks','Chen','Duarte','Ellis','Foster','Garcia','Hughes','Ibarra','Jensen','Kim','Lopez','Morgan','Nguyen','Ortiz','Patel','Reyes','Shaw','Turner','Walsh'];
+const name=()=>FIRST[Math.floor(rnd()*FIRST.length)]+' '+LAST[Math.floor(rnd()*LAST.length)];
+let DB, nextId;
+function fresh(){
+  seed=7; nextId=1040;
+  const courses=[
+    {id:'cpr',name:'CPR / AED',desc:'Adult, child and infant',dur:'3 hrs',price:75},
+    {id:'fa',name:'First Aid',desc:'Standard certification',dur:'3 hrs',price:65},
+    {id:'combo',name:'CPR + First Aid',desc:'Combined certification',dur:'5 hrs',price:110}];
+  const zones=[
+    {id:'z0',name:'At our training center',note:'No travel fee',fee:0},
+    {id:'z1',name:'On-site · Zone 1',note:'Within 10 miles',fee:25},
+    {id:'z2',name:'On-site · Zone 2',note:'10 to 25 miles',fee:50},
+    {id:'z3',name:'On-site · Zone 3',note:'25 to 40 miles',fee:90}];
+  const sessions=[]; const t0=new Date(); t0.setHours(0,0,0,0);
+  const slots=[[3,'6:00 PM','cpr'],[6,'9:00 AM','combo'],[6,'2:00 PM','fa']];
+  let sid=1;
+  for(let w=0;w<3;w++) for(const [dow,time,course] of slots){
+    const d=new Date(t0); d.setDate(d.getDate()+((dow-d.getDay()+7)%7||7)+w*7);
+    sessions.push({id:'s'+sid++,course,date:d,time,cap:course==='combo'?8:10});
+  }
+  const bookings=[], waitlist=[];
+  const fills=[1,.6,1,.8,.3,.9,.5,.2,.4];
+  sessions.forEach((s,i)=>{
+    let target=Math.round(s.cap*fills[i]);
+    while(target>0){ const p=Math.min(target,1+Math.floor(rnd()*3)); target-=p;
+      const z=rnd()<.7?'z0':['z1','z2','z3'][Math.floor(rnd()*3)];
+      const n=name(); const c=courses.find(c=>c.id===s.course);
+      bookings.push({id:'SP-'+(nextId++),name:n,email:n.toLowerCase().replace(' ','.')+'@example.com',sessionId:s.id,people:p,zone:z,
+        total:c.price*p+zones.find(x=>x.id===z).fee,status:rnd()<.75?'paid':'pending'}); }
+    if(fills[i]===1){ for(let k=0;k<1+Math.floor(rnd()*3);k++) waitlist.push({id:'WL-'+(nextId++),name:name(),sessionId:s.id,people:1+Math.floor(rnd()*2)}); }
+  });
+  DB={courses,zones,sessions,bookings,waitlist,log:[{t:now(),m:'Demo data loaded'}]};
+}
+fresh();
+const course=id=>DB.courses.find(c=>c.id===id);
+const zone=id=>DB.zones.find(z=>z.id===id);
+const sess=id=>DB.sessions.find(s=>s.id===id);
+const booked=s=>DB.bookings.filter(b=>b.sessionId===s.id&&b.status!=='cancelled').reduce((a,b)=>a+b.people,0);
+const left=s=>s.cap-booked(s);
+const wlFor=s=>DB.waitlist.filter(w=>w.sessionId===s.id);
+const log=m=>{DB.log.unshift({t:now(),m}); DB.log=DB.log.slice(0,12);};
+let toastT; function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600);}
+
+/* ---------- booking flow ---------- */
+const STEP_NAMES=['Course','Date','Location','Details','Review'];
+let F; const resetF=()=>{F={step:0,course:null,session:null,zone:'z0',people:1,name:'',email:'',done:null};}; resetF();
+const canGo=i=>[true,!!F.course,!!F.session,!!F.session,!!F.session&&F.name.trim()&&/.+@.+\..+/.test(F.email)][i];
+const isWait=()=>F.session&&left(sess(F.session))<F.people;
+const price=()=>{ if(!F.course)return null; const c=course(F.course), z=zone(F.zone); return {sub:c.price*F.people, fee:z.fee, total:c.price*F.people+z.fee}; };
+
+function renderBook(){
+  $('#steps').innerHTML=STEP_NAMES.map((n,i)=>`<button type="button" class="${i===F.step?'on':i<F.step?'done':''}" data-step="${i}" ${(!F.done&&canGo(i)&&(i<=F.step||canGo(i)))?'':'disabled'}><span>${i+1}</span>${n}</button>`).join('');
+  $$('[data-step]').forEach(b=>b.onclick=()=>{F.step=+b.dataset.step;renderBook();});
+  const P=$('#pane'), N=$('#nav');
+  if(F.done){
+    const d=F.done;
+    P.innerHTML=`<div class="done-box"><div class="ok">✓</div><h2>${d.wait?'You are on the waitlist':'Booking confirmed'}</h2>
+      <p class="muted" style="margin:8px 0 14px">${d.wait?`We will email you if a seat opens. Your place in line: <b>#${d.pos}</b>.`:'A confirmation would be emailed to you here.'}</p>
+      <span class="ref">${esc(d.id)}</span>
+      <p class="info" style="text-align:left">Demo: this ${d.wait?'waitlist entry':'booking'} now shows up in the <a href="#admin">admin panel</a>.</p></div>`;
+    N.innerHTML=`<span></span><button class="btn" type="button" id="again">Book another class</button>`;
+    $('#again').onclick=()=>{resetF();renderBook();}; renderSum(); return;
+  }
+  if(F.step===0){
+    P.innerHTML=`<h2>Choose a course</h2><div class="opts">${DB.courses.map(c=>`<button type="button" class="opt${F.course===c.id?' sel':''}" data-c="${c.id}"><span><b>${esc(c.name)}</b><small>${esc(c.desc)} · ${c.dur}</small></span><span class="r">${money(c.price)}<small style="display:block;font-weight:400">per person</small></span></button>`).join('')}</div>`;
+    $$('[data-c]').forEach(b=>b.onclick=()=>{ if(F.course!==b.dataset.c){F.course=b.dataset.c;F.session=null;} F.step=1; renderBook();});
+  }
+  if(F.step===1){
+    const list=DB.sessions.filter(s=>s.course===F.course);
+    let lastW=-1, html='';
+    list.forEach(s=>{ const w=Math.floor((s.date-new Date())/6048e5); if(w!==lastW){html+=`<div class="week">${w<=0?'This week':w===1?'Next week':'In '+w+' weeks'}</div>`;lastW=w;}
+      const l=left(s); const cls=l<=0?'full':l<=3?'low':'';
+      html+=`<button type="button" class="opt${F.session===s.id?' sel':''}" data-s="${s.id}"><span><b>${fmtDay(s.date)}</b><small>${s.time} · ${course(s.course).dur}</small></span><span class="seats ${cls}">${l<=0?'Full · waitlist':l+' seats left'}</span></button>`; });
+    P.innerHTML=`<h2>Pick a session</h2><div class="opts">${html}</div>`;
+    $$('[data-s]').forEach(b=>b.onclick=()=>{F.session=b.dataset.s;F.step=2;renderBook();});
+  }
+  if(F.step===2){
+    P.innerHTML=`<h2>Where is training?</h2><div class="opts">${DB.zones.map(z=>`<button type="button" class="opt${F.zone===z.id?' sel':''}" data-z="${z.id}"><span><b>${esc(z.name)}</b><small>${esc(z.note)}</small></span><span class="r">${z.fee?'+'+money(z.fee):'Free'}</span></button>`).join('')}</div>
+      <div class="field" style="margin-top:16px;max-width:200px"><label for="ppl">People attending</label><input type="number" id="ppl" min="1" max="10" value="${F.people}"></div>
+      <p class="info">Travel fees depend on distance from our center. Admins can change these zones in the admin panel.</p>`;
+    $$('[data-z]').forEach(b=>b.onclick=()=>{F.zone=b.dataset.z;renderBook();});
+    $('#ppl').oninput=e=>{F.people=Math.max(1,Math.min(10,+e.target.value||1));renderSum();renderNav();};
+  }
+  if(F.step===3){
+    P.innerHTML=`<h2>Your details</h2><div class="row2">
+      <div class="field"><label for="fn">Full name</label><input id="fn" autocomplete="off" value="${esc(F.name)}" placeholder="e.g. Sam Rivera"></div>
+      <div class="field"><label for="fe">Email</label><input id="fe" type="email" autocomplete="off" value="${esc(F.email)}" placeholder="sam@example.com"></div></div>
+      <p class="info">Demo only: use made-up details. Nothing is sent or stored outside this page.</p>`;
+    $('#fn').oninput=e=>{F.name=e.target.value;renderNav();renderSteps();};
+    $('#fe').oninput=e=>{F.email=e.target.value;renderNav();renderSteps();};
+  }
+  if(F.step===4){
+    const s=sess(F.session), p=price(), w=isWait();
+    P.innerHTML=`<h2>${w?'Join the waitlist':'Review and pay'}</h2>
+      <p>${esc(course(F.course).name)} on <b>${fmtDay(s.date)}</b> at ${s.time}, ${esc(zone(F.zone).name.toLowerCase())}, for ${F.people} ${F.people>1?'people':'person'}.</p>
+      ${w?`<p class="info">This session doesn't have ${F.people} open ${F.people>1?'seats':'seat'}. Join the waitlist and you'll be offered a seat if one opens. You won't be charged until then.</p>`
+         :`<p class="info">In the real site, payment is handled by the payment processor's secure checkout. This demo skips that step and does not collect card details.</p>`}`;
+  }
+  renderNav(); renderSum();
+}
+function renderSteps(){ $$('[data-step]').forEach((b,i)=>b.disabled=!canGo(i)); }
+function renderNav(){
+  const N=$('#nav'); if(F.done)return;
+  const last=F.step===4, w=isWait();
+  N.innerHTML=`<button class="btn ghost" type="button" id="back" ${F.step===0?'hidden':''}>Back</button><span></span>
+    <button class="btn" type="button" id="fwd" ${canGo(Math.min(4,F.step+1))||last?'':'disabled'}>${last?(w?'Join waitlist':'Confirm demo booking'):'Continue'}</button>`;
+  const back=$('#back'); if(back) back.onclick=()=>{F.step--;renderBook();};
+  $('#fwd').onclick=()=>{ if(!last){F.step++;renderBook();return;} submit(); };
+  if(last && !canGo(4)) $('#fwd').disabled=true;
+}
+function submit(){
+  const p=price(), s=sess(F.session);
+  if(isWait()){
+    const id='WL-'+(nextId++); DB.waitlist.push({id,name:F.name.trim(),sessionId:s.id,people:F.people});
+    F.done={id,wait:true,pos:wlFor(s).length}; log(`${F.name.trim()} joined the waitlist for ${course(s.course).name}, ${fmtDay(s.date)}`);
+  } else {
+    const id='SP-'+(nextId++); DB.bookings.unshift({id,name:F.name.trim(),email:F.email.trim(),sessionId:s.id,people:F.people,zone:F.zone,total:p.total,status:'paid'});
+    F.done={id,wait:false}; log(`New booking ${id}: ${F.name.trim()}, ${F.people} for ${course(s.course).name}`);
+  }
+  renderBook(); toast(F.done.wait?'Added to waitlist':'Demo booking confirmed');
+}
+function renderSum(){
+  const S=$('#sum'), p=price(), s=F.session&&sess(F.session);
+  if(!F.course){S.innerHTML='<h3>Your booking</h3><p class="muted" style="font-size:14px">Choose a course to see pricing.</p><p class="info">Sample pricing for the demo.</p>';return;}
+  S.innerHTML=`<h3>Your booking</h3><dl>
+    <dt>Course</dt><dd>${esc(course(F.course).name)}</dd>
+    <dt>Session</dt><dd>${s?fmtDay(s.date)+', '+s.time:'—'}</dd>
+    <dt>Location</dt><dd>${esc(zone(F.zone).name)}</dd>
+    <dt>People</dt><dd>${F.people} × ${money(course(F.course).price)}</dd>
+    <dt>Travel</dt><dd>${p.fee?money(p.fee):'—'}</dd></dl>
+    <div class="total"><span>${isWait()?'Due if a seat opens':'Total'}</span><span>${money(p.total)}</span></div>
+    <p class="info">Sample pricing for the demo.</p>`;
+}
+
+/* ---------- admin ---------- */
+let tab='overview', q='', fStatus='all';
+const upcoming=()=>DB.sessions;
+function counts(){ $('#cB').textContent=DB.bookings.filter(b=>b.status!=='cancelled').length; $('#cW').textContent=DB.waitlist.length; }
+function renderAdmin(){
+  counts(); $$('#side [data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  const M=$('#main');
+  if(tab==='overview'){
+    const live=DB.bookings.filter(b=>b.status!=='cancelled');
+    const paid=live.filter(b=>b.status==='paid').reduce((a,b)=>a+b.total,0), due=live.filter(b=>b.status==='pending').reduce((a,b)=>a+b.total,0);
+    const seats=live.reduce((a,b)=>a+b.people,0), cap=DB.sessions.reduce((a,s)=>a+s.cap,0);
+    M.innerHTML=`<h1>Overview</h1><p class="sub">Next three weeks · fake data</p>
+      <div class="kpis">
+        <div class="kpi"><span>Seats booked</span><b>${seats}<small> / ${cap}</small></b><small>${Math.round(seats/cap*100)}% full</small></div>
+        <div class="kpi"><span>Sessions</span><b>${DB.sessions.length}</b><small>${DB.sessions.filter(s=>left(s)<=0).length} full</small></div>
+        <div class="kpi"><span>Waitlist</span><b>${DB.waitlist.length}</b><small>people waiting</small></div>
+        <div class="kpi"><span>Collected</span><b>${money(paid)}</b><small>${money(due)} outstanding</small></div></div>
+      <div class="grid2">
+        <div class="panel"><div class="panel-h"><h2>Upcoming sessions</h2><button class="btn ghost sm" type="button" data-go="sessions">Manage</button></div>${DB.sessions.slice(0,6).map(capRow).join('')}</div>
+        <div class="panel"><div class="panel-h"><h2>Activity</h2></div><ul class="log">${DB.log.map(l=>`<li><time>${l.t}</time><span>${esc(l.m)}</span></li>`).join('')}</ul></div></div>`;
+  }
+  if(tab==='bookings'){
+    const rows=DB.bookings.filter(b=>(fStatus==='all'||b.status===fStatus)&&(!q||(b.name+' '+b.id+' '+b.email).toLowerCase().includes(q.toLowerCase())));
+    M.innerHTML=`<h1>Bookings</h1><p class="sub">Mark payments, cancel, and free up seats.</p>
+      <div class="panel"><div class="tools"><input id="q" placeholder="Search name, email or ID" value="${esc(q)}" aria-label="Search bookings">
+        <select id="fs" aria-label="Filter by status"><option value="all">All statuses</option><option value="paid">Paid</option><option value="pending">Pending</option><option value="cancelled">Cancelled</option></select></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Booking</th><th>Session</th><th>Location</th><th style="text-align:right">Total</th><th>Status</th><th></th></tr></thead><tbody>
+      ${rows.map(b=>{const s=sess(b.sessionId);return `<tr><td><b>${esc(b.name)}</b><br><span class="mono muted">${esc(b.id)} · ${b.people}p</span></td>
+        <td>${esc(course(s.course).name)}<br><span class="muted" style="font-size:13px">${fmtDay(s.date)}, ${s.time}</span></td>
+        <td>${esc(zone(b.zone).name.replace('On-site · ',''))}</td><td class="num">${money(b.total)}</td>
+        <td><span class="pill p-${b.status}">${b.status[0].toUpperCase()+b.status.slice(1)}</span></td>
+        <td><div class="acts">${b.status==='pending'?`<button class="btn ghost sm" type="button" data-paid="${b.id}">Mark paid</button>`:''}${b.status!=='cancelled'?`<button class="btn ghost sm" type="button" data-cancel="${b.id}">Cancel</button>`:''}</div></td></tr>`;}).join('')}
+      </tbody></table>${rows.length?'':'<div class="empty">No bookings match.</div>'}</div></div>`;
+    $('#fs').value=fStatus;
+    $('#q').oninput=e=>{q=e.target.value;const pos=e.target.selectionStart;renderAdmin();const n=$('#q');n.focus();n.setSelectionRange(pos,pos);};
+    $('#fs').onchange=e=>{fStatus=e.target.value;renderAdmin();};
+    $$('[data-paid]').forEach(b=>b.onclick=()=>{const x=DB.bookings.find(k=>k.id===b.dataset.paid);x.status='paid';log(`${x.id} marked paid`);toast('Marked as paid');renderAdmin();});
+    $$('[data-cancel]').forEach(b=>b.onclick=()=>{const x=DB.bookings.find(k=>k.id===b.dataset.cancel);x.status='cancelled';const s=sess(x.sessionId);
+      log(`${x.id} cancelled, ${x.people} seat${x.people>1?'s':''} freed`); toast(wlFor(s).length?'Seats freed. Someone on the waitlist can be offered a seat.':'Booking cancelled'); renderAdmin();});
+  }
+  if(tab==='sessions'){
+    M.innerHTML=`<h1>Sessions &amp; waitlist</h1><p class="sub">Capacity per session. Offer open seats to people in line.</p>
+      <div class="panel">${DB.sessions.map(s=>{const w=wlFor(s), l=left(s);return `<div class="sess">${capRow(s)}${w.length?`<div class="wl">${w.map((x,i)=>`<div><span><span class="mono muted">#${i+1}</span> ${esc(x.name)} · ${x.people}p</span><button class="btn sm" type="button" data-promote="${x.id}" ${l>=x.people?'':'disabled title="Not enough open seats"'}>Give seat</button></div>`).join('')}</div>`:''}</div>`;}).join('')}</div>`;
+    $$('[data-promote]').forEach(b=>b.onclick=()=>{const i=DB.waitlist.findIndex(w=>w.id===b.dataset.promote), w=DB.waitlist[i], s=sess(w.sessionId);
+      DB.waitlist.splice(i,1); const id='SP-'+(nextId++);
+      DB.bookings.unshift({id,name:w.name,email:w.name.toLowerCase().replace(' ','.')+'@example.com',sessionId:s.id,people:w.people,zone:'z0',total:course(s.course).price*w.people,status:'pending'});
+      log(`${w.name} moved from waitlist to booking ${id}`); toast(`${w.name} booked, payment pending`); renderAdmin();});
+  }
+  if(tab==='pricing'){
+    M.innerHTML=`<h1>Pricing &amp; zones</h1><p class="sub">Changes apply to new bookings on the booking site right away.</p>
+      <div class="grid2"><div class="panel"><div class="panel-h"><h2>Courses</h2></div><div class="tbl-wrap"><table><thead><tr><th>Course</th><th>Length</th><th style="text-align:right">Per person</th></tr></thead><tbody>
+        ${DB.courses.map(c=>`<tr><td>${esc(c.name)}</td><td>${c.dur}</td><td class="num"><input class="num-in" type="number" min="0" step="5" value="${c.price}" data-cp="${c.id}" aria-label="${esc(c.name)} price"></td></tr>`).join('')}</tbody></table></div></div>
+      <div class="panel"><div class="panel-h"><h2>Travel zones</h2></div><div class="tbl-wrap"><table><thead><tr><th>Zone</th><th>Distance</th><th style="text-align:right">Fee</th></tr></thead><tbody>
+        ${DB.zones.map(z=>`<tr><td>${esc(z.name.replace('On-site · ',''))}</td><td>${esc(z.note)}</td><td class="num"><input class="num-in" type="number" min="0" step="5" value="${z.fee}" data-zf="${z.id}" aria-label="${esc(z.name)} fee"></td></tr>`).join('')}</tbody></table></div></div></div>`;
+    $$('[data-cp]').forEach(i=>i.onchange=()=>{const c=course(i.dataset.cp);c.price=Math.max(0,+i.value||0);log(`${c.name} price set to ${money(c.price)}`);toast('Price updated');});
+    $$('[data-zf]').forEach(i=>i.onchange=()=>{const z=zone(i.dataset.zf);z.fee=Math.max(0,+i.value||0);log(`${z.name} fee set to ${money(z.fee)}`);toast('Zone fee updated');});
+  }
+  $$('[data-go]').forEach(b=>b.onclick=()=>{tab=b.dataset.go;renderAdmin();});
+}
+function capRow(s){const b=booked(s), pct=Math.min(100,b/s.cap*100), w=wlFor(s).length;
+  return `<div class="cap"><span><b>${esc(course(s.course).name)}</b> · ${fmtDay(s.date)}, ${s.time}</span><span class="mono ${b>=s.cap?'':'muted'}" style="${b>=s.cap?'color:var(--red)':''}">${b}/${s.cap}${w?` · ${w} waiting`:''}</span><div class="bar"><i class="${pct>=100?'full':pct>=75?'hi':''}" style="width:${pct}%"></i></div></div>`;}
+$$('#side [data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;renderAdmin();});
+$('#resetBtn').onclick=()=>{fresh();resetF();q='';fStatus='all';renderAdmin();renderBook();toast('Demo data reset');};
+
+/* ---------- view routing ---------- */
+function route(){
+  const v=location.hash==='#admin'?'admin':'book';
+  $('#viewBook').hidden=v!=='book'; $('#viewAdmin').hidden=v!=='admin';
+  $$('[data-view]').forEach(a=>a.classList.toggle('on',a.dataset.view===v));
+  if(v==='admin')renderAdmin(); else renderBook();
+  scrollTo(0,0);
+}
+addEventListener('hashchange',route); route();
+})();
+</script>
+</body>
+</html>
