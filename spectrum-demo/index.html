@@ -2375,7 +2375,7 @@ const Booking = (() => {
         for <b id="holdClock">20:00</b><br>
         <span style="color:var(--ink-soft)">Reference ${esc(data.groupRef || holdRef)}</span>
       </div>
-      ${mock ? '<div class="mock-banner"><b>Test mode.</b> No card is charged.</div>' : ''}
+      ${mock ? '<div class="mock-banner"><b>Simulated payment.</b> This is a portfolio demo. It never asks for card details and no money moves. On the real site, payment goes through the card processor.</div>' : ''}
       <div class="modal-price">${money(data.totalCents ?? data.registration.amountCents)}
         <small>${esc(current.title)}${data.seats > 1
           ? ` — ${data.seats} people at ${money(data.registration.amountCents)} each` : ''}</small>
