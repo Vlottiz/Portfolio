@@ -474,7 +474,7 @@ footer h2 span{color:var(--accent)}
         <article class="step" data-stage="1">
           <span class="mono">02 · Filter</span>
           <h3>Through the HEPA cartridge</h3>
-          <p>The HEPA cartridge sits inside the housing. A printed TPU lip seal closes off the top of it, with a central seal support underneath to hold it in place. The seal only works one way, so I noted its orientation in the hardware docs.</p>
+          <p>The HEPA cartridge sits inside the housing. A printed TPU lip seal closes off the top of it, held in place by a central seal support beneath the lip seal. The seal only works one way, so I noted its orientation in the hardware docs.</p>
         </article>
         <article class="step" data-stage="2">
           <span class="mono">03 · Measure</span>
@@ -530,7 +530,7 @@ footer h2 span{color:var(--accent)}
       <div class="log">
         <div class="log-row">
           <span class="status s-bad">Air path</span>
-          <div><h4>The filter wasn't the problem</h4><p>A test came back at 57%. Instead of blaming the HEPA filter, I traced the air path and found that the central support beneath the top TPU seal was missing. Without it, the seal couldn't press against the cartridge, so dirty air slipped over the top of the filter and straight to the post-filter sensor.</p><div class="delta"><span class="muted">Sealed-chamber test</span><b style="color:var(--bad)">57%</b><span>→</span><b style="color:var(--ok)">96.6%</b></div></div>
+          <div><h4>The filter wasn't the problem</h4><p>A test came back at 57%. Instead of blaming the HEPA filter, I traced the air path and found that the central seal support beneath the TPU lip seal was missing. Without it, the seal couldn't press against the cartridge, so dirty air slipped over the top of the filter and straight to the post-filter sensor.</p><div class="delta"><span class="muted">Sealed-chamber test</span><b style="color:var(--bad)">57%</b><span>→</span><b style="color:var(--ok)">96.6%</b></div></div>
         </div>
         <div class="log-row">
           <span class="status s-warn">RF noise</span>
@@ -933,10 +933,13 @@ const air = (() => {
     // top TPU seal, held up by the center seal support
     const sealOn = hi(1);
     if(shaft){
-      ctx.fillStyle='#3b403a'; ctx.fillRect(191,75,18,22); ctx.strokeStyle='#5c615a'; ctx.lineWidth=1; ctx.strokeRect(191,75,18,22);
+      ctx.fillStyle='#4a4f49'; ctx.fillRect(190,75,20,24);
+      ctx.save(); ctx.beginPath(); ctx.rect(190,75,20,24); ctx.clip(); ctx.strokeStyle='#8f938b'; ctx.lineWidth=1;
+      for(let k=-24;k<24;k+=5){ctx.beginPath();ctx.moveTo(190+k,99);ctx.lineTo(214+k,75);ctx.stroke();} ctx.restore();
+      ctx.strokeStyle=C.ink; ctx.lineWidth=1.2; ctx.strokeRect(190,75,20,24);
       ctx.fillStyle=C.clean; ctx.fillRect(122,68,156,7);
       ctx.fillStyle=C.muted; ctx.font='7px JetBrains Mono, monospace';
-      ctx.fillText('SEAL',184,108); ctx.fillText('SUPPORT',178,117);
+      ctx.fillText('SEAL',184,110); ctx.fillText('SUPPORT',178,119);
     } else {
       ctx.strokeStyle=C.clean; ctx.lineWidth=6; ctx.lineCap='round';
       ctx.beginPath(); ctx.moveTo(130,79); ctx.quadraticCurveTo(200,104,270,79); ctx.stroke(); ctx.lineCap='butt';
