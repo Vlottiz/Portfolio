@@ -53,7 +53,7 @@ p{margin:0}
 .bar nav a:hover{border-color:var(--accent);color:var(--accent)}
 .bar nav a.on{background:var(--accent);border-color:var(--accent);color:#120800}
 .progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;background:var(--accent);transform-origin:0 50%;transform:scaleX(0)}
-@media (max-width:820px){.bar-in{flex-wrap:wrap;height:auto;padding-top:8px;padding-bottom:8px;row-gap:8px}.sheet{margin-left:auto}.sheet{flex:1 1 0;min-width:0;text-align:right}.bar nav{order:3;width:100%;margin-left:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.bar nav a{padding:7px 4px;text-align:center;letter-spacing:.03em}}
+@media (max-width:820px){.bar-in{flex-wrap:wrap;height:auto;padding-top:8px;padding-bottom:8px;row-gap:8px}.sheet{margin-left:auto}.sheet{flex:1 1 0;min-width:0;text-align:right}.bar nav{order:3;width:100%;margin-left:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.bar nav a{padding:7px 2px;text-align:center;letter-spacing:.02em;font-size:11.5px}}
 
 /* ---------- hero ---------- */
 .hero{position:relative;padding:130px 0 72px;overflow:hidden;border-bottom:1px solid var(--line)}
@@ -320,6 +320,33 @@ body.demo-open{overflow:hidden}
 .trail div{display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px}
 .trail div span:first-child{font-family:var(--f-mono);font-size:clamp(12.07px,calc(8.61px + 0.28vw),15.22px);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);padding-top:3px}
 
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn-main,.btn-line{font-family:var(--f-mono);font-size:clamp(13px,calc(10.66px + 0.28vw),16.9px);font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:13px 20px;border:1px solid var(--accent)}
+.btn-main{background:var(--accent);color:#120800}
+.btn-main:hover{background:#ff8442;color:#120800}
+.btn-line{color:var(--ink);border-color:#4a4f49}
+.btn-line:hover{border-color:var(--accent);color:var(--accent)}
+.bar nav a.hire{border-color:var(--accent);color:var(--accent)}
+.bar nav a.hire.on{color:#120800}
+.svc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;position:relative;z-index:1}
+.svc .who{font-size:clamp(15px,calc(12.30px + 0.28vw),19.5px);color:var(--muted)}
+.svc .who b{color:var(--ink);font-weight:500}
+.proof{font-family:var(--f-mono);font-size:clamp(12px,calc(9.84px + 0.28vw),15.6px);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);text-decoration:none;margin-top:auto;padding-top:6px}
+.svc .card-b{flex:1}
+.process{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);position:relative;z-index:1}
+.process li{background:var(--bg);padding:18px;display:flex;flex-direction:column;gap:6px}
+.process .mono{color:var(--accent)}
+.process h4{margin:0;font-family:var(--f-display);font-weight:800;font-size:clamp(24px,calc(19.68px + 0.28vw),31.2px);text-transform:uppercase;letter-spacing:.02em}
+.process p{font-size:clamp(15px,calc(12.30px + 0.28vw),19.5px);color:#cfcbc1}
+.ask{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start;position:relative;z-index:1}
+.mail-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:22px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.mail-row b{font-weight:500;font-size:clamp(18px,calc(14.76px + 0.28vw),23.4px);word-break:break-all}
+.ask-form .f{display:grid;gap:6px;margin-bottom:14px}
+.ask-form label{font-family:var(--f-mono);font-size:clamp(11px,calc(9.02px + 0.28vw),14.3px);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ask-form input,.ask-form textarea{font:inherit;color:var(--ink);background:#0f110f;border:1px solid var(--line);border-radius:2px;padding:10px 12px;width:100%;resize:vertical}
+.ask-form input:focus,.ask-form textarea:focus{border-color:var(--accent);outline:none}
+@media (max-width:980px){.svc{grid-template-columns:minmax(0,1fr)}.process{grid-template-columns:repeat(2,minmax(0,1fr))}.ask{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:520px){.process{grid-template-columns:minmax(0,1fr)}}
 /* ---------- toolchain + footer ---------- */
 .tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
 .tools div{background:var(--bg);padding:20px}
@@ -365,12 +392,13 @@ footer h2 span{color:var(--accent)}
 <header class="bar">
   <div class="wrap bar-in">
     <a class="logo" href="#top">FIELD <b>/</b> NOTES</a>
-    <div class="sheet" id="sheetLabel">SHT <span id="sheetNo">00</span> / 04 · <span id="sheetName">Index</span></div>
+    <div class="sheet" id="sheetLabel">SHT <span id="sheetNo">00</span> / 05 · <span id="sheetName">Index</span></div>
     <nav aria-label="Sections">
       <a href="#airpure" data-nav="airpure">Airpure</a>
       <a href="#vexis" data-nav="vexis">Vexis</a>
       <a href="#spectrum" data-nav="spectrum">Spectrum</a>
       <a href="#bench" data-nav="bench">Bench</a>
+      <a href="#services" data-nav="services" class="hire">Services</a>
     </nav>
   </div>
   <div class="progress" id="progress"></div>
@@ -409,7 +437,8 @@ footer h2 span{color:var(--accent)}
   <div class="wrap hero-in">
     <div class="eyebrow mono"><i></i><span>Nickolos Christensen</span><span>·</span><span>Engineering portfolio</span><span>·</span><span>Hardware ↔ Software</span></div>
     <h1>I build systems that connect <span class="sw">software</span> to the <span class="pw">physical world.</span></h1>
-    <p class="hero-sub">I design enclosures, wire up sensors, and write the firmware and desktop software that run them. I also machine precision parts for a living. I built, tested and debugged everything on this page myself.</p>
+    <p class="hero-sub">I design enclosures, wire up sensors, and write the firmware and desktop software that run them. I also machine precision parts for a living. Everything here is real, working, tested project work.</p>
+    <div class="hero-cta"><a class="btn-main" href="#services">Work with me</a><a class="btn-line" href="#airpure">See the projects</a></div>
     <div class="hero-foot">
       <nav class="index" aria-label="Featured work">
         <a href="#airpure"><span class="mono muted">Sheet 01</span><b>Airpure</b><span class="mono muted">Embedded · CAD</span></a>
@@ -420,7 +449,7 @@ footer h2 span{color:var(--accent)}
       <div class="tblock" aria-label="Title block">
         <div>Drawn</div><div>N. Christensen</div>
         <div>Scale</div><div>NTS</div>
-        <div>Sheets</div><div>04</div>
+        <div>Sheets</div><div>05</div>
         <div>Rev</div><div>2026</div>
       </div>
     </div>
@@ -628,6 +657,7 @@ footer h2 span{color:var(--accent)}
       <div>
         <h2><small>Sheet 03 · Client delivery</small>Spectrum CPR</h2>
         <p class="tag-line">A website for a family-run CPR and first aid business that travels to its customers, plus the booking system behind it.</p>
+        <p class="prose" style="margin-top:16px;color:#cfcbc1">The problem: because the instructor goes to the customer, booking is more than picking a class time. Each booking has to fit the instructor's day, the drive between visits, the group size and the distance, and the owner needs a simple way to manage all of it afterward.</p>
       </div>
       <div class="meta">
         <div>Stack</div><div>Node.js + Express, SQLite, plain HTML/CSS/JS</div>
@@ -736,9 +766,81 @@ footer h2 span{color:var(--accent)}
     <h3 class="sub-h">Tool<span>chain</span></h3>
     <div class="tools">
       <div><h4>Embedded</h4><p>ESP32-C6, Arduino C++, UART sensors, PWM and tach, OTA, LittleFS, mDNS</p></div>
-      <div><h4>Software</h4><p>C# / .NET 8, WinForms, WebView2, JavaScript, HTML/CSS, GitHub Actions</p></div>
+      <div><h4>Software</h4><p>C# / .NET 8, WinForms, WebView2, Node.js, Express, SQLite, JavaScript, HTML/CSS, GitHub Actions</p></div>
       <div><h4>Mechanical</h4><p>Onshape CAD, PETG and TPU printing, sealing and airflow design, Klipper</p></div>
       <div><h4>Shop &amp; systems</h4><p>CNC milling, inspection, aluminum, brass, steel, titanium, Ubuntu, SSH, LVM, custom liquid cooling</p></div>
+    </div>
+  </div>
+</section>
+<!-- ================= 05 SERVICES ================= -->
+<section class="sheet-sec" id="services" data-sheet="05" data-sheet-name="Services">
+  <div class="bignum" data-speed="-0.3" aria-hidden="true">05</div>
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2><small>Sheet 05 · Services</small>Work with me</h2>
+        <p class="tag-line">I build practical software and hardware for small businesses and hands-on projects.</p>
+      </div>
+      <p class="prose" style="color:#cfcbc1">That could be a website that makes booking easier for your customers, a custom tool that takes repetitive admin work off your plate, or a prototype that connects sensors, electronics and software. I look at both sides: how it should work for the person using it, and how the pieces fit together behind the scenes.</p>
+    </div>
+
+    <div class="svc">
+      <article class="card">
+        <div class="panel-h"><span class="mono muted">A</span><span class="status s-ok">Main offer</span></div>
+        <div class="card-b">
+          <h3>Websites and booking</h3>
+          <p>Customer-facing websites, online booking, scheduling, instructor or staff availability, intake forms and admin pages.</p>
+          <p class="who"><b>Good fit:</b> training providers, instructors, tutors, fitness pros and local service businesses.</p>
+          <a class="proof" href="#spectrum">See it in action: Spectrum CPR →</a>
+        </div>
+      </article>
+      <article class="card">
+        <div class="panel-h"><span class="mono muted">B</span></div>
+        <div class="card-b">
+          <h3>Business tools</h3>
+          <p>Small custom apps that replace spreadsheet and email juggling: tracking jobs, bookings, inventory or requests, simple dashboards, and connecting the services you already use.</p>
+          <p class="who"><b>Good fit:</b> small teams whose process has outgrown spreadsheets but doesn't need a big enterprise system.</p>
+          <a class="proof" href="#spectrum">Example: the Spectrum admin page →</a>
+        </div>
+      </article>
+      <article class="card">
+        <div class="panel-h"><span class="mono muted">C</span><span class="status s-info">Prototypes</span></div>
+        <div class="card-b">
+          <h3>Hardware prototypes</h3>
+          <p>ESP32 sensor prototypes, data logging, monitoring dashboards and 3D-printed enclosures for bench testing and demos.</p>
+          <p class="who">This is prototype and proof-of-concept work only, not certified, medical, life-safety or production-critical engineering.</p>
+          <a class="proof" href="#airpure">See it in action: Airpure →</a>
+        </div>
+      </article>
+    </div>
+
+    <h3 class="sub-h">How projects <span>work</span></h3>
+    <ol class="process">
+      <li><span class="mono">01</span><h4>Discovery</h4><p>We talk through the problem, who it's for, any limits, and what a good result looks like.</p></li>
+      <li><span class="mono">02</span><h4>Scope</h4><p>We agree on what's included and what isn't, the timeline, the price and how we'll know it's done.</p></li>
+      <li><span class="mono">03</span><h4>Build</h4><p>I build in small milestones and show you working progress along the way.</p></li>
+      <li><span class="mono">04</span><h4>Test</h4><p>I check every agreed workflow and the edge cases before handing anything over.</p></li>
+      <li><span class="mono">05</span><h4>Handoff</h4><p>You get access, documentation and an agreed plan for support.</p></li>
+    </ol>
+    <p class="note" style="position:relative;z-index:1"><b>How I build.</b> I use AI tools throughout development for research, writing code, documentation and troubleshooting. I set the requirements, direct how the system fits together, and test and evaluate the results. I don't claim to have written every line by hand, but I take responsibility for the work I deliver.</p>
+
+    <h3 class="sub-h">Start a <span>conversation</span></h3>
+    <div class="ask">
+      <div class="prose" style="color:#cfcbc1">
+        <p>Have a process that's too manual, a website that doesn't fit your business anymore, or an idea you want to prototype? Tell me a little about the problem and what a good result would look like. I'll let you know if it's a good fit and what a sensible first step would be.</p>
+        <p class="muted" style="margin-top:14px">Pricing depends on scope, so I quote after a short conversation.</p>
+        <div class="mail-row"><span class="mono muted">Email</span><b id="mailText"></b><button type="button" id="copyMail">Copy</button></div>
+      </div>
+      <form class="panel ask-form" id="askForm" novalidate>
+        <div class="panel-b">
+          <div class="f"><label for="aName">Your name</label><input id="aName" autocomplete="name"></div>
+          <div class="f"><label for="aBiz">Business or project (optional)</label><input id="aBiz" autocomplete="organization"></div>
+          <div class="f"><label for="aWhat">What's the problem?</label><textarea id="aWhat" rows="3"></textarea></div>
+          <div class="f"><label for="aGood">What would a good result look like?</label><textarea id="aGood" rows="3"></textarea></div>
+          <button type="submit" class="primary" style="width:100%">Write the email</button>
+          <p class="muted" id="askMsg" style="font-size:14px;margin-top:10px" aria-live="polite">This opens your email app with the message filled in.</p>
+        </div>
+      </form>
     </div>
   </div>
 </section>
@@ -1181,6 +1283,26 @@ const air = (() => {
   const spin=now=>{const dt=(now-lastF)/1000;lastF=now; if(!reduce){ang=(ang+applied*7*dt)%360; blades.style.transform=`rotate(${ang}deg)`;} requestAnimationFrame(spin);};
   requestAnimationFrame(spin);
   update();
+})();
+
+/* ---------- contact ---------- */
+(() => {
+  const mail=CONTACT.email; $('#mailText').textContent=mail;
+  const msg=$('#askMsg');
+  $('#copyMail').addEventListener('click',async()=>{
+    try{ await navigator.clipboard.writeText(mail); $('#copyMail').textContent='Copied'; }
+    catch(e){ $('#copyMail').textContent='Select the address to copy'; }
+    setTimeout(()=>{$('#copyMail').textContent='Copy';},2000);
+  });
+  $('#askForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const v=id=>$('#'+id).value.trim();
+    if(!v('aWhat')){ msg.textContent='Add a line about the problem first.'; $('#aWhat').focus(); return; }
+    const subject='Project inquiry'+(v('aBiz')?' from '+v('aBiz'):v('aName')?' from '+v('aName'):'');
+    const body=['Hi Nickolos,','',"What's the problem:",v('aWhat'),'','What a good result looks like:',v('aGood')||'(not sure yet)','','Thanks,',v('aName')].join('\n');
+    const a=document.createElement('a'); a.href='mailto:'+mail+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body); a.click();
+    msg.textContent='If your email app didn\'t open, send your note to '+mail+'.';
+  });
 })();
 
 /* ---------- Spectrum demo window ---------- */
